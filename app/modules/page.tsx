@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { Card, Badge, Button, PageLayout } from '../../components/ui';
 import { useRouter } from '../../lib/routerContext';
-import { BookOpen, Shield, MessageSquare, Briefcase, Lock, ArrowRight } from 'lucide-react';
+import { BookOpen, Shield, MessageSquare, Briefcase, Lock, ArrowRight, Globe } from 'lucide-react';
 import { Module } from '../../types';
 
 export default function Page() {
@@ -23,6 +24,15 @@ export default function Page() {
       description: 'The art of asking: Context, Persona, Task, and Constraints.',
       duration: '20 min',
       icon: 'MessageSquare',
+      locked: false
+    },
+    // NEW: Tools Module
+    {
+      id: 'tools-overview',
+      title: 'AI Tools & Research',
+      description: 'Beyond the chatbot: Research tools, Doc analysis, and more.',
+      duration: '15 min',
+      icon: 'Globe',
       locked: false
     },
     {
@@ -49,6 +59,7 @@ export default function Page() {
       case 'MessageSquare': return <MessageSquare className="w-6 h-6" />;
       case 'Briefcase': return <Briefcase className="w-6 h-6" />;
       case 'Shield': return <Shield className="w-6 h-6" />;
+      case 'Globe': return <Globe className="w-6 h-6" />;
       default: return <BookOpen className="w-6 h-6" />;
     }
   };

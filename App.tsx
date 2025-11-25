@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { RouterProvider, useRouter } from './lib/routerContext';
 import RootLayout from './app/layout';
@@ -10,6 +11,9 @@ import ModulesFundamentalsPage from './app/modules/fundamentals/page';
 import ModulesPromptingPage from './app/modules/prompting/page';
 import ModulesWorkflowPage from './app/modules/workflow/page';
 import ModulesResponsibleUsePage from './app/modules/responsible-use/page';
+// NEW: Import the Hub Page
+import ModulesToolsOverviewPage from './app/modules/tools-overview/page';
+
 import ReferencePage from './app/reference/page';
 import PolicyQuickViewPage from './app/reference/policy-quick-view/page';
 import ReferencePromptingGuidePage from './app/reference/prompting-guide/page';
@@ -29,6 +33,10 @@ const RouteHandler = () => {
   if (path === '/modules/prompting') return <ModulesPromptingPage />;
   if (path === '/modules/workflow') return <ModulesWorkflowPage />;
   if (path === '/modules/responsible-use') return <ModulesResponsibleUsePage />;
+  
+  // NEW: Route for Tools Overview
+  if (path === '/modules/tools-overview') return <ModulesToolsOverviewPage />;
+  
   // Fallback for demo: any other module goes to main list
   if (path.startsWith('/modules/')) return <ModulesPage />; 
   
