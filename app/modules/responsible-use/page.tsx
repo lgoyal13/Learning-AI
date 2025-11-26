@@ -1,31 +1,36 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, Button } from '../../../components/ui';
-import { ShieldAlert, UserCheck, Eye, Lock, CheckCircle2, XCircle, FileText } from 'lucide-react';
+import { ShieldAlert, UserCheck, Eye, Lock, CheckCircle2, XCircle, FileText, ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function Page() {
   const [quizAnswer, setQuizAnswer] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const sections = [
     { id: 'intro', title: 'The Trust Imperative' },
     { id: 'pii', title: 'The Golden Rule (PII)' },
     { id: 'hitl', title: 'Human in the Loop' },
-    { id: 'bias', title: 'Bias & Fairness' },
     { id: 'quiz', title: 'Scenario Challenge' },
   ];
 
-  return (
-    <ModuleLayout
-      title="Responsible & Safe Use"
-      description="AI is powerful, but trust is fragile. Learn how to use these tools without compromising customer privacy or company integrity."
-      duration="10 mins"
-      audience="All Employees"
-      sections={sections}
-      nextModulePath="/modules"
-    >
-      {/* SECTION 1: INTRO */}
-      <section id="intro" className="mb-12">
+  const totalSteps = sections.length;
+
+  const handleNext = () => {
+    setCurrentStep(prev => Math.min(totalSteps - 1, prev + 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePrev = () => {
+    setCurrentStep(prev => Math.max(0, prev - 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const sectionContent = [
+    // SECTION 1: INTRO
+    (
+      <section key="intro" id="intro" className="mb-12 animate-fade-in">
         <h2>The Trust Imperative</h2>
         <p>
           As a business, our product is <strong>trust</strong>. Our clients trust us with their most sensitive data—financial records, strategic plans, and personal details.
@@ -37,9 +42,11 @@ export default function Page() {
           You are the Pilot. AI is the Co-pilot. You are responsible for the flight, not the machine.
         </Callout>
       </section>
+    ),
 
-      {/* SECTION 2: PII */}
-      <section id="pii" className="mb-12">
+    // SECTION 2: PII
+    (
+      <section key="pii" id="pii" className="mb-12 animate-fade-in">
         <h2 className="flex items-center gap-2">
           <Lock className="w-6 h-6 text-blue-600" />
           The Golden Rule: Protect PII
@@ -87,9 +94,11 @@ export default function Page() {
           </p>
         </Card>
       </section>
+    ),
 
-      {/* SECTION 3: HUMAN IN THE LOOP */}
-      <section id="hitl" className="mb-12">
+    // SECTION 3: HUMAN IN THE LOOP
+    (
+      <section key="hitl" id="hitl" className="mb-12 animate-fade-in">
         <h2 className="flex items-center gap-2">
           <UserCheck className="w-6 h-6 text-blue-600" />
           Human in the Loop (HITL)
@@ -121,9 +130,11 @@ export default function Page() {
           <strong>Always verify output against the actual source document.</strong>
         </p>
       </section>
+    ),
 
-      {/* SECTION 4: SCENARIO QUIZ */}
-      <section id="quiz" className="mb-12 pt-8 border-t border-slate-200">
+    // SECTION 4: SCENARIO QUIZ
+    (
+      <section key="quiz" id="quiz" className="mb-12 pt-8 border-t border-slate-200 animate-fade-in">
         <h2 className="flex items-center gap-2">
           <Eye className="w-6 h-6 text-yellow-600" /> 
           Scenario Challenge
@@ -201,6 +212,57 @@ export default function Page() {
           )}
         </Card>
       </section>
+    )
+  ];
+
+  return (
+    <ModuleLayout
+      title="Responsible & Safe Use"
+      description="AI is powerful, but trust is fragile. Learn how to use these tools without compromising customer privacy or company integrity."
+      duration="10 mins"
+      audience="All Employees"
+      sections={sections}
+      nextModulePath="/modules"
+    >
+      {/* Progress Bar */}
+      <div className="mb-10">
+        <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
+          <span>Step {currentStep + 1} of {totalSteps}</span>
+          <span>{Math.round(((currentStep + 1) / totalSteps) * 100)}%</span>
+        </div>
+        <div className="w-full bg-slate-200 rounded-full h-2.5">
+          <div 
+            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
+            style={{ width: `${Math.round(((currentStep + 1) / totalSteps) * 100)}%` }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Current Section Content */}
+      <div className="min-h-[400px]">
+        {sectionContent[currentStep]}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between mt-12 pt-8 border-t border-slate-200">
+        <Button 
+          variant="secondary" 
+          onClick={handlePrev} 
+          disabled={currentStep === 0}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" /> Previous
+        </Button>
+
+        {currentStep < totalSteps - 1 ? (
+          <Button onClick={handleNext}>
+            Next <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        ) : (
+          <Button variant="outline" disabled className="opacity-75 cursor-not-allowed">
+            Module Complete <CheckCircle2 className="w-4 h-4 ml-2" />
+          </Button>
+        )}
+      </div>
     </ModuleLayout>
   );
 }

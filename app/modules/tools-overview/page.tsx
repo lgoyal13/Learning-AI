@@ -1,12 +1,12 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Button, Badge } from '../../../components/ui';
 import { useRouter } from '../../../lib/routerContext';
-import { Globe, Layers, PenTool, MessageSquare, ArrowRight } from 'lucide-react';
+import { Globe, Layers, PenTool, MessageSquare, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
 
 export default function Page() {
   const { push } = useRouter();
+  const [currentStep, setCurrentStep] = useState(0);
 
   const sections = [
     { id: 'intro', title: 'The Right Tool for the Job' },
@@ -14,17 +14,22 @@ export default function Page() {
     { id: 'deep-dives', title: 'Deep Dives' },
   ];
 
-  return (
-    <ModuleLayout
-      title="AI Tools & Research"
-      description="Don't just use a chatbot for everything. Learn to pick the right specialized AI tool for research, document analysis, and prototyping."
-      duration="10 mins"
-      audience="All Employees"
-      sections={sections}
-      nextModulePath="/modules/tool-research"
-    >
-      {/* SECTION 1: INTRO */}
-      <section id="intro" className="mb-12">
+  const totalSteps = sections.length;
+
+  const handleNext = () => {
+    setCurrentStep(prev => Math.min(totalSteps - 1, prev + 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePrev = () => {
+    setCurrentStep(prev => Math.max(0, prev - 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const sectionContent = [
+    // SECTION 1: INTRO
+    (
+      <section key="intro" id="intro" className="mb-12 animate-fade-in">
         <h2>Stop Using a Hammer for Everything</h2>
         <p>
           We often see people trying to use a standard Chat Assistant (like ChatGPT) for tasks it isn't good at—like 
@@ -35,9 +40,11 @@ export default function Page() {
           Understanding the <strong>Core Categories</strong> of AI tools will double your efficiency.
         </p>
       </section>
+    ),
 
-      {/* SECTION 2: CATEGORIES */}
-      <section id="categories" className="mb-12">
+    // SECTION 2: CATEGORIES
+    (
+      <section key="categories" id="categories" className="mb-12 animate-fade-in">
         <h2>The 4 Main Tool Types</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
@@ -106,9 +113,11 @@ export default function Page() {
           </Card>
         </div>
       </section>
+    ),
 
-      {/* SECTION 3: DEEP DIVES */}
-      <section id="deep-dives" className="mb-12">
+    // SECTION 3: DEEP DIVES
+    (
+      <section key="deep-dives" id="deep-dives" className="mb-12 animate-fade-in">
         <h2>Explore Specific Tools</h2>
         <p className="mb-6">Choose a path to learn more.</p>
         
@@ -165,6 +174,57 @@ export default function Page() {
           </Card>
         </div>
       </section>
+    )
+  ];
+
+  return (
+    <ModuleLayout
+      title="AI Tools & Research"
+      description="Don't just use a chatbot for everything. Learn to pick the right specialized AI tool for research, document analysis, and prototyping."
+      duration="10 mins"
+      audience="All Employees"
+      sections={sections}
+      nextModulePath="/modules/tool-research"
+    >
+      {/* Progress Bar */}
+      <div className="mb-10">
+        <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
+          <span>Step {currentStep + 1} of {totalSteps}</span>
+          <span>{Math.round(((currentStep + 1) / totalSteps) * 100)}%</span>
+        </div>
+        <div className="w-full bg-slate-200 rounded-full h-2.5">
+          <div 
+            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
+            style={{ width: `${Math.round(((currentStep + 1) / totalSteps) * 100)}%` }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Current Section Content */}
+      <div className="min-h-[400px]">
+        {sectionContent[currentStep]}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between mt-12 pt-8 border-t border-slate-200">
+        <Button 
+          variant="secondary" 
+          onClick={handlePrev} 
+          disabled={currentStep === 0}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" /> Previous
+        </Button>
+
+        {currentStep < totalSteps - 1 ? (
+          <Button onClick={handleNext}>
+            Next <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        ) : (
+          <Button variant="outline" disabled className="opacity-75 cursor-not-allowed">
+            Module Complete <CheckCircle2 className="w-4 h-4 ml-2" />
+          </Button>
+        )}
+      </div>
     </ModuleLayout>
   );
 }

@@ -1,9 +1,23 @@
-
 import React from 'react';
 import { Card, Badge, Button, PageLayout } from '../../components/ui';
 import { useRouter } from '../../lib/routerContext';
 import { BookOpen, Shield, MessageSquare, Briefcase, Lock, ArrowRight, Globe } from 'lucide-react';
 import { Module } from '../../types';
+
+const tracks = [
+  {
+    id: 'foundations',
+    title: 'Start Here – Fundamentals',
+    description: 'Recommended for most people. Gives you the mental model, prompting skills, and safety basics.',
+    moduleIds: ['fundamentals', 'prompting', 'responsible-use'],
+  },
+  {
+    id: 'applied',
+    title: 'Apply It – Workflows & Tools',
+    description: 'Once you are comfortable with the basics, use these to plug AI into your day-to-day work.',
+    moduleIds: ['tools-overview', 'workflow'],
+  },
+];
 
 export default function Page() {
   const { push } = useRouter();
@@ -74,43 +88,63 @@ export default function Page() {
       title="Learning Path" 
       description="Master the skills you need to boost your productivity safely."
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {modules.map((module) => (
-          <Card 
-            key={module.id} 
-            className={`group h-full flex flex-col ${module.locked ? 'opacity-75 bg-slate-50' : 'bg-white'}`}
-            hover={!module.locked}
-            onClick={() => !module.locked && handleModuleClick(module.id)}
-          >
-            <div className="p-6 flex-1 flex flex-col">
-              <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 rounded-lg ${module.locked ? 'bg-slate-200 text-slate-500' : 'bg-blue-100 text-blue-600'}`}>
-                  {getIcon(module.icon)}
-                </div>
-                <Badge variant={module.locked ? 'neutral' : 'success'}>
-                  {module.locked ? <Lock className="w-3 h-3 mr-1 inline" /> : null}
-                  {module.locked ? 'Locked' : module.duration}
-                </Badge>
+      <div className="space-y-12">
+        {tracks.map((track) => {
+          const trackModules = modules.filter((m) => track.moduleIds.includes(m.id));
+          
+          return (
+            <section key={track.id}>
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-slate-900">{track.title}</h2>
+                <p className="text-slate-600 mt-1 max-w-3xl">{track.description}</p>
               </div>
               
-              <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
-                {module.title}
-              </h3>
-              <p className="text-slate-600 mb-6 text-sm leading-relaxed flex-1">
-                {module.description}
-              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {trackModules.map((module) => (
+                  <Card 
+                    key={module.id} 
+                    className={`group h-full flex flex-col ${module.locked ? 'opacity-75 bg-slate-50' : 'bg-white'}`}
+                    hover={!module.locked}
+                    onClick={() => !module.locked && handleModuleClick(module.id)}
+                  >
+                    <div className="p-6 flex-1 flex flex-col">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className={`p-3 rounded-lg ${module.locked ? 'bg-slate-200 text-slate-500' : 'bg-blue-100 text-blue-600'}`}>
+                          {getIcon(module.icon)}
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          {module.id === 'fundamentals' && (
+                            <Badge variant="blue">Recommended Start</Badge>
+                          )}
+                          <Badge variant={module.locked ? 'neutral' : 'success'}>
+                            {module.locked ? <Lock className="w-3 h-3 mr-1 inline" /> : null}
+                            {module.locked ? 'Locked' : module.duration}
+                          </Badge>
+                        </div>
+                      </div>
+                      
+                      <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
+                        {module.title}
+                      </h3>
+                      <p className="text-slate-600 mb-6 text-sm leading-relaxed flex-1">
+                        {module.description}
+                      </p>
 
-              <Button 
-                variant={module.locked ? 'secondary' : 'outline'} 
-                className="w-full justify-between group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-200"
-                disabled={module.locked}
-              >
-                {module.locked ? 'Complete previous modules' : 'Start Module'}
-                {!module.locked && <ArrowRight className="w-4 h-4" />}
-              </Button>
-            </div>
-          </Card>
-        ))}
+                      <Button 
+                        variant={module.locked ? 'secondary' : 'outline'} 
+                        className="w-full justify-between group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-200"
+                        disabled={module.locked}
+                      >
+                        {module.locked ? 'Complete previous modules' : 'Start Module'}
+                        {!module.locked && <ArrowRight className="w-4 h-4" />}
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </div>
     </PageLayout>
   );

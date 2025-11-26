@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, Button } from '../../../components/ui';
-import { BrainCircuit, Search, PenTool, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
+import { BrainCircuit, Search, PenTool, AlertTriangle, CheckCircle2, XCircle, ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function Page() {
   const [quizAnswer, setQuizAnswer] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const sections = [
     { id: 'what-is-it', title: 'What is Generative AI?' },
@@ -15,17 +16,22 @@ export default function Page() {
     { id: 'quiz', title: 'Knowledge Check' },
   ];
 
-  return (
-    <ModuleLayout
-      title="AI Fundamentals"
-      description="Look under the hood. Understand how Large Language Models (LLMs) actually work, so you know when to trust them—and when to doubt them."
-      duration="15 mins"
-      audience="All Employees"
-      sections={sections}
-      nextModulePath="/modules/prompting"
-    >
-      {/* SECTION 1: WHAT IS IT */}
-      <section id="what-is-it" className="mb-12">
+  const totalSteps = sections.length;
+
+  const handleNext = () => {
+    setCurrentStep(prev => Math.min(totalSteps - 1, prev + 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePrev = () => {
+    setCurrentStep(prev => Math.max(0, prev - 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const sectionContent = [
+    // SECTION 1: WHAT IS IT
+    (
+      <section key="what-is-it" id="what-is-it" className="mb-12 animate-fade-in">
         <h2>It's Not a Search Engine</h2>
         <p>
           Most of us are used to Google. When you search for a document on the intranet, the computer looks for an exact match.
@@ -50,9 +56,11 @@ export default function Page() {
           </Card>
         </div>
       </section>
+    ),
 
-      {/* SECTION 2: PREDICTION ENGINE */}
-      <section id="prediction" className="mb-12">
+    // SECTION 2: PREDICTION ENGINE
+    (
+      <section key="prediction" id="prediction" className="mb-12 animate-fade-in">
         <h2>The "Autocomplete" Analogy</h2>
         <p>
           Think of LLMs as "Autocomplete on Steroids." They are trained on billions of sentences to predict the most likely next word.
@@ -67,9 +75,11 @@ export default function Page() {
           This means the AI doesn't always know facts. It knows <em>patterns</em>. This is why it can write poetry, code, and emails, but it can also make mistakes with math or obscure facts.
         </p>
       </section>
+    ),
 
-      {/* SECTION 3: HALLUCINATIONS */}
-      <section id="hallucinations" className="mb-12">
+    // SECTION 3: HALLUCINATIONS
+    (
+      <section key="hallucinations" id="hallucinations" className="mb-12 animate-fade-in">
         <h2>The Trust Gap: Hallucinations</h2>
         <p>
           Because the AI is trying to predict the "next likely word," it sometimes prioritizes <strong>fluency</strong> over <strong>accuracy</strong>.
@@ -90,9 +100,11 @@ export default function Page() {
           </Card>
         </div>
       </section>
+    ),
 
-      {/* SECTION 4: STRENGTHS */}
-      <section id="strengths" className="mb-12">
+    // SECTION 4: STRENGTHS
+    (
+      <section key="strengths" id="strengths" className="mb-12 animate-fade-in">
         <h2>Use the "Jagged Frontier"</h2>
         <p>
           AI is a genius at some things and a novice at others. Use it for its strengths, not its weaknesses.
@@ -123,9 +135,11 @@ export default function Page() {
           </div>
         </div>
       </section>
+    ),
 
-      {/* SECTION 5: QUIZ */}
-      <section id="quiz" className="mb-12 pt-8 border-t border-slate-200">
+    // SECTION 5: QUIZ
+    (
+      <section key="quiz" id="quiz" className="mb-12 pt-8 border-t border-slate-200 animate-fade-in">
         <h2>Knowledge Check</h2>
         <p className="mb-6">Which task is best suited for Generative AI?</p>
 
@@ -186,6 +200,57 @@ export default function Page() {
           )}
         </Card>
       </section>
+    )
+  ];
+
+  return (
+    <ModuleLayout
+      title="AI Fundamentals"
+      description="Look under the hood. Understand how Large Language Models (LLMs) actually work, so you know when to trust them—and when to doubt them."
+      duration="15 mins"
+      audience="All Employees"
+      sections={sections}
+      nextModulePath="/modules/prompting"
+    >
+      {/* Progress Bar */}
+      <div className="mb-10">
+        <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
+          <span>Step {currentStep + 1} of {totalSteps}</span>
+          <span>{Math.round(((currentStep + 1) / totalSteps) * 100)}%</span>
+        </div>
+        <div className="w-full bg-slate-200 rounded-full h-2.5">
+          <div 
+            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
+            style={{ width: `${Math.round(((currentStep + 1) / totalSteps) * 100)}%` }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Current Section Content */}
+      <div className="min-h-[400px]">
+        {sectionContent[currentStep]}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between mt-12 pt-8 border-t border-slate-200">
+        <Button 
+          variant="secondary" 
+          onClick={handlePrev} 
+          disabled={currentStep === 0}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" /> Previous
+        </Button>
+
+        {currentStep < totalSteps - 1 ? (
+          <Button onClick={handleNext}>
+            Next <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        ) : (
+          <Button variant="outline" disabled className="opacity-75 cursor-not-allowed">
+            Module Complete <CheckCircle2 className="w-4 h-4 ml-2" />
+          </Button>
+        )}
+      </div>
     </ModuleLayout>
   );
 }

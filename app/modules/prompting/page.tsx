@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, PromptCard, Button } from '../../../components/ui';
-import { CheckCircle2, XCircle, ChevronRight, Zap } from 'lucide-react';
+import { CheckCircle2, XCircle, ChevronRight, Zap, ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function Page() {
   const [quizAnswer, setQuizAnswer] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const sections = [
     { id: 'intro', title: 'Why Prompting Matters' },
@@ -16,17 +17,22 @@ export default function Page() {
     { id: 'quiz', title: 'Knowledge Check' },
   ];
 
-  return (
-    <ModuleLayout
-      title="Prompting Basics: The Art of Asking"
-      description="Learn the simple formula to get high-quality, professional results from AI every time. Stop wrestling with the model and start delegating effectively."
-      duration="20 mins"
-      audience="All Employees"
-      sections={sections}
-      nextModulePath="/modules/workflow"
-    >
-      {/* SECTION 1: INTRO */}
-      <section id="intro" className="mb-12">
+  const totalSteps = sections.length;
+
+  const handleNext = () => {
+    setCurrentStep(prev => Math.min(totalSteps - 1, prev + 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePrev = () => {
+    setCurrentStep(prev => Math.max(0, prev - 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const sectionContent = [
+    // SECTION 1: INTRO
+    (
+      <section key="intro" id="intro" className="mb-12 animate-fade-in">
         <h2>Garbage In, Garbage Out</h2>
         <p>
           Imagine you have a brilliant intern who has read every business textbook in the world but has 
@@ -41,9 +47,11 @@ export default function Page() {
           Treat the AI like a smart, junior employee. Be specific, give context, and tell it exactly what good looks like.
         </Callout>
       </section>
+    ),
 
-      {/* SECTION 2: FRAMEWORK */}
-      <section id="framework" className="mb-12">
+    // SECTION 2: FRAMEWORK
+    (
+      <section key="framework" id="framework" className="mb-12 animate-fade-in">
         <h2>The Framework: C.T.F.</h2>
         <p>
           You don't need to be a coder to write good prompts. You just need to cover these three bases.
@@ -79,9 +87,11 @@ export default function Page() {
           </Card>
         </div>
       </section>
+    ),
 
-      {/* SECTION 3: EXAMPLES */}
-      <section id="examples" className="mb-12">
+    // SECTION 3: EXAMPLES
+    (
+      <section key="examples" id="examples" className="mb-12 animate-fade-in">
         <h2>Business Examples: Before & After</h2>
         <p>See the difference when you apply the C.T.F. framework.</p>
 
@@ -113,9 +123,11 @@ export default function Page() {
           </div>
         </div>
       </section>
+    ),
 
-      {/* SECTION 4: POWER TIPS */}
-      <section id="tips" className="mb-12">
+    // SECTION 4: POWER TIPS
+    (
+      <section key="tips" id="tips" className="mb-12 animate-fade-in">
         <h2>3 Power Tips</h2>
         
         <h3>1. Assign a Role (Persona)</h3>
@@ -147,9 +159,11 @@ export default function Page() {
           <p className="mb-1">Output:</p>
         </div>
       </section>
+    ),
 
-      {/* SECTION 5: TROUBLESHOOTING */}
-      <section id="troubleshooting" className="mb-12">
+    // SECTION 5: TROUBLESHOOTING
+    (
+      <section key="troubleshooting" id="troubleshooting" className="mb-12 animate-fade-in">
         <h2>Troubleshooting: "It didn't work!"</h2>
         <p>
           Sometimes the AI gives a bad answer. Don't give up! Try these fixes:
@@ -160,9 +174,11 @@ export default function Page() {
           <li><strong>Iterate:</strong> Treat it like a conversation. "That was too formal. Rewrite it to be friendlier."</li>
         </ul>
       </section>
+    ),
 
-      {/* SECTION 6: QUIZ */}
-      <section id="quiz" className="mb-12 pt-8 border-t border-slate-200">
+    // SECTION 6: QUIZ
+    (
+      <section key="quiz" id="quiz" className="mb-12 pt-8 border-t border-slate-200 animate-fade-in">
         <h2 className="flex items-center gap-3">
           <Zap className="text-yellow-500 fill-yellow-500" /> 
           Knowledge Check
@@ -225,6 +241,57 @@ export default function Page() {
           )}
         </Card>
       </section>
+    )
+  ];
+
+  return (
+    <ModuleLayout
+      title="Prompting Basics: The Art of Asking"
+      description="Learn the simple formula to get high-quality, professional results from AI every time. Stop wrestling with the model and start delegating effectively."
+      duration="20 mins"
+      audience="All Employees"
+      sections={sections}
+      nextModulePath="/modules/workflow"
+    >
+      {/* Progress Bar */}
+      <div className="mb-10">
+        <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
+          <span>Step {currentStep + 1} of {totalSteps}</span>
+          <span>{Math.round(((currentStep + 1) / totalSteps) * 100)}%</span>
+        </div>
+        <div className="w-full bg-slate-200 rounded-full h-2.5">
+          <div 
+            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
+            style={{ width: `${Math.round(((currentStep + 1) / totalSteps) * 100)}%` }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Current Section Content */}
+      <div className="min-h-[400px]">
+        {sectionContent[currentStep]}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between mt-12 pt-8 border-t border-slate-200">
+        <Button 
+          variant="secondary" 
+          onClick={handlePrev} 
+          disabled={currentStep === 0}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" /> Previous
+        </Button>
+
+        {currentStep < totalSteps - 1 ? (
+          <Button onClick={handleNext}>
+            Next <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        ) : (
+          <Button variant="outline" disabled className="opacity-75 cursor-not-allowed">
+            Module Complete <CheckCircle2 className="w-4 h-4 ml-2" />
+          </Button>
+        )}
+      </div>
     </ModuleLayout>
   );
 }

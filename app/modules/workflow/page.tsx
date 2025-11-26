@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, PromptCard, Button } from '../../../components/ui';
-import { FileText, Users, ArrowRight, Check } from 'lucide-react';
+import { FileText, Users, ArrowRight, ArrowLeft, CheckCircle2, Check } from 'lucide-react';
 
 export default function Page() {
+  const [currentStep, setCurrentStep] = useState(0);
+
   const sections = [
     { id: 'intro', title: 'Workflows vs. Chat' },
     { id: 'minutes', title: 'Meeting Minutes' },
@@ -11,26 +13,33 @@ export default function Page() {
     { id: 'excel', title: 'Excel Helper' },
   ];
 
-  return (
-    <ModuleLayout
-      title="Business Workflows"
-      description="Move beyond simple chat. Learn how to chain prompts together to automate repetitive business processes."
-      duration="25 mins"
-      audience="Project Managers, Ops, Admin"
-      sections={sections}
-      nextModulePath="/modules/responsible-use"
-    >
-      {/* SECTION 1: INTRO */}
-      <section id="intro" className="mb-12">
+  const totalSteps = sections.length;
+
+  const handleNext = () => {
+    setCurrentStep(prev => Math.min(totalSteps - 1, prev + 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePrev = () => {
+    setCurrentStep(prev => Math.max(0, prev - 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const sectionContent = [
+    // SECTION 1: INTRO
+    (
+      <section key="intro" id="intro" className="mb-12 animate-fade-in">
         <h2>From Chatting to Working</h2>
         <p>
           Most people stop at "Write me an email." But the real power of AI comes when you use it to transform
           inputs (documents, data, notes) into structured outputs (tables, reports, summaries).
         </p>
       </section>
+    ),
 
-      {/* SECTION 2: MEETING MINUTES */}
-      <section id="minutes" className="mb-12">
+    // SECTION 2: MEETING MINUTES
+    (
+      <section key="minutes" id="minutes" className="mb-12 animate-fade-in">
         <h2 className="flex items-center gap-2">
           <Users className="w-6 h-6 text-blue-600" />
           Workflow 1: The "Instant" Minutes
@@ -65,9 +74,11 @@ export default function Page() {
            prompt="Act as a Project Coordinator. Review these raw meeting notes. \n1. Summarize the key decisions. \n2. List action items with owners. \n3. List open risks. \nFormat as a clean HTML email." 
         />
       </section>
+    ),
 
-      {/* SECTION 3: CONTRACTS */}
-      <section id="contracts" className="mb-12">
+    // SECTION 3: CONTRACTS
+    (
+      <section key="contracts" id="contracts" className="mb-12 animate-fade-in">
         <h2 className="flex items-center gap-2">
           <FileText className="w-6 h-6 text-purple-600" />
           Workflow 2: Document Comparison
@@ -87,9 +98,11 @@ export default function Page() {
           />
         </div>
       </section>
+    ),
 
-      {/* SECTION 4: EXCEL */}
-      <section id="excel" className="mb-12">
+    // SECTION 4: EXCEL
+    (
+      <section key="excel" id="excel" className="mb-12 animate-fade-in">
         <h2>Workflow 3: The Excel & Data Helper</h2>
         <p>
           You have a spreadsheet but don't know the formula to extract the data you need. 
@@ -107,19 +120,70 @@ export default function Page() {
             </div>
           </Card>
         </div>
-      </section>
 
-      <section className="pt-8 border-t border-slate-200">
-        <div className="bg-blue-50 p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
-           <div>
-             <h3 className="font-bold text-blue-900 text-lg">Ready for the next step?</h3>
-             <p className="text-blue-700 text-sm">Learn how to stay safe while being productive.</p>
-           </div>
-           <Button onClick={() => window.location.href='/modules/responsible-use'}>
-             Go to Responsible Use <ArrowRight className="ml-2 w-4 h-4" />
-           </Button>
+        <div className="mt-8 pt-8 border-t border-slate-200">
+          <div className="bg-blue-50 p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
+             <div>
+               <h3 className="font-bold text-blue-900 text-lg">Ready for the next step?</h3>
+               <p className="text-blue-700 text-sm">Learn how to stay safe while being productive.</p>
+             </div>
+             <Button onClick={() => window.location.href='/modules/responsible-use'}>
+               Go to Responsible Use <ArrowRight className="ml-2 w-4 h-4" />
+             </Button>
+          </div>
         </div>
       </section>
+    )
+  ];
+
+  return (
+    <ModuleLayout
+      title="Business Workflows"
+      description="Move beyond simple chat. Learn how to chain prompts together to automate repetitive business processes."
+      duration="25 mins"
+      audience="Project Managers, Ops, Admin"
+      sections={sections}
+      nextModulePath="/modules/responsible-use"
+    >
+      {/* Progress Bar */}
+      <div className="mb-10">
+        <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
+          <span>Step {currentStep + 1} of {totalSteps}</span>
+          <span>{Math.round(((currentStep + 1) / totalSteps) * 100)}%</span>
+        </div>
+        <div className="w-full bg-slate-200 rounded-full h-2.5">
+          <div 
+            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
+            style={{ width: `${Math.round(((currentStep + 1) / totalSteps) * 100)}%` }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Current Section Content */}
+      <div className="min-h-[400px]">
+        {sectionContent[currentStep]}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between mt-12 pt-8 border-t border-slate-200">
+        <Button 
+          variant="secondary" 
+          onClick={handlePrev} 
+          disabled={currentStep === 0}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" /> Previous
+        </Button>
+
+        {currentStep < totalSteps - 1 ? (
+          <Button onClick={handleNext}>
+            Next <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        ) : (
+          <Button variant="outline" disabled className="opacity-75 cursor-not-allowed">
+            Module Complete <CheckCircle2 className="w-4 h-4 ml-2" />
+          </Button>
+        )}
+      </div>
     </ModuleLayout>
   );
 }
