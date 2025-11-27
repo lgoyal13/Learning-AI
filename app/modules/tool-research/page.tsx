@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, PromptCard, Button } from '../../../components/ui';
-import { Globe, Search, CheckCircle2, AlertTriangle, ArrowLeft, ArrowRight, Zap, BrainCircuit, Target } from 'lucide-react';
+import { Globe, Search, CheckCircle2, AlertTriangle, ArrowLeft, ArrowRight, Zap, BrainCircuit, Target, BookOpen } from 'lucide-react';
+import { useRouter } from '../../../lib/routerContext';
 
 export default function Page() {
+  const { push } = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
 
   const sections = [
@@ -31,41 +33,39 @@ export default function Page() {
       case 0:
         return (
           <section id="why-research-tools" className="mb-12 animate-fade-in">
-            <h2>Search plus superpowers</h2>
+            <h2>When you need facts, not just chat</h2>
             <p className="text-lg text-slate-700">
-              Regular AI chat models are fantastic at rewriting, brainstorming, and explaining concepts you already understand.
-              "Your Docs" tools (like NotebookLM) are brilliant at reading your internal PDFs.
+              Standard chat models are great conversationalists, but they don't always know what happened this morning. 
+              <strong>Research tools</strong> are built differently: they read the live web first, then synthesize an answer.
             </p>
             <p className="text-slate-600">
-              But what if you need to know <strong>what happened in the market this morning</strong>? Or need a report backed by real citations?
-              That is where <strong>Research Tools</strong> come in.
+              Use these tools when accuracy, citations, and recency matter more than speed or creativity.
             </p>
 
             <div className="my-8">
-              <h3 className="text-xl font-bold text-slate-900 mb-4">What this module is really about</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">What you can do here</h3>
               <p className="text-slate-600 mb-4">
-                This isn't just about Googling faster. It's about having a tireless research assistant who reads 20 websites in seconds
-                and synthesizes the findings into a clean brief.
+                Instead of opening 15 browser tabs, you can ask an AI agent to read them all and summarize the consensus.
               </p>
               
               <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                 <h4 className="font-bold text-slate-900 mb-3">Use these tools for:</h4>
+                 <h4 className="font-bold text-slate-900 mb-3">Best use cases:</h4>
                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-700">
                    <li className="flex items-start gap-2">
                      <CheckCircle2 className="w-4 h-4 text-blue-600 mt-0.5" />
-                     Competitive and market intelligence
+                     Market intelligence & competitor news
                    </li>
                    <li className="flex items-start gap-2">
                      <CheckCircle2 className="w-4 h-4 text-blue-600 mt-0.5" />
-                     Regulation and policy updates
+                     Checking recent regulation changes
                    </li>
                    <li className="flex items-start gap-2">
                      <CheckCircle2 className="w-4 h-4 text-blue-600 mt-0.5" />
-                     "What changed this quarter?" news scanning
+                     Scanning news for specific topics ("telematics trends")
                    </li>
                    <li className="flex items-start gap-2">
                      <CheckCircle2 className="w-4 h-4 text-blue-600 mt-0.5" />
-                     Quick fact-checking with clickable links
+                     Fact-checking a claim with source links
                    </li>
                  </ul>
               </div>
@@ -75,10 +75,9 @@ export default function Page() {
       case 1:
         return (
           <section id="fast-vs-deep" className="mb-12 animate-fade-in">
-            <h2>Fast chat vs deep research</h2>
+            <h2>Two speeds: Fast vs. Deep</h2>
             <p className="mb-6">
-              Not all research questions are equal. Sometimes you need a quick answer, and sometimes you need a PhD-level thesis.
-              Modern AI tools now offer two distinct "modes" for this.
+              Research tools usually offer two modes. Knowing which one to pick will save you time and frustration.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 not-prose">
@@ -88,7 +87,7 @@ export default function Page() {
                   <h3 className="text-lg font-bold text-slate-900">Fast Mode</h3>
                 </div>
                 <p className="text-sm text-slate-600 mb-4 min-h-[40px]">
-                  <strong>Best for:</strong> Quick drafts, scanning headlines, simple definitions, and summaries.
+                  <strong>Goal:</strong> Quick orientation. Good for scanning headlines, simple definitions, and getting the "gist."
                 </p>
                 <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-600 border border-slate-100">
                   "Give me a quick overview of telematics-based auto insurance."
@@ -101,60 +100,60 @@ export default function Page() {
                   <h3 className="text-lg font-bold text-slate-900">Deep / Reasoning Mode</h3>
                 </div>
                 <p className="text-sm text-slate-600 mb-4 min-h-[40px]">
-                  <strong>Best for:</strong> Multi-step analysis, strategic comparisons, and reports that need to be 100% solid.
+                  <strong>Goal:</strong> Strategic depth. Good for multi-step analysis, comparisons, and reports you'd show a manager.
                 </p>
                 <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-600 border border-slate-100">
-                  "Compare how regulators in US vs EU talk about telematics-based discounts in the last 12 months. Include citations."
+                  "Compare how regulators in US vs EU talk about telematics privacy. Cite 3 recent rulings."
                 </div>
               </Card>
             </div>
 
-            <Callout variant="info" title="Rule of Thumb">
-              If you’d be embarrassed to get it wrong in front of leadership, lean toward deep/reasoning modes (like Gemini Advanced or Perplexity Pro). It takes longer, but it checks its work.
+            <Callout variant="info" title="The Trade-off">
+              Deep mode takes longer (sometimes minutes) because it is literally "thinking" and verifying multiple sources. Use it for high-stakes questions.
             </Callout>
           </section>
         );
       case 2:
         return (
           <section id="gemini-deep-research" className="mb-12 animate-fade-in">
-            <h2>Using Gemini when the question is big</h2>
+            <h2>Gemini & The Google Ecosystem</h2>
             <p className="mb-6">
-              Gemini isn't just a chatbot. It is connected to the entire Google ecosystem.
+              Gemini shines when you need to connect web research directly into your workflow (Docs, Slides, Gmail).
             </p>
             <ul className="list-disc pl-5 space-y-2 text-slate-700 mb-8">
               <li>
-                <strong>On the Web:</strong> It can read dozens of sources to synthesize a structured report (Deep Research style).
+                <strong>Deep Research:</strong> It can read dozens of sources to build a structured report.
               </li>
               <li>
-                <strong>In Workspace:</strong> It can help you draft the email or slide deck based on that research immediately.
+                <strong>Integration:</strong> You can export that report straight to a Google Doc or draft an email based on it.
               </li>
             </ul>
 
             <Card className="p-6 bg-white border-slate-200">
-              <h3 className="font-bold text-lg text-slate-900 mb-2">Scenario: Plan a Research-Backed Campaign</h3>
+              <h3 className="font-bold text-lg text-slate-900 mb-2">Scenario: The Product Launch Plan</h3>
               <p className="text-sm text-slate-600 mb-6">
-                You need a tactical plan for a new product launch, grounded in what competitors are doing right now.
+                You need a tactical plan for a new launch, grounded in current competitor activity.
               </p>
 
               <div className="space-y-4">
                 <div>
-                  <strong className="text-sm text-slate-900 block mb-1">The Prompt</strong>
+                  <strong className="text-sm text-slate-900 block mb-1">Try this prompt:</strong>
                   <div className="bg-slate-50 p-3 rounded border border-slate-200 font-mono text-sm text-slate-700">
                     "Plan a 3-week campaign for our new renters' insurance product targeting young professionals. Use recent articles about renters' insurance trends. Output a table with week, channel, message, and main CTA."
                   </div>
                 </div>
 
                 <div>
-                  <strong className="text-sm text-slate-900 block mb-1">What to look for</strong>
+                  <strong className="text-sm text-slate-900 block mb-1">Check the work:</strong>
                   <p className="text-sm text-slate-600">
-                    You should see a structured table. Crucially, look for the citations (little numbers or dropdowns) to verify where it found the "trends."
+                    Look for the citations (little numbers). Click a few to ensure the "trends" are actually from this year, not 2021.
                   </p>
                 </div>
 
                 <div>
-                   <strong className="text-sm text-slate-900 block mb-1">Iterate</strong>
+                   <strong className="text-sm text-slate-900 block mb-1">Iterate:</strong>
                    <p className="text-sm text-slate-600">
-                     Don't stop there. Ask: <em>"Make it shorter,"</em> <em>"Focus on members with roadside assistance,"</em> or <em>"Add SMS touchpoints."</em>
+                     "Make the tone more urgent," or "Add SMS touchpoints for Week 2."
                    </p>
                 </div>
               </div>
@@ -164,22 +163,23 @@ export default function Page() {
       case 3:
         return (
           <section id="perplexity-engine" className="mb-12 animate-fade-in">
-            <h2>Perplexity: citations first</h2>
+            <h2>Perplexity: The Citation Engine</h2>
             <p className="mb-6">
-              Perplexity is a "search engine that gives you answers, not links." Its superpower is transparency. Every claim usually has a little number next to it, linking to the source.
+              Think of Perplexity as a search engine that answers you in paragraphs, not blue links. 
+              Its superpower is transparency—almost every sentence links back to a source.
             </p>
 
             <div className="mb-8">
-              <h3 className="font-bold text-slate-900 mb-4">Competitive Intelligence Exercise</h3>
+              <h3 className="font-bold text-slate-900 mb-4">Example: Competitive Intelligence</h3>
               <PromptCard 
-                label="Prompt Template"
-                prompt={`Provide a competitive intelligence summary for [Industry] in [Time Window]. For each:
+                label="Market Scan Prompt"
+                prompt={`Provide a competitive intelligence summary for [Industry] in [Time Window]. For each competitor:
 1. Cite at least two reputable sources.
-2. Summarize each source in 1–2 sentences.
-3. Present a table with columns: Industry, Article Title & Source (Date), Short Summary.`}
+2. Summarize their recent launches in 1–2 sentences.
+3. Present a table with columns: Competitor, Launch Date, Source Link, Key Feature.`}
               />
               <p className="text-sm text-slate-600 mt-4">
-                You can adjust the <strong>Time Window</strong> (e.g., "last 30 days") and <strong>Format</strong> (Table vs Bullets) to get exactly what you need for your slide deck.
+                Adjust the <strong>Time Window</strong> (e.g., "last 30 days") to filter out old noise.
               </p>
             </div>
 
@@ -188,15 +188,15 @@ export default function Page() {
               <ul className="space-y-3 text-sm text-slate-700">
                 <li className="flex gap-2">
                   <Target className="w-4 h-4 text-purple-600 mt-0.5" />
-                  <strong>Product Manager:</strong> Ask for "New feature landscapes and user complaints."
+                  <strong>Product Manager:</strong> "Summarize user complaints about [Competitor App] from Reddit and Twitter."
                 </li>
                 <li className="flex gap-2">
                   <Target className="w-4 h-4 text-purple-600 mt-0.5" />
-                  <strong>Marketer:</strong> Ask for "Consumer sentiment trends and viral topics."
+                  <strong>Marketer:</strong> "Find viral trends related to [Topic] in the last week."
                 </li>
                 <li className="flex gap-2">
                   <Target className="w-4 h-4 text-purple-600 mt-0.5" />
-                  <strong>Risk/Ops:</strong> Ask for "Regulatory changes or loss trends in [Region]."
+                  <strong>Risk/Ops:</strong> "List regulatory changes for [Industry] in [Region] effective 2025."
                 </li>
               </ul>
             </div>
@@ -205,31 +205,30 @@ export default function Page() {
       case 4:
         return (
           <section id="choose-tool" className="mb-12 animate-fade-in">
-            <h2>Which tool for which question?</h2>
+            <h2>The Research Rule of Thumb</h2>
             <p className="mb-8 text-lg text-slate-700">
-              I’ll let you in on a secret: You don’t need to be a "power user." You just need a simple rule-of-thumb 
-              to know when to use basic chat, when to open your docs, and when to run deep research.
+              You don’t need to be a "power user." You just need to know which tool fits the question.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 not-prose">
               <Card className="p-4 border-t-4 border-t-slate-400">
-                <h3 className="font-bold text-slate-900 mb-2">Use Chat Assistant when...</h3>
+                <h3 className="font-bold text-slate-900 mb-2">Use Chat when...</h3>
                 <p className="text-sm text-slate-600">
-                  You’re drafting, rephrasing, or brainstorming based on what you <strong>already know</strong>. You don't need links or live web info.
+                  You are brainstorming or drafting based on knowledge you <strong>already have</strong>. No need for citations.
                 </p>
               </Card>
 
               <Card className="p-4 border-t-4 border-t-blue-500">
                 <h3 className="font-bold text-slate-900 mb-2">Use NotebookLM when...</h3>
                 <p className="text-sm text-slate-600">
-                  The truth lives inside your <strong>internal PDFs, decks, and docs</strong>. You want citations, but only from your own materials.
+                  The answer is hidden in your <strong>own files</strong> (PDFs, docs). You trust your own data more than the web.
                 </p>
               </Card>
 
               <Card className="p-4 border-t-4 border-t-purple-600">
                 <h3 className="font-bold text-slate-900 mb-2">Use Research Tools when...</h3>
                 <p className="text-sm text-slate-600">
-                  You need <strong>timely information</strong>, external data, or market views. You’d send a human analyst to Google news or research databases.
+                  You need <strong>external facts</strong>, news, or market data. You need to see the source to believe it.
                 </p>
               </Card>
             </div>
@@ -241,17 +240,28 @@ export default function Page() {
               <ul className="space-y-3 text-sm text-slate-700">
                 <li className="flex gap-2 items-start">
                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0" />
-                   <span>If the answer feels generic, <strong>narrow the question</strong> (add region, time, or persona).</span>
+                   <span><strong>Generic answers?</strong> Narrow the scope. Add a region, persona, or time frame.</span>
                 </li>
                 <li className="flex gap-2 items-start">
                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0" />
-                   <span>If the answer feels made up, <strong>check the citations</strong>. If they look weak, ask it to "Verify with more reputable sources."</span>
+                   <span><strong>Suspicious facts?</strong> Click the citation. If the link is broken or the text doesn't match, the AI hallucinated.</span>
                 </li>
                 <li className="flex gap-2 items-start">
                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0" />
-                   <span>If you need to share it, ask explicitly for structure: <strong>"Format with sections, bullets, and an executive summary."</strong></span>
+                   <span><strong>Need a report?</strong> Ask for structure. "Format as an executive summary with bullet points."</span>
                 </li>
               </ul>
+            </div>
+
+            {/* Resource Hook */}
+            <div className="mt-8 flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+               <BookOpen className="w-5 h-5 text-slate-500" />
+               <div className="flex-1 text-sm text-slate-600">
+                 Want real-world walkthroughs of Perplexity and Gemini?
+               </div>
+               <Button variant="ghost" size="sm" onClick={() => push('/reference/resources')}>
+                 Open Resource Library
+               </Button>
             </div>
           </section>
         );
@@ -303,8 +313,8 @@ export default function Page() {
             Next <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         ) : (
-          <Button variant="outline" disabled className="opacity-75 cursor-not-allowed">
-            Module Complete <CheckCircle2 className="w-4 h-4 ml-2" />
+          <Button onClick={() => push('/modules')} variant="outline">
+            Finish module <CheckCircle2 className="w-4 h-4 ml-2" />
           </Button>
         )}
       </div>

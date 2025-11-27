@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, PromptCard, Button } from '../../../components/ui';
-import { FileText, Users, ArrowRight, ArrowLeft, CheckCircle2, Check } from 'lucide-react';
+import { FileText, Users, ArrowRight, ArrowLeft, CheckCircle2, Check, BookOpen } from 'lucide-react';
+import { useRouter } from '../../../lib/routerContext';
 
 export default function Page() {
+  const { push } = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
 
   const sections = [
@@ -121,6 +123,17 @@ export default function Page() {
           </Card>
         </div>
 
+        {/* Resource Hook */}
+        <div className="mt-8 flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+           <BookOpen className="w-5 h-5 text-slate-500" />
+           <div className="flex-1 text-sm text-slate-600">
+             Want to see more detailed workflow case studies?
+           </div>
+           <Button variant="ghost" size="sm" onClick={() => push('/reference/resources')}>
+             Open Resource Library
+           </Button>
+        </div>
+
         <div className="mt-8 pt-8 border-t border-slate-200">
           <div className="bg-blue-50 p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
              <div>
@@ -179,8 +192,8 @@ export default function Page() {
             Next <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         ) : (
-          <Button variant="outline" disabled className="opacity-75 cursor-not-allowed">
-            Module Complete <CheckCircle2 className="w-4 h-4 ml-2" />
+          <Button onClick={() => push('/modules')} variant="outline">
+            Finish module <CheckCircle2 className="w-4 h-4 ml-2" />
           </Button>
         )}
       </div>

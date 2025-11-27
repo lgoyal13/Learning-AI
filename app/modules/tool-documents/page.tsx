@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, Button } from '../../../components/ui';
-import { FileText, Layers, Clock, ShieldAlert, CheckCircle2, Database, ArrowLeft, ArrowRight, Lightbulb, Search, Zap, AlertTriangle, MessageSquare, Upload } from 'lucide-react';
+import { FileText, Layers, CheckCircle2, Database, ArrowLeft, ArrowRight, Lightbulb, Search, AlertTriangle, MessageSquare, Upload, BookOpen, ShieldAlert, Clock } from 'lucide-react';
+import { useRouter } from '../../../lib/routerContext';
 
 export default function Page() {
+  const { push } = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
 
   const sections = [
@@ -31,35 +33,36 @@ export default function Page() {
       case 0:
         return (
           <section id="why-doc-tools" className="mb-12 animate-fade-in">
-            <h2>When Google can’t help you</h2>
+            <h2>The "Messy Desk" Problem</h2>
             <p className="text-lg text-slate-700">
-              Search engines and open web tools are amazing, but they have a blind spot: they can't see your internal strategy docs, meeting notes, or confidential spreadsheets.
+              The internet is great, but your actual work lives in a specific pile of PDFs, slide decks, and meeting notes. 
+              Search tools can't see your internal files, and generic chat doesn't know about your Q3 strategy.
             </p>
             <p className="text-slate-600">
-              The "Your Docs" category of tools (like <strong>NotebookLM</strong>) shines when the answer is buried in <strong>your</strong> material, not the internet.
+              Tools like <strong>NotebookLM</strong>, <strong>Notion AI</strong>, and <strong>Gemini in Workspace</strong> are designed for exactly this: 
+              reading your specific pile of documents and helping you make sense of it.
             </p>
 
             <div className="my-8">
-              <h3 className="text-xl font-bold text-slate-900 mb-4">What this module is about</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">What you can do here</h3>
               <p className="text-slate-600 mb-4">
-                This is about using AI to read, link, and explain the documents you already have. 
-                It gets you grounded answers that cite <em>only</em> your sources, not random blog posts.
+                Instead of reading 200 pages yourself, you upload the files and start asking questions.
               </p>
               
               <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                 <h4 className="font-bold text-slate-900 mb-3">Imagine being able to:</h4>
+                 <h4 className="font-bold text-slate-900 mb-3">Imagine asking:</h4>
                  <ul className="space-y-3 text-sm text-slate-700">
                    <li className="flex items-start gap-2">
                      <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
-                     <span>Summarize 5 years of member feedback into key trends.</span>
+                     <span>"Based on these 5 PDFs, what are the top 3 risks mentioned?"</span>
                    </li>
                    <li className="flex items-start gap-2">
                      <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
-                     <span>Turn a 40-page policy PDF into a 1-page plain language explainer.</span>
+                     <span>"Turn this 40-page policy document into a 1-page FAQ for new hires."</span>
                    </li>
                    <li className="flex items-start gap-2">
                      <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
-                     <span>Compare three project plans and pull out shared risks and dependencies.</span>
+                     <span>"Compare the pricing models in these three competitor decks."</span>
                    </li>
                  </ul>
               </div>
@@ -69,29 +72,29 @@ export default function Page() {
       case 1:
         return (
           <section id="notebooklm-basics" className="mb-12 animate-fade-in">
-            <h2>Think of it as a private research room</h2>
+            <h2>Your Private Reading Room</h2>
             <p className="mb-6">
-              When you use a tool like NotebookLM, you are building a custom expert. Here is how it works in plain language.
+              When you use a tool like NotebookLM, you create a "Notebook." Think of it as a clean desk where you drop only the files relevant to one project.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 not-prose">
               <Card className="p-6 border-t-4 border-t-blue-500">
                 <div className="flex items-center gap-2 mb-3">
                   <Upload className="w-5 h-5 text-blue-600" />
-                  <h3 className="font-bold text-slate-900">1. Ingestion</h3>
+                  <h3 className="font-bold text-slate-900">1. Ingest</h3>
                 </div>
                 <p className="text-sm text-slate-600">
-                  Drag in PDFs, Google Docs, Sheets, Slides, web pages, or even paste text. This is the "brain" of your notebook.
+                  Upload PDFs, Google Docs, Slides, or paste text. This creates the "brain" for this specific project.
                 </p>
               </Card>
 
               <Card className="p-6 border-t-4 border-t-purple-500">
                 <div className="flex items-center gap-2 mb-3">
                   <Layers className="w-5 h-5 text-purple-600" />
-                  <h3 className="font-bold text-slate-900">2. Notebooks</h3>
+                  <h3 className="font-bold text-slate-900">2. Ground</h3>
                 </div>
                 <p className="text-sm text-slate-600">
-                  Group related sources into a workspace. Keep "Q3 Competitive Analysis" separate from "Risk Program Docs."
+                  The AI answers <strong>only</strong> using the files you uploaded. It cites its sources (e.g., "Source 1, Page 4").
                 </p>
               </Card>
 
@@ -101,18 +104,18 @@ export default function Page() {
                   <h3 className="font-bold text-slate-900">3. Chat</h3>
                 </div>
                 <p className="text-sm text-slate-600">
-                  Ask questions across all your sources at once. <br/>
-                  <em>"What are the top 5 risks mentioned in these docs?"</em>
+                  Ask questions across all documents at once. <br/>
+                  <em>"What do these docs say about timelines?"</em>
                 </p>
               </Card>
 
               <Card className="p-6 border-t-4 border-t-amber-500">
                 <div className="flex items-center gap-2 mb-3">
                   <Lightbulb className="w-5 h-5 text-amber-600" />
-                  <h3 className="font-bold text-slate-900">4. Views</h3>
+                  <h3 className="font-bold text-slate-900">4. Create</h3>
                 </div>
                 <p className="text-sm text-slate-600">
-                  Generate structured outputs instantly: Study guides, briefing docs, timelines, mind maps, or FAQs.
+                  Generate study guides, timelines, briefing docs, or even an audio podcast overview.
                 </p>
               </Card>
             </div>
@@ -121,9 +124,9 @@ export default function Page() {
       case 2:
         return (
           <section id="notebooklm-scenario" className="mb-12 animate-fade-in">
-            <h2>Walkthrough: Understand competitors in 10 minutes</h2>
+            <h2>Walkthrough: The Competitor Pricing Analysis</h2>
             <p className="mb-6">
-              Let's look at a concrete scenario: <strong>"Competitive Pricing Analysis."</strong>
+              You have three PDF brochures from competitors. You need to know how your pricing compares, but you don't have 2 hours to read them all.
             </p>
 
             <Card className="p-6 bg-white border-slate-200">
@@ -131,17 +134,17 @@ export default function Page() {
                 <div className="flex gap-4">
                   <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">1</div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Upload Sources</h4>
-                    <p className="text-sm text-slate-600">Upload competitor PDFs and link to their pricing web pages in one Notebook.</p>
+                    <h4 className="font-bold text-slate-900">Create the Notebook</h4>
+                    <p className="text-sm text-slate-600">Upload the 3 competitor PDFs. Name the notebook "Q3 Pricing Intel."</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4">
                   <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">2</div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Ask the Big Question</h4>
+                    <h4 className="font-bold text-slate-900">The "Comparison" Prompt</h4>
                     <div className="mt-2 bg-slate-50 p-3 rounded border border-slate-200 font-mono text-sm text-slate-700">
-                      "Compare the pricing strategies of Company X and Company Y in a bullet list, then create a simple comparison table I can paste into slides."
+                      "Compare the pricing strategies of Company A, B, and C in a bulleted list. Then create a table comparing their Enterprise Tiers specifically."
                     </div>
                   </div>
                 </div>
@@ -149,10 +152,12 @@ export default function Page() {
                 <div className="flex gap-4">
                   <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">3</div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Refine the Output</h4>
-                    <p className="text-sm text-slate-600 mb-2">Treat the answer as a draft. Follow up with:</p>
+                    <h4 className="font-bold text-slate-900">Refine & Verify</h4>
+                    <p className="text-sm text-slate-600 mb-2">
+                      Click the citation numbers to check the prices. If you need more detail:
+                    </p>
                     <div className="bg-slate-50 p-2 rounded border border-slate-200 font-mono text-xs text-slate-600">
-                      "Focus on enterprise plans and highlight risks for our segment."
+                      "Does any document mention volume discounts? If so, list the terms."
                     </div>
                   </div>
                 </div>
@@ -160,11 +165,8 @@ export default function Page() {
                 <div className="flex gap-4">
                   <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">4</div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Generate a Quiz</h4>
-                    <p className="text-sm text-slate-600 mb-2">Test your own understanding:</p>
-                    <div className="bg-slate-50 p-2 rounded border border-slate-200 font-mono text-xs text-slate-600">
-                      "Create 5 quiz questions to test my understanding of how these companies price."
-                    </div>
+                    <h4 className="font-bold text-slate-900">Output</h4>
+                    <p className="text-sm text-slate-600 mb-2">Copy the table directly into your slide deck or email.</p>
                   </div>
                 </div>
               </div>
@@ -174,9 +176,9 @@ export default function Page() {
       case 3:
         return (
           <section id="first-tasks" className="mb-12 animate-fade-in">
-            <h2>Five things you can do in your first week</h2>
+            <h2>Five things to try this week</h2>
             <p className="mb-8 text-lg text-slate-700">
-              Don't wait for a "big project." Here are five simple tasks to try right now.
+              Pick one of these and try it on real work files. It takes 5 minutes.
             </p>
 
             <div className="space-y-4 mb-8">
@@ -186,7 +188,7 @@ export default function Page() {
                    <div>
                      <strong className="block text-slate-900">Training Handbook</strong>
                      <p className="text-sm text-slate-600">
-                       "Give me a 1-page onboarding guide for new hires. Make a version for managers and a version for analysts."
+                       "Create a 1-page cheat sheet for new hires based on this 50-page manual."
                      </p>
                    </div>
                 </div>
@@ -196,9 +198,9 @@ export default function Page() {
                 <div className="flex items-start gap-3">
                    <Search className="w-5 h-5 text-blue-500 mt-1" />
                    <div>
-                     <strong className="block text-slate-900">Research PDFs</strong>
+                     <strong className="block text-slate-900">Research & Whitepapers</strong>
                      <p className="text-sm text-slate-600">
-                       "Write a literature-review-style summary and a mind map of themes from these 4 papers."
+                       "Summarize the key trends from these 4 industry reports. List any contradictions between them."
                      </p>
                    </div>
                 </div>
@@ -208,9 +210,9 @@ export default function Page() {
                 <div className="flex items-start gap-3">
                    <Database className="w-5 h-5 text-emerald-500 mt-1" />
                    <div>
-                     <strong className="block text-slate-900">Quarterly Reports</strong>
+                     <strong className="block text-slate-900">Quarterly Reports (QBRs)</strong>
                      <p className="text-sm text-slate-600">
-                       "Pull out 5 key trends from these spreadsheets and propose 3 slide headlines."
+                       "Pull out the top 5 risks mentioned across all these department updates."
                      </p>
                    </div>
                 </div>
@@ -220,9 +222,9 @@ export default function Page() {
                 <div className="flex items-start gap-3">
                    <ShieldAlert className="w-5 h-5 text-amber-500 mt-1" />
                    <div>
-                     <strong className="block text-slate-900">Policy PDF</strong>
+                     <strong className="block text-slate-900">Compliance Policy</strong>
                      <p className="text-sm text-slate-600">
-                       "Explain this policy in plain language for frontline staff. Include 5 FAQs."
+                       "Explain the travel expense policy in plain language. Can I expense a client lunch over $50?"
                      </p>
                    </div>
                 </div>
@@ -232,9 +234,9 @@ export default function Page() {
                 <div className="flex items-start gap-3">
                    <Clock className="w-5 h-5 text-indigo-500 mt-1" />
                    <div>
-                     <strong className="block text-slate-900">Project Notes</strong>
+                     <strong className="block text-slate-900">Project Transcripts</strong>
                      <p className="text-sm text-slate-600">
-                       "Turn these messy notes into a rollout plan with milestones and owners."
+                       "Based on these meeting notes, create a timeline of decisions and a list of open action items."
                      </p>
                    </div>
                 </div>
@@ -242,16 +244,16 @@ export default function Page() {
             </div>
 
             <Callout variant="info" title="Pro Tip">
-              If the answer feels generic, check whether you actually uploaded the right docs and referenced them in your question. The AI can only be as smart as the files you give it.
+              If the answer feels generic, make sure you explicitly reference the files: "Based <strong>only</strong> on these documents..."
             </Callout>
           </section>
         );
       case 4:
         return (
           <section id="habits-and-safety" className="mb-12 animate-fade-in">
-            <h2>Good habits make this a superpower, not a toy</h2>
+            <h2>Good habits make this a superpower</h2>
             <p className="mb-8">
-              To get professional results, treat this like a professional workflow.
+              Document tools are powerful, but they are only as good as the files you feed them.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
@@ -262,28 +264,28 @@ export default function Page() {
                     <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
                     <div>
                       <strong>Keep notebooks focused</strong>
-                      <p className="text-slate-500">Don’t mix unrelated projects. One notebook per topic or initiative.</p>
+                      <p className="text-slate-500">One project, one notebook. Don't dump everything into one giant bucket.</p>
                     </div>
                   </li>
                   <li className="flex gap-3">
                     <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
                     <div>
-                      <strong>Name notebooks clearly</strong>
-                      <p className="text-slate-500">"Q3 Member Churn Review" is better than "Untitled Notebook 4".</p>
+                      <strong>Name things clearly</strong>
+                      <p className="text-slate-500">"Q3 Pricing Intel" is easier to find later than "Untitled Notebook 4".</p>
                     </div>
                   </li>
                   <li className="flex gap-3">
                     <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
                     <div>
-                      <strong>Ask grounded questions</strong>
-                      <p className="text-slate-500">"Based <em>only</em> on these docs, summarize..." or "If sources disagree, highlight where."</p>
+                      <strong>Ask for citations</strong>
+                      <p className="text-slate-500">Always ask the model to point to the page number so you can verify.</p>
                     </div>
                   </li>
                   <li className="flex gap-3">
                     <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
                     <div>
                       <strong>Use it to teach back</strong>
-                      <p className="text-slate-500">Generate quizzes and flashcards for yourself to verify you understood the material.</p>
+                      <p className="text-slate-500">Generate a quiz for yourself to make sure you actually understood the reading.</p>
                     </div>
                   </li>
                 </ul>
@@ -296,14 +298,25 @@ export default function Page() {
                  <ul className="space-y-3 text-sm text-slate-700">
                    <li className="flex gap-2 items-start">
                       <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0" />
-                      <span>If something looks wrong, click on the cited source number and check the original text.</span>
+                      <span>If an answer looks wrong, click the citation. Read the source text.</span>
                    </li>
                    <li className="flex gap-2 items-start">
                       <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0" />
-                      <span>If the model can’t find an answer, assume the source documents might be incomplete, not just that the AI is "dumb."</span>
+                      <span>If the model says "I don't know," it might be because the answer isn't in your files. That's a good thing—it means it's not hallucinating.</span>
                    </li>
                  </ul>
               </div>
+            </div>
+
+            {/* Resource Hook */}
+            <div className="mt-8 flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+               <BookOpen className="w-5 h-5 text-slate-500" />
+               <div className="flex-1 text-sm text-slate-600">
+                 Want real-world walkthroughs of NotebookLM?
+               </div>
+               <Button variant="ghost" size="sm" onClick={() => push('/reference/resources')}>
+                 Open Resource Library
+               </Button>
             </div>
           </section>
         );
@@ -315,7 +328,7 @@ export default function Page() {
   return (
     <ModuleLayout
       title="Your Documents: AI as a Research Assistant"
-      description="Learn how to use tools like NotebookLM to chat securely with your own internal files, creating grounded summaries, reports, and insights."
+      description="Turn piles of PDFs, decks, and notes into instant understanding. Learn how to query your own files securely."
       duration="15 mins"
       audience="All Employees"
       sections={sections}
@@ -355,8 +368,8 @@ export default function Page() {
             Next <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         ) : (
-          <Button variant="outline" disabled className="opacity-75 cursor-not-allowed">
-            Module Complete <CheckCircle2 className="w-4 h-4 ml-2" />
+          <Button onClick={() => push('/modules')} variant="outline">
+            Finish module <CheckCircle2 className="w-4 h-4 ml-2" />
           </Button>
         )}
       </div>

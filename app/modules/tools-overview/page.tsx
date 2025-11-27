@@ -84,66 +84,66 @@ export default function Page() {
     );
   }
 
-  // Quiz Data
+  // Quiz Data - Updated mental models and examples
   const jobs = [
     {
       id: 'job1',
-      title: 'Job 1: Write, rewrite, or brainstorm',
-      description: 'e.g., "Draft an email," "Give me ideas," "Fix this grammar"',
+      title: 'Job 1: I need words (emails, drafts, ideas)',
+      description: 'e.g., "Write a polite decline," "Give me 5 taglines," "Fix this grammar"',
       correctTool: 'chat',
       options: [
-        { id: 'chat', label: 'Gemini / ChatGPT / Claude (Chat Assistants)' },
-        { id: 'research', label: 'Perplexity / Gemini Deep Research (Research Tools)' },
-        { id: 'docs', label: 'NotebookLM / Notion AI (Your Docs Tools)' },
-        { id: 'builder', label: 'AI Studio / Custom Builders (Builders)' },
+        { id: 'chat', label: 'Chat Assistants (Gemini / ChatGPT / Claude)' },
+        { id: 'research', label: 'Research Tools (Perplexity / Deep Research)' },
+        { id: 'docs', label: 'Your Docs (NotebookLM / Notion AI)' },
+        { id: 'builder', label: 'Builders (AI Studio)' },
       ],
-      successMessage: 'Correct! Use Chat Assistants when you have the facts in your head but need help articulating them.',
-      successPrompt: '"Draft a polite email to [Client] explaining the delay due to [Reason]. Keep it under 100 words."',
+      successMessage: 'Exactly. For pure drafting and reasoning, standard chat is your best friend.',
+      successPrompt: '"Act as a polite Account Manager. Draft an email to [Client] explaining the delay due to [Reason]."',
       errorMessage: 'Not quite. While other tools can generate text, a standard Chat Assistant is fastest and most flexible for open-ended writing.',
     },
     {
       id: 'job2',
-      title: 'Job 2: Up-to-date facts and citations',
-      description: 'e.g., "What did Competitor X launch?" "Latest regulations"',
+      title: 'Job 2: I need facts (news, stats, market intel)',
+      description: 'e.g., "What did Competitor X launch?" "Latest FDA regulations"',
       correctTool: 'research',
       options: [
-        { id: 'chat', label: 'Gemini / ChatGPT / Claude (Chat Assistants)' },
-        { id: 'research', label: 'Perplexity / Gemini Deep Research (Research Tools)' },
-        { id: 'docs', label: 'NotebookLM / Notion AI (Your Docs Tools)' },
-        { id: 'builder', label: 'AI Studio / Custom Builders (Builders)' },
+        { id: 'chat', label: 'Chat Assistants (Gemini / ChatGPT / Claude)' },
+        { id: 'research', label: 'Research Tools (Perplexity / Deep Research)' },
+        { id: 'docs', label: 'Your Docs (NotebookLM / Notion AI)' },
+        { id: 'builder', label: 'Builders (AI Studio)' },
       ],
-      successMessage: 'Correct! Research Tools access the live web and provide citations, so you can verify facts.',
+      successMessage: 'Correct. Research tools browse the live web and cite their sources.',
       successPrompt: '"What are the latest regulatory changes for [Industry] in [Region] from the last 6 months? Cite sources."',
-      errorMessage: 'Be careful! Standard chat assistants might hallucinate facts or have outdated knowledge. Research tools are safer for facts.',
-      mentalModel: 'Tip: Fast models (Gemini Flash) give quick overviews. For high-stakes research, switch to reasoning/Deep Research modes (Gemini Pro, Perplexity Deep Research) for slower, evidence-backed answers.',
+      errorMessage: 'Be careful! Standard chat models have a knowledge cutoff date. Research tools are safer for up-to-the-minute facts.',
+      mentalModel: 'Tip: Use "Deep Research" or "Reasoning" modes for high-stakes reports. It takes longer but checks its work.',
     },
     {
       id: 'job3',
-      title: 'Job 3: Understanding your own PDFs/Docs',
-      description: 'e.g., "Summarize these 50 pages," "Compare these contracts"',
+      title: 'Job 3: I need to understand my own files',
+      description: 'e.g., "Summarize these 50 pages," "Compare these two vendor contracts"',
       correctTool: 'docs',
       options: [
-        { id: 'chat', label: 'Gemini / ChatGPT / Claude (Chat Assistants)' },
-        { id: 'research', label: 'Perplexity / Gemini Deep Research (Research Tools)' },
-        { id: 'docs', label: 'NotebookLM / Notion AI (Your Docs Tools)' },
-        { id: 'builder', label: 'AI Studio / Custom Builders (Builders)' },
+        { id: 'chat', label: 'Chat Assistants (Gemini / ChatGPT / Claude)' },
+        { id: 'research', label: 'Research Tools (Perplexity / Deep Research)' },
+        { id: 'docs', label: 'Your Docs (NotebookLM / Notion AI)' },
+        { id: 'builder', label: 'Builders (AI Studio)' },
       ],
-      successMessage: 'Correct! "Your Docs" tools create a private knowledge base from your uploaded files.',
+      successMessage: 'Spot on. Tools like NotebookLM create a private knowledge base just for your uploaded files.',
       successPrompt: '"Based on these 5 PDFs, what are the top 3 risks mentioned? Cite the page numbers."',
-      errorMessage: 'Standard chat windows have limits on how much text you can paste. "Your Docs" tools are built for large document sets.',
+      errorMessage: 'Standard chat windows have context limits. "Your Docs" tools are built to handle large libraries of information.',
     },
     {
       id: 'job4',
-      title: 'Job 4: Reusable workflows / Mini-apps',
+      title: 'Job 4: I need a reusable mini-app',
       description: 'e.g., "I re-type this same complex prompt every week"',
       correctTool: 'builder',
       options: [
-        { id: 'chat', label: 'Gemini / ChatGPT / Claude (Chat Assistants)' },
-        { id: 'research', label: 'Perplexity / Gemini Deep Research (Research Tools)' },
-        { id: 'docs', label: 'NotebookLM / Notion AI (Your Docs Tools)' },
-        { id: 'builder', label: 'AI Studio / Custom Builders (Builders)' },
+        { id: 'chat', label: 'Chat Assistants (Gemini / ChatGPT / Claude)' },
+        { id: 'research', label: 'Research Tools (Perplexity / Deep Research)' },
+        { id: 'docs', label: 'Your Docs (NotebookLM / Notion AI)' },
+        { id: 'builder', label: 'Builders (AI Studio)' },
       ],
-      successMessage: 'Correct! Builders let you freeze a prompt into a reliable tool that you or your team can use repeatedly.',
+      successMessage: 'Yes. If you do it more than 3 times, build a tool. Freeze the prompt into a reliable button.',
       successPrompt: 'System Instruction: "You are an expert editor. Always rewrite input to be concise and professional."',
       errorMessage: 'Chat is great for one-offs, but for repeatable tasks, a Builder tool ensures consistency.',
     },
@@ -160,15 +160,15 @@ export default function Page() {
       id: 'intro',
       node: (
         <section id="intro" className="mb-16 animate-fade-in">
-          <h2>You Don’t Have “An AI.” You Have a Toolkit.</h2>
+          <h2>Stop using a hammer for everything</h2>
           <p>
-            Most people just open a chat window and hope for magic. But using a generic chatbot for everything is like trying to build a house using only a hammer.
+            Most people just open a generic chat window and hope for magic. But using a text generator to do deep web research is like trying to build a house with only a hammer.
           </p>
           <p>
-            In reality, AI tools fall into a few specific jobs:
+            You actually have a <strong>toolkit</strong>. The trick is knowing which tool to grab.
           </p>
           <ul className="list-disc pl-5 space-y-2 text-slate-700 mb-6">
-            <li><strong>Organizing your own material</strong> (docs, PDFs, decks, notes)</li>
+            <li><strong>Organizing your own material</strong> (docs, PDFs, decks)</li>
             <li><strong>Helping with drafting</strong> (emails, briefs, slides)</li>
             <li><strong>Doing grounded web research</strong> (facts with citations)</li>
             <li><strong>Building reusable workflows</strong> (mini-apps, assistants)</li>
@@ -179,7 +179,7 @@ export default function Page() {
 
           {/* LOGO PALETTE CARD */}
           <Card className="bg-slate-50 border-slate-200 p-6 mb-8">
-             <h3 className="text-lg font-bold text-slate-900 mb-4">You’ll Meet These Along the Way</h3>
+             <h3 className="text-lg font-bold text-slate-900 mb-4">Your Tool Palette</h3>
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div>
                    <div className="text-xs font-bold uppercase text-slate-500 mb-2 tracking-wider">Chat & Drafting</div>
@@ -193,7 +193,7 @@ export default function Page() {
                    <div className="text-xs font-bold uppercase text-slate-500 mb-2 tracking-wider">Research & Web</div>
                    <div className="flex flex-wrap gap-2">
                       <Badge variant="neutral">Perplexity</Badge>
-                      <Badge variant="neutral">Gemini Deep Research</Badge>
+                      <Badge variant="neutral">Deep Research</Badge>
                    </div>
                 </div>
                 <div>
@@ -220,7 +220,7 @@ export default function Page() {
                 <h3 className="text-lg font-bold text-slate-900 m-0">Already know the basics? Jump straight to a deep dive.</h3>
              </div>
              <p className="text-sm text-slate-600 mb-6 max-w-3xl">
-                If you’re here with a specific job in mind, you can skip the tour and dive right into the tool you actually care about. You can always come back to this overview later.
+                If you have a specific task right now, skip the tour and go to the lab.
              </p>
              
              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 not-prose">
@@ -237,7 +237,7 @@ export default function Page() {
                    </p>
                    <div className="flex gap-1 flex-wrap mb-3">
                      <span className="text-[10px] px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded">Perplexity</span>
-                     <span className="text-[10px] px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded">Gemini Deep Research</span>
+                     <span className="text-[10px] px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded">Deep Research</span>
                    </div>
                    <div className="mt-auto flex items-center text-xs font-bold text-blue-600 group-hover:underline">
                       Start Deep Dive <ArrowRight className="w-3 h-3 ml-1" />
@@ -278,7 +278,7 @@ export default function Page() {
                    </p>
                    <div className="flex gap-1 flex-wrap mb-3">
                      <span className="text-[10px] px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded">AI Studio</span>
-                     <span className="text-[10px] px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded">Gems / GPTs</span>
+                     <span className="text-[10px] px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded">Gems</span>
                    </div>
                    <div className="mt-auto flex items-center text-xs font-bold text-emerald-600 group-hover:underline">
                       Start Deep Dive <ArrowRight className="w-3 h-3 ml-1" />
@@ -294,9 +294,9 @@ export default function Page() {
       id: 'decision',
       node: (
         <section id="decision" className="mb-16 animate-fade-in">
-          <h2>Quick Decision Guide</h2>
+          <h2>Routing Game: Pick the Right Tool</h2>
           <p className="mb-6">
-             Not sure which tool to open? Pick a job below to see the right tool for the task.
+             The most common mistake is using a chatbot when you needed a research engine. Let's practice.
           </p>
 
           <div className="space-y-4 not-prose">
@@ -323,7 +323,7 @@ export default function Page() {
 
                   {isExpanded && (
                     <div className="px-4 pb-6 pt-2 border-t border-slate-100 animate-fade-in">
-                      <p className="text-sm font-semibold text-slate-700 mb-3">Which tool group fits best?</p>
+                      <p className="text-sm font-semibold text-slate-700 mb-3">Which tool category wins?</p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                         {job.options.map((option) => (
                           <button
@@ -349,7 +349,7 @@ export default function Page() {
                           </div>
                           {job.mentalModel && (
                             <p className="text-xs text-slate-600 mb-3 ml-7">
-                              <strong>Mental Model:</strong> {job.mentalModel}
+                              <strong>Note:</strong> {job.mentalModel}
                             </p>
                           )}
                           <div className="ml-7 mt-2">
@@ -381,7 +381,7 @@ export default function Page() {
       id: 'categories',
       node: (
         <section id="categories" className="mb-16 animate-fade-in">
-          <h2>Tool Categories</h2>
+          <h2>Your 4 Core Toolboxes</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
             
             <Card className="p-6 border-t-4 border-t-yellow-500">
@@ -486,8 +486,8 @@ export default function Page() {
       node: (
         <div className="animate-fade-in">
           <section id="deep-dives" className="mb-16">
-            <h2>Deep Dives</h2>
-            <p className="mb-6">Ready to master a specific tool? Click below to start the interactive module.</p>
+            <h2>Ready to master a specific tool?</h2>
+            <p className="mb-6">Click below to start an interactive deep dive.</p>
             
             <div className="space-y-4 not-prose">
               <Card 
@@ -540,6 +540,19 @@ export default function Page() {
                 </div>
                 <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-emerald-500" />
               </Card>
+            </div>
+          </section>
+
+          {/* Resource Hook */}
+          <section className="mb-12">
+             <div className="mt-8 flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+               <BookOpen className="w-5 h-5 text-slate-500" />
+               <div className="flex-1 text-sm text-slate-600">
+                 Want real-world walkthroughs of NotebookLM, Perplexity, Gemini, and AI Studio?
+               </div>
+               <Button variant="ghost" size="sm" onClick={() => push('/reference/resources')}>
+                 Open Resource Library
+               </Button>
             </div>
           </section>
 
@@ -608,8 +621,8 @@ export default function Page() {
             Next <ArrowRight className="w-4 h-4" />
           </Button>
         ) : (
-          <Button variant="outline" disabled className="opacity-75 cursor-not-allowed gap-2">
-            Module Overview Complete <CheckCircle2 className="w-4 h-4" />
+          <Button onClick={() => push('/modules')} variant="outline" className="gap-2">
+            Finish module <CheckCircle2 className="w-4 h-4" />
           </Button>
         )}
       </div>

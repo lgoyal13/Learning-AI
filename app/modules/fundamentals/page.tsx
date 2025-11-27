@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, Button } from '../../../components/ui';
-import { BrainCircuit, Search, PenTool, AlertTriangle, CheckCircle2, XCircle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { BrainCircuit, Search, PenTool, AlertTriangle, CheckCircle2, XCircle, ArrowLeft, ArrowRight, BookOpen } from 'lucide-react';
+import { useRouter } from '../../../lib/routerContext';
 
 export default function Page() {
+  const { push } = useRouter();
   const [quizAnswer, setQuizAnswer] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -32,27 +34,27 @@ export default function Page() {
     // SECTION 1: WHAT IS IT
     (
       <section key="what-is-it" id="what-is-it" className="mb-12 animate-fade-in">
-        <h2>It's Not a Search Engine</h2>
-        <p>
-          Most of us are used to Google. When you search for a document on the intranet, the computer looks for an exact match.
+        <h2>It looks like search, but it’s an improv machine</h2>
+        <p className="text-lg text-slate-700">
+          When you use a search engine (like internal search or Google), it retrieves an exact file. If you ask for the "2024 Holiday Calendar," it finds the PDF.
         </p>
-        <p>
-          <strong>Generative AI (like Gemini or ChatGPT) is different.</strong> It doesn't "look up" answers in a database. It <em>creates</em> new answers from scratch based on patterns it learned during training.
+        <p className="text-slate-600">
+          <strong>Generative AI (like Gemini or ChatGPT) is doing something completely different.</strong> It doesn’t "look up" answers in a database. It <em>generates</em> a new answer from scratch, word by word, based on patterns it learned.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 not-prose my-6">
           <Card className="p-4 border-l-4 border-l-blue-500">
             <div className="flex items-center gap-2 mb-2 font-bold text-blue-900">
               <Search className="w-5 h-5" /> Search Engine
             </div>
-            <p className="text-sm text-slate-600">Retrieves existing information.</p>
-            <p className="text-xs text-slate-500 mt-2">"Find the 2024 Holiday Calendar PDF."</p>
+            <p className="text-sm text-slate-600">Finds an existing file.</p>
+            <p className="text-xs text-slate-500 mt-2">"Here is the link to the policy PDF."</p>
           </Card>
           <Card className="p-4 border-l-4 border-l-purple-500">
             <div className="flex items-center gap-2 mb-2 font-bold text-purple-900">
               <BrainCircuit className="w-5 h-5" /> Generative AI
             </div>
-            <p className="text-sm text-slate-600">Generates new content based on patterns.</p>
-            <p className="text-xs text-slate-500 mt-2">"Draft an email announcing the 2024 holidays."</p>
+            <p className="text-sm text-slate-600">Writes a new explanation.</p>
+            <p className="text-xs text-slate-500 mt-2">"Here is a summary of the policy based on what I read."</p>
           </Card>
         </div>
       </section>
@@ -63,17 +65,30 @@ export default function Page() {
       <section key="prediction" id="prediction" className="mb-12 animate-fade-in">
         <h2>The "Autocomplete" Analogy</h2>
         <p>
-          Think of LLMs as "Autocomplete on Steroids." They are trained on billions of sentences to predict the most likely next word.
+          Think of LLMs as incredibly advanced autocomplete. They’ve read billions of sentences, so they are experts at predicting the next likely word.
         </p>
-        <p>
-          If you type: <em>"The quick brown fox jumps over the..."</em>
+        <div className="bg-slate-50 p-6 rounded-lg my-6 border border-slate-200 text-center">
+           <p className="text-xl text-slate-800 font-medium">
+             "The quick brown fox jumps over the..."
+           </p>
+           <p className="text-sm text-slate-500 mt-2">
+             The model predicts <strong>"lazy dog"</strong> because that's the pattern it knows.
+           </p>
+        </div>
+        <p className="text-slate-600">
+          This is why AI is so good at creative tasks (poems, emails, code) but risky with facts. It doesn't always "know" the truth; it knows what <em>sounds</em> right.
         </p>
-        <p>
-          The AI predicts <strong>"lazy dog"</strong> (99% probability).
-        </p>
-        <p>
-          This means the AI doesn't always know facts. It knows <em>patterns</em>. This is why it can write poetry, code, and emails, but it can also make mistakes with math or obscure facts.
-        </p>
+        
+        {/* Resource Hook */}
+        <div className="mt-8 flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+           <BookOpen className="w-5 h-5 text-slate-500" />
+           <div className="flex-1 text-sm text-slate-600">
+             Want a deeper dive on how LLMs actually work?
+           </div>
+           <Button variant="ghost" size="sm" onClick={() => push('/reference/resources')}>
+             Open Resource Library
+           </Button>
+        </div>
       </section>
     ),
 
@@ -82,10 +97,10 @@ export default function Page() {
       <section key="hallucinations" id="hallucinations" className="mb-12 animate-fade-in">
         <h2>The Trust Gap: Hallucinations</h2>
         <p>
-          Because the AI is trying to predict the "next likely word," it sometimes prioritizes <strong>fluency</strong> over <strong>accuracy</strong>.
+          Because the AI is optimizing for "what sounds like a good answer," it sometimes prioritizes <strong>fluency</strong> over <strong>fact</strong>.
         </p>
         <Callout variant="warning" title="What is a Hallucination?">
-          A confident but completely false answer generated by AI.
+          A confident, plausible-sounding answer that is completely made up.
         </Callout>
         
         <div className="my-6 not-prose">
@@ -95,7 +110,7 @@ export default function Page() {
             <p className="font-mono text-sm text-slate-800 mb-2"><strong>AI:</strong> "Project Apollo was a strategic initiative launched in Q3 2019 to optimize cloud infrastructure..."</p>
             <div className="flex items-center gap-2 text-red-600 text-sm font-bold mt-4">
               <AlertTriangle className="w-4 h-4" /> 
-              Reality Check: We never had a "Project Apollo". The AI made it up because it sounded plausible.
+              Reality Check: We never had a "Project Apollo". The AI invented a plausible-sounding project because you asked for it.
             </div>
           </Card>
         </div>
@@ -107,19 +122,19 @@ export default function Page() {
       <section key="strengths" id="strengths" className="mb-12 animate-fade-in">
         <h2>Use the "Jagged Frontier"</h2>
         <p>
-          AI is a genius at some things and a novice at others. Use it for its strengths, not its weaknesses.
+          AI is a genius at some tasks and surprisingly bad at others. To get value, you need to use it for its superpowers, not its weak spots.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
           <div className="bg-green-50 p-6 rounded-xl border border-green-100">
              <h3 className="font-bold text-green-800 flex items-center gap-2 mb-4">
-               <CheckCircle2 className="w-5 h-5" /> The Sweet Spot
+               <CheckCircle2 className="w-5 h-5" /> The Superpowers
              </h3>
              <ul className="space-y-3 text-sm text-slate-700">
-               <li><strong>Transformation:</strong> "Turn this bulleted list into an email."</li>
-               <li><strong>Summarization:</strong> "Summarize this meeting transcript."</li>
-               <li><strong>Ideation:</strong> "Give me 10 ideas for a team building event."</li>
-               <li><strong>Drafting:</strong> "Write a first draft of a project plan."</li>
+               <li><strong>Transformation:</strong> "Turn this messy list into a clean table."</li>
+               <li><strong>Summarization:</strong> "Give me the top 3 themes from this transcript."</li>
+               <li><strong>Ideation:</strong> "Give me 10 ideas for a project name."</li>
+               <li><strong>Drafting:</strong> "Write a polite first draft of this difficult email."</li>
              </ul>
           </div>
 
@@ -128,9 +143,9 @@ export default function Page() {
                <XCircle className="w-5 h-5" /> The Danger Zone
              </h3>
              <ul className="space-y-3 text-sm text-slate-700">
-               <li><strong>Fact Retrieval:</strong> "What is our Q3 revenue?" (Use a database instead).</li>
-               <li><strong>Math:</strong> "Calculate the ROI of these 50 rows." (Use Excel).</li>
-               <li><strong>High Stakes:</strong> "Should we fire this employee?" (Use Human Judgment).</li>
+               <li><strong>Fact Retrieval:</strong> "What was our exact Q3 revenue?" (Check the dashboard).</li>
+               <li><strong>Math:</strong> "Calculate the variance across these 50 rows." (Use Excel).</li>
+               <li><strong>High Stakes:</strong> "Should we approve this loan?" (Use Human Judgment).</li>
              </ul>
           </div>
         </div>
@@ -183,16 +198,16 @@ export default function Page() {
             <div className="mt-6 animate-fade-in">
               {quizAnswer === 'summary' ? (
                 <div className="bg-green-100 text-green-800 p-4 rounded-lg">
-                  <p className="font-bold">Correct!</p>
+                  <p className="font-bold">Spot on.</p>
                   <p className="text-sm mt-1">
-                    Summarization is a core strength of LLMs. They are great at distilling text. Math and Fact Retrieval are better suited for Calculators and Databases.
+                    Summarization is the classic LLM use case. It excels at reading text and extracting themes. Math and phone numbers are risky—better left to calculators and directories.
                   </p>
                 </div>
               ) : (
                 <div className="bg-red-100 text-red-800 p-4 rounded-lg">
-                  <p className="font-bold">Not quite.</p>
+                  <p className="font-bold">Careful.</p>
                   <p className="text-sm mt-1">
-                    AI can make mistakes with math and specific facts/phone numbers. It is safest when working with text you provide, like summarizing a document.
+                    LLMs can make math errors and invent facts (like phone numbers). They are safest when working with text you provide, like summarizing a document.
                   </p>
                 </div>
               )}
@@ -246,8 +261,8 @@ export default function Page() {
             Next <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         ) : (
-          <Button variant="outline" disabled className="opacity-75 cursor-not-allowed">
-            Module Complete <CheckCircle2 className="w-4 h-4 ml-2" />
+          <Button onClick={() => push('/modules')} variant="outline">
+            Finish module <CheckCircle2 className="w-4 h-4 ml-2" />
           </Button>
         )}
       </div>

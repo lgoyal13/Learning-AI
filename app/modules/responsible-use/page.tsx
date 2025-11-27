@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, Button } from '../../../components/ui';
-import { ShieldAlert, UserCheck, Eye, Lock, CheckCircle2, XCircle, FileText, ArrowLeft, ArrowRight } from 'lucide-react';
+import { ShieldAlert, UserCheck, Eye, Lock, CheckCircle2, XCircle, FileText, ArrowLeft, ArrowRight, BookOpen } from 'lucide-react';
+import { useRouter } from '../../../lib/routerContext';
 
 export default function Page() {
+  const { push } = useRouter();
   const [quizAnswer, setQuizAnswer] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -31,12 +33,13 @@ export default function Page() {
     // SECTION 1: INTRO
     (
       <section key="intro" id="intro" className="mb-12 animate-fade-in">
-        <h2>The Trust Imperative</h2>
-        <p>
-          As a business, our product is <strong>trust</strong>. Our clients trust us with their most sensitive data—financial records, strategic plans, and personal details.
+        <h2>License to operate</h2>
+        <p className="text-lg text-slate-700">
+          Our clients trust us with their financial future and personal secrets. That trust is our most valuable product.
         </p>
-        <p>
-          AI helps us serve them faster, but it also introduces new risks. This module isn't about scaring you; it's about giving you the <strong>license to operate</strong> safely.
+        <p className="text-slate-600">
+          AI helps us serve them faster, but it introduces new ways to accidentally break that trust. 
+          This module is your field guide to using these powerful tools without compromising safety.
         </p>
         <Callout variant="info" title="The Core Principle">
           You are the Pilot. AI is the Co-pilot. You are responsible for the flight, not the machine.
@@ -51,42 +54,42 @@ export default function Page() {
           <Lock className="w-6 h-6 text-blue-600" />
           The Golden Rule: Protect PII
         </h2>
-        <p>
-          <strong>PII (Personally Identifiable Information)</strong> and <strong>SPII (Sensitive PII)</strong> are radioactive to public AI models. Once you paste data into a public tool, you may lose control of it.
+        <p className="mb-6">
+          Public AI models learn from what you type. If you paste sensitive client data into a public chatbot, you might lose control of it forever.
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6 not-prose">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6">
             <h3 className="text-red-800 font-bold mb-4 flex items-center gap-2">
-              <XCircle className="w-5 h-5"/> Never Input This:
+              <XCircle className="w-5 h-5"/> The "Radioactive" List
             </h3>
             <ul className="space-y-2 text-sm text-slate-700">
               <li>❌ Full Names (John Doe)</li>
               <li>❌ Account Numbers (ACCT-12345678)</li>
               <li>❌ Social Security Numbers</li>
-              <li>❌ Employee Salary Data</li>
-              <li>❌ Specific Addresses</li>
+              <li>❌ Precise Salary Data</li>
+              <li>❌ Home Addresses</li>
             </ul>
           </div>
 
           <div className="bg-green-50 border border-green-200 rounded-lg p-6">
             <h3 className="text-green-800 font-bold mb-4 flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5"/> Safe to Input:
+              <CheckCircle2 className="w-5 h-5"/> Safe to Share
             </h3>
             <ul className="space-y-2 text-sm text-slate-700">
               <li>✅ Generic Roles ("The Client")</li>
-              <li>✅ Generalized Problems ("Budget Issues")</li>
-              <li>✅ Public Contract Wording ("Section 4.a")</li>
-              <li>✅ Internal Meeting Notes (Anonymized)</li>
-              <li>✅ Excel Formulas / SQL Queries (No data)</li>
+              <li>✅ General Problems ("Budget Issues")</li>
+              <li>✅ Public Contract Templates</li>
+              <li>✅ Excel Formulas (No data)</li>
+              <li>✅ Anonymized Notes</li>
             </ul>
           </div>
         </div>
 
-        <h3>How to Anonymize (The "Mad Libs" Method)</h3>
-        <p>Before you prompt, strip the data. Replace specifics with placeholders.</p>
+        <h3>The "Mad Libs" Method</h3>
+        <p>You can still use AI for sensitive tasks—just strip the specifics first. Use placeholders like [Client] or [Amount].</p>
         <Card className="p-4 bg-slate-100 font-mono text-sm not-prose">
-          <p className="line-through text-red-500 mb-2">
+          <p className="line-through text-red-500 mb-2 opacity-50">
             "Write a rejection for John Smith (Account #999) regarding his refund request for the Manhattan project."
           </p>
           <p className="text-green-600">
@@ -101,19 +104,19 @@ export default function Page() {
       <section key="hitl" id="hitl" className="mb-12 animate-fade-in">
         <h2 className="flex items-center gap-2">
           <UserCheck className="w-6 h-6 text-blue-600" />
-          Human in the Loop (HITL)
+          The Human in the Loop (HITL)
         </h2>
         <p>
-          "Automated Decision Making" is often regulated. We <strong>never</strong> let AI make the final call on hiring, lending, or legal matters.
+          We never let AI make the final call on hiring, lending, or legal matters. "Automated Decision Making" is strictly regulated for a reason.
         </p>
         
         <div className="flex flex-col md:flex-row gap-6 items-center bg-blue-50 p-6 rounded-xl border border-blue-100 not-prose">
           <div className="flex-1">
             <h3 className="text-blue-900 font-bold text-lg mb-2">The 80/20 Rule</h3>
             <p className="text-slate-700">
-              Let AI do the heavy lifting (80% of the work)—drafting, summarizing, researching. 
+              Let AI do the heavy lifting (80%)—drafting, summarizing, researching. 
               <br/><br/>
-              <strong>You do the final 20%</strong>: Verifying facts, checking tone, and making the decision.
+              <strong>You own the final 20%</strong>: Checking the tone, verifying the facts, and pressing "Send."
             </p>
           </div>
           <div className="shrink-0 bg-white p-4 rounded-full shadow-sm">
@@ -124,10 +127,9 @@ export default function Page() {
           </div>
         </div>
 
-        <h3 className="mt-6">Beware of Hallucinations</h3>
+        <h3 className="mt-6">Trust but verify</h3>
         <p>
-          AI loves to please. If you ask it about a specific contract clause that doesn't exist, it might invent one just to be helpful. 
-          <strong>Always verify output against the actual source document.</strong>
+          AI loves to be helpful, even if it has to invent a fact. Always verify specific claims (like contract clauses or dates) against the original source document.
         </p>
       </section>
     ),
@@ -139,7 +141,7 @@ export default function Page() {
           <Eye className="w-6 h-6 text-yellow-600" /> 
           Scenario Challenge
         </h2>
-        <p className="mb-6">Test your judgment.</p>
+        <p className="mb-6">Test your judgment on a real-world edge case.</p>
 
         <Card className="p-6 bg-slate-50 not-prose">
           <div className="flex items-start gap-4">
@@ -150,7 +152,7 @@ export default function Page() {
                 <h3 className="font-bold text-lg text-slate-900 mb-2">The HR Investigation</h3>
                 <p className="text-slate-600 mb-4">
                   You have a PDF transcript of an employee relations interview. 
-                  You need a timeline of events. You plan to upload the PDF to the "Enterprise AI" internal tool to summarize it.
+                  You need a timeline of events. You plan to upload the PDF to "Enterprise AI" (our internal tool) to summarize it.
                 </p>
                 <p className="font-medium text-slate-900 mb-4">Is this safe?</p>
              </div>
@@ -177,8 +179,8 @@ export default function Page() {
                   : 'border-slate-200 bg-white hover:border-blue-300'
               }`}
             >
-              <span className="font-bold block mb-1">Yes, but check the tool.</span>
-              <span className="text-sm text-slate-500">If "Enterprise AI" is approved for Restricted data, I can proceed.</span>
+              <span className="font-bold block mb-1">Yes, but verify the tool.</span>
+              <span className="text-sm text-slate-500">If "Enterprise AI" is certified for Restricted data, I can proceed.</span>
             </button>
           </div>
 
@@ -188,11 +190,10 @@ export default function Page() {
                 <div className="bg-green-100 text-green-800 p-4 rounded-lg flex gap-3">
                   <CheckCircle2 className="w-6 h-6 shrink-0" />
                   <div>
-                    <p className="font-bold">Correct!</p>
+                    <p className="font-bold">Correct.</p>
                     <p className="text-sm mt-1">
-                      This is a trick question! The context says "Enterprise AI" (our <strong>internal</strong> tool). 
-                      If IT Compliance has certified this tool for Internal Restricted data, you CAN use it. 
-                      However, you could NEVER upload this to a public tool like ChatGPT.
+                      This is nuanced. You can NEVER upload this to a public tool (like ChatGPT). 
+                      But if IT Compliance has certified an <strong>internal</strong> tool for Restricted data, you can use it. Always check the tool's classification.
                     </p>
                   </div>
                 </div>
@@ -211,6 +212,17 @@ export default function Page() {
             </div>
           )}
         </Card>
+
+        {/* Resource Hook */}
+        <div className="mt-8 flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+           <BookOpen className="w-5 h-5 text-slate-500" />
+           <div className="flex-1 text-sm text-slate-600">
+             Need a refresher on our data classification policy or approved tool list?
+           </div>
+           <Button variant="ghost" size="sm" onClick={() => push('/reference/resources')}>
+             Open Resource Library
+           </Button>
+        </div>
       </section>
     )
   ];
@@ -258,8 +270,8 @@ export default function Page() {
             Next <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         ) : (
-          <Button variant="outline" disabled className="opacity-75 cursor-not-allowed">
-            Module Complete <CheckCircle2 className="w-4 h-4 ml-2" />
+          <Button onClick={() => push('/modules')} variant="outline">
+            Finish module <CheckCircle2 className="w-4 h-4 ml-2" />
           </Button>
         )}
       </div>

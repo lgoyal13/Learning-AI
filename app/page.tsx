@@ -8,7 +8,14 @@ import {
   FileText, 
   Search, 
   CheckCircle2, 
-  Shield 
+  Shield,
+  Layers,
+  Globe,
+  MessageSquare,
+  BrainCircuit,
+  Image as ImageIcon,
+  Clock,
+  Lock
 } from 'lucide-react';
 
 export default function Page() {
@@ -20,14 +27,22 @@ export default function Page() {
       {/* Hero Section */}
       <section className="bg-slate-900 rounded-2xl p-8 md:p-16 text-white shadow-xl relative overflow-hidden">
         <div className="relative z-10 max-w-3xl">
-          <Badge variant="blue" className="mb-4 bg-blue-500/20 text-blue-100 border-blue-500/50">Internal Beta v1.0</Badge>
+          <Badge variant="blue" className="mb-4 bg-blue-500/20 text-blue-100 border-blue-500/50">Internal Academy</Badge>
+          
           <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
-            Work smarter, <br/>
-            <span className="text-blue-400">not harder.</span>
+            Learn to Talk to AI <br/>
+            <span className="text-blue-400">Like a Pro.</span>
           </h1>
-          <p className="text-slate-300 text-lg md:text-xl mb-10 leading-relaxed max-w-2xl">
-            Welcome to the Enterprise AI Academy. Learn how to use our secure AI tools to draft client emails, summarize reports, and research market trends in seconds.
-          </p>
+          
+          <div className="text-slate-300 text-lg md:text-xl mb-10 leading-relaxed max-w-2xl space-y-4">
+            <p className="font-medium text-white">
+              You already have Gemini, ChatGPT, or Claude. This site shows you how to actually talk to them so they stop giving mushy answers and start doing real work for you.
+            </p>
+            <p className="text-base text-slate-400">
+              A few simple prompting habits will quietly put you ahead of most people using AI.
+            </p>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-4">
             <Button 
                size="lg" 
@@ -35,7 +50,7 @@ export default function Page() {
                className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 h-14 text-lg shadow-lg shadow-blue-900/50"
             >
               <Zap className="w-5 h-5 mr-2" /> 
-              Start 10-Min Quick Win
+              Start the Prompting Quickstart
             </Button>
             <Button 
                size="lg" 
@@ -53,7 +68,96 @@ export default function Page() {
         <div className="absolute bottom-0 right-20 -mb-20 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
       </section>
 
-      {/* Persona / "Jobs to be Done" Section */}
+      {/* Pick Your AI Strip */}
+      <section>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-slate-900">Use whatever AI you already have.</h2>
+          <p className="text-slate-600">Everything in this academy works with Gemini, ChatGPT, or Claude.</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Gemini */}
+          <Card className="p-5 flex items-start gap-4 bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-2 bg-blue-50 rounded-lg text-blue-600 shrink-0">
+              <Zap className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">Gemini</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Great inside Google Docs, Sheets, and for long, detailed reasoning.
+              </p>
+            </div>
+          </Card>
+
+          {/* ChatGPT */}
+          <Card className="p-5 flex items-start gap-4 bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-2 bg-green-50 rounded-lg text-green-600 shrink-0">
+              <MessageSquare className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">ChatGPT</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Strong for writing, coding, and image generation.
+              </p>
+            </div>
+          </Card>
+
+          {/* Claude */}
+          <Card className="p-5 flex items-start gap-4 bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-2 bg-purple-50 rounded-lg text-purple-600 shrink-0">
+              <BrainCircuit className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">Claude</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Excellent at careful reading of long documents, with strong privacy defaults.
+              </p>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* What You'll Learn This Week */}
+      <section className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-slate-900">What You’ll Learn This Week</h2>
+          <p className="text-slate-600 mt-1">You don’t have to become an AI engineer. You just need a few reliable habits.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="space-y-3">
+            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 mb-2">
+              <PenTool className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-slate-900 text-lg">Prompt Patterns That Just Work</h3>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              How to turn vague asks like "make this better" into prompts that actually save you hours.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center text-rose-600 mb-2">
+              <Clock className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-slate-900 text-lg">Fast vs Deep Models</h3>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              Why your AI sometimes feels "dumb"—and when to flip into the slower, more careful mode.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mb-2">
+              <Shield className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-slate-900 text-lg">Safe & Responsible Prompting</h3>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              How to stay within policy while still getting honest, useful help on real work problems.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Jobs to be Done / Module Access */}
       <section>
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -88,7 +192,7 @@ export default function Page() {
              </div>
              <h3 className="text-xl font-bold text-slate-900 mb-3">"I read long documents."</h3>
              <p className="text-slate-600 text-sm mb-6 leading-relaxed">
-               Drowning in vendor contracts or 50-page reports? Learn to extract key dates, terms, and financial figures in seconds.
+               Drowning in vendor contracts or 50-page reports? Learn to extract the dates, dollars, and decisions without reading every word.
              </p>
              <div className="flex items-center text-purple-600 font-medium text-sm">
                Go to Summarization <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"/>
@@ -114,7 +218,7 @@ export default function Page() {
       </section>
 
       {/* Curriculum Overview */}
-      <section className="bg-slate-50 rounded-xl p-8 border border-slate-200">
+      <section className="bg-white rounded-xl p-8 border border-slate-200">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className="text-2xl font-bold text-slate-900 mb-4">What's in the Academy?</h2>

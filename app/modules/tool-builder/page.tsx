@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, PromptCard, Button } from '../../../components/ui';
-import { PenTool, Sliders, Cpu, ShieldAlert, Hammer, ArrowRight, ArrowLeft, CheckCircle2, Bot, Wrench, Braces, Layers, Target, AlertTriangle } from 'lucide-react';
+import { PenTool, Sliders, Cpu, ShieldAlert, Hammer, ArrowRight, ArrowLeft, CheckCircle2, Bot, Wrench, Braces, Layers, Target, AlertTriangle, BookOpen } from 'lucide-react';
 import { useRouter } from '../../../lib/routerContext';
 
 export default function Page() {
@@ -33,12 +33,13 @@ export default function Page() {
       case 0:
         return (
           <section id="why-builders" className="mb-12 animate-fade-in">
-            <h2>From one-off answers to reusable tools</h2>
+            <h2>The "Copy-Paste" Trap</h2>
             <p className="text-lg text-slate-700">
-              Chat is fantastic for ad-hoc questions. But if you find yourself copying and pasting the <strong>same prompt</strong> over and over, that's a signal to graduate from "Chatter" to "Builder."
+              We've all been there: You have a prompt that works perfectly, but you have to copy-paste it from a Google Doc every time you need it. 
+              Or worse, you try to teach a colleague how to use it, and they change one word that breaks everything.
             </p>
             <p className="text-slate-600 mb-8">
-              Builder environments (like Google AI Studio) let you design stable, reusable tools that solve a specific problem reliably, every time.
+              <strong>Builder tools</strong> (like Google AI Studio or custom GPTs) solve this. They let you "freeze" a great prompt into a reusable button that anyone on your team can click.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 not-prose">
@@ -60,9 +61,9 @@ export default function Page() {
                 </div>
                 <h3 className="font-bold text-slate-900 mb-2">The Reusable Assistant</h3>
                 <ul className="space-y-2 text-sm text-slate-600">
-                  <li>"Triage customer feedback into categories."</li>
-                  <li>"Turn raw meeting notes into tasks with owners."</li>
-                  <li>"Extract invoice data into JSON for finance."</li>
+                  <li>"The 'Customer Feedback Triage' Bot"</li>
+                  <li>"The 'Meeting Notes to Tasks' Generator"</li>
+                  <li>"The 'Invoice Data Extractor'"</li>
                 </ul>
               </Card>
             </div>
@@ -72,7 +73,7 @@ export default function Page() {
                 <Target className="w-5 h-5" /> The Secret
               </h3>
               <p className="text-sm text-blue-800">
-                Building an internal tool isn't about coding. It's about freezing a great prompt into a repeatable workflow so you (or your team) don't have to rethink it every time.
+                Building an internal tool isn't about coding. It's about taking a prompt you <em>already use</em> and giving it a permanent home.
               </p>
             </div>
           </section>
@@ -80,10 +81,10 @@ export default function Page() {
       case 1:
         return (
           <section id="system-prompts" className="mb-12 animate-fade-in">
-            <h2>Teach the model who it is before you ask for work</h2>
+            <h2>The "Hidden Prompt"</h2>
             <p className="mb-6">
-              In a builder tool, you have a special box called the <strong>System Instruction</strong>.
-              This is the "hidden prompt" that defines the AI's role, tone, and boundaries before the user even types a word.
+              In a normal chat, you type instructions every time. In a builder, you set a <strong>System Instruction</strong> once.
+              This is the "god mode" prompt that defines who the AI is, what it knows, and what it is allowed to say.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 not-prose">
@@ -93,38 +94,38 @@ export default function Page() {
                   "You are a helpful assistant."
                 </p>
                 <p className="text-xs text-slate-500">
-                  <strong>Result:</strong> Generic, polite, sometimes overly verbose.
+                  <strong>Result:</strong> Polite, generic, and eager to please (sometimes too eager).
                 </p>
               </Card>
 
               <Card className="p-6 border-l-4 border-l-purple-500 bg-white">
                 <h3 className="font-bold text-slate-900 mb-2">Strong System Prompt</h3>
                 <p className="font-mono text-sm text-slate-800 mb-4">
-                  "You are a senior business analyst at an insurance company. You speak in concise, plain English. You ask clarifying questions before making assumptions. You never fabricate data; if you’re missing information, you say so clearly."
+                  "You are a Senior Business Analyst at [Company]. You speak in concise, plain English. You prioritize accuracy over politeness. If you lack data, state 'Insufficient Data' rather than guessing."
                 </p>
                 <p className="text-xs text-purple-600 font-medium">
-                  <strong>Result:</strong> Professional, grounded, safe, and on-brand.
+                  <strong>Result:</strong> Professional, grounded, consistent, and safe for work.
                 </p>
               </Card>
             </div>
 
             <h3 className="font-bold text-slate-900 mb-4">Mini Exercise: The Tone Shift</h3>
             <p className="text-sm text-slate-600 mb-4">
-              Try taking a generic prompt ("Write an apology email") and running it through two different System Personas:
+              Imagine running the prompt "Write an apology email" through these two personas:
             </p>
             <ul className="space-y-2 text-sm text-slate-700 list-disc pl-5">
-              <li><strong>Persona A:</strong> "You are an empathetic customer support agent." (Result: Warm, apologetic).</li>
-              <li><strong>Persona B:</strong> "You are a strict legal compliance officer." (Result: Formal, liability-focused).</li>
+              <li><strong>Persona A:</strong> "You are an empathetic customer support agent." (Result: Warm, apologetic, maybe offers a refund).</li>
+              <li><strong>Persona B:</strong> "You are a strict legal compliance officer." (Result: Formal, liability-focused, no admissions of fault).</li>
             </ul>
           </section>
         );
       case 2:
         return (
           <section id="structured-output" className="mb-12 animate-fade-in">
-            <h2>Make outputs predictable (your future self will thank you)</h2>
+            <h2>Make it talk to spreadsheets</h2>
             <p className="mb-6">
-              When you're building a tool, you often want the answer to go somewhere else—like a spreadsheet or another app.
-              Asking for <strong>Structured Output</strong> (like JSON) ensures the AI gives you data, not paragraphs.
+              One of the best uses for a custom tool is to force the AI to stop "chatting" and start "structuring."
+              You can tell it: "Do not write paragraphs. Output <strong>only JSON</strong> or a CSV table."
             </p>
 
             <div className="bg-slate-900 text-slate-200 p-6 rounded-xl font-mono text-sm shadow-xl mb-8 overflow-x-auto not-prose">
@@ -139,18 +140,18 @@ export default function Page() {
               </div>
             </div>
 
-            <h3 className="font-bold text-slate-900 mb-4">Why this matters</h3>
+            <h3 className="font-bold text-slate-900 mb-4">Why do this?</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
               <Card className="p-4 bg-white border-slate-200">
                 <h4 className="font-bold text-slate-900 mb-2">For Humans</h4>
                 <p className="text-sm text-slate-600">
-                  It creates clean tables you can copy-paste directly into Google Sheets or Excel without formatting cleanup.
+                  Clean tables you can copy-paste directly into Google Sheets or Excel without spending 20 minutes reformatting.
                 </p>
               </Card>
               <Card className="p-4 bg-white border-slate-200">
                 <h4 className="font-bold text-slate-900 mb-2">For Engineers</h4>
                 <p className="text-sm text-slate-600">
-                  If you ever want to turn your prototype into a real app, this schema is exactly what developers need to connect it to code.
+                  If you ever want to turn your prototype into a real app, this schema is the "contract" developers need to connect it to code.
                 </p>
               </Card>
             </div>
@@ -159,9 +160,9 @@ export default function Page() {
       case 3:
         return (
           <section id="models-and-settings" className="mb-12 animate-fade-in">
-            <h2>Experimenting with Models & Settings</h2>
+            <h2>Under the hood: Speed vs. Smarts</h2>
             <p className="mb-6">
-              In a builder tool, you aren't stuck with one "brain." You can swap models and tune settings to fit the task.
+              In a builder tool, you aren't stuck with the default brain. You can choose the engine that fits the job.
             </p>
 
             <div className="space-y-6 mb-8">
@@ -172,8 +173,8 @@ export default function Page() {
                 <div>
                   <h3 className="font-bold text-slate-900">Model Choice</h3>
                   <p className="text-sm text-slate-600">
-                    <strong>Flash (Fast/Cheap):</strong> Great for high-volume tasks like summarizing emails or extracting data. <br/>
-                    <strong>Pro (Deep/Reasoning):</strong> Better for complex logic, creative writing, or nuanced analysis.
+                    <strong>Flash (Fast/Cheap):</strong> Perfect for high-volume tasks like summarizing 50 emails or extracting data. <br/>
+                    <strong>Pro (Deep/Reasoning):</strong> Better for complex logic, creative writing, or nuanced strategic analysis.
                   </p>
                 </div>
               </div>
@@ -185,9 +186,9 @@ export default function Page() {
                 <div>
                   <h3 className="font-bold text-slate-900">Temperature</h3>
                   <p className="text-sm text-slate-600">
-                    Controls "creativity" (randomness). <br/>
+                    Controls the "wildness." <br/>
                     <strong>Low (0.0 - 0.3):</strong> Predictable, factual. Good for data extraction. <br/>
-                    <strong>High (0.7 - 1.0):</strong> Creative, varied. Good for brainstorming marketing slogans.
+                    <strong>High (0.7 - 1.0):</strong> Creative, varied. Good for brainstorming 50 different taglines.
                   </p>
                 </div>
               </div>
@@ -199,9 +200,9 @@ export default function Page() {
                  Try running a "Campaign Idea Generator" with these settings:
                </p>
                <ul className="space-y-2 text-sm text-slate-700 list-disc pl-5">
-                 <li><strong>Flash, Temp 0.2:</strong> You'll get safe, consistent, standard ideas.</li>
-                 <li><strong>Flash, Temp 0.9:</strong> You'll get wild, unexpected, sometimes weird ideas.</li>
-                 <li><strong>Pro, Temp 0.5:</strong> You'll get deeper, more strategic concepts.</li>
+                 <li><strong>Flash, Temp 0.2:</strong> Safe, consistent, standard corporate ideas.</li>
+                 <li><strong>Flash, Temp 0.9:</strong> Wild, unexpected, sometimes weird ideas.</li>
+                 <li><strong>Pro, Temp 0.5:</strong> Deep, strategic concepts that connect dots.</li>
                </ul>
             </Card>
           </section>
@@ -209,9 +210,9 @@ export default function Page() {
       case 4:
         return (
           <section id="mini-project" className="mb-12 animate-fade-in">
-            <h2>Mini Project: Your First Internal Tool</h2>
+            <h2>Mini Project: Build Your Own Assistant</h2>
             <p className="mb-6">
-              Ready to build? Pick one nagging, repetitive task from your week and turn it into an assistant.
+              Ready to build? Don't start with a blank page. Pick a real, annoying task from your week and automate it.
             </p>
 
             <Card className="p-6 border-l-4 border-l-emerald-500 bg-white mb-8">
@@ -225,7 +226,7 @@ export default function Page() {
                 </div>
                 <div>
                   <strong className="block text-slate-900">Input:</strong>
-                  Raw meeting transcript.
+                  Raw meeting transcript (pasted by the user).
                 </div>
                 <div>
                   <strong className="block text-slate-900">Structured Output (JSON):</strong>
@@ -246,6 +247,17 @@ export default function Page() {
               <Button onClick={() => push('/playground')} size="lg" className="w-full md:w-auto">
                 Open Playground <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
+            </div>
+
+            {/* Resource Hook */}
+            <div className="mt-8 flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+               <BookOpen className="w-5 h-5 text-slate-500" />
+               <div className="flex-1 text-sm text-slate-600">
+                 Want to see Tina Huang build this live?
+               </div>
+               <Button variant="ghost" size="sm" onClick={() => push('/reference/resources')}>
+                 Open Resource Library
+               </Button>
             </div>
           </section>
         );
@@ -304,8 +316,8 @@ export default function Page() {
             Next <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         ) : (
-          <Button variant="outline" disabled className="opacity-75 cursor-not-allowed">
-            Module Complete <CheckCircle2 className="w-4 h-4 ml-2" />
+          <Button onClick={() => push('/modules')} variant="outline">
+            Finish module <CheckCircle2 className="w-4 h-4 ml-2" />
           </Button>
         )}
       </div>
