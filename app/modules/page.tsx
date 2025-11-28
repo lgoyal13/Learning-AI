@@ -48,7 +48,7 @@ export default function Page() {
           duration: '15 min',
           icon: 'BookOpen',
           path: '/modules/fundamentals',
-          tag: 'Level 1–2',
+          tag: 'Start here',
           tagVariant: 'blue',
           locked: false
         },
@@ -122,7 +122,7 @@ export default function Page() {
     {
       id: 'advanced',
       title: 'Advanced & Coming Soon',
-      description: 'For Level 3+ power users who want to turn good prompts into reusable workflows and pilots. These are optional and may require extra approvals.',
+      description: 'For power users who want to turn good prompts into reusable workflows and pilots. These are optional and may require extra approvals.',
       modules: [
         {
           id: 'advanced-hub',
@@ -131,7 +131,7 @@ export default function Page() {
           duration: 'Ongoing',
           icon: 'Cpu',
           path: '/advanced',
-          tag: 'Level 3+',
+          tag: 'Advanced',
           tagVariant: 'warning',
           locked: false
         },
@@ -167,24 +167,20 @@ export default function Page() {
   return (
     <PageLayout 
       title="Learning modules" 
-      description="Follow the core path to get comfortable with AI, then dive into specialist tools. Start at the top, move left to right, and you will pick up the habits real power users rely on."
+      description="Explore the core skills first, then dive into tools and advanced workflows. You can hop around, but most people start with the foundations."
     >
-      {/* Hero / Path Hint */}
-      <div className="mb-8">
-        <div className="text-sm text-slate-500 mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200 inline-block leading-relaxed">
-          <strong className="text-slate-700">Recommended path:</strong> Quick Start → AI Fundamentals & Safe Use → Prompting Foundations → Modern Chatbots & Modes → Tools Overview → the specific tool modules.
-        </div>
-        
+      {/* Hero Buttons */}
+      <div className="mb-12">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-          <Button onClick={() => push('/quick-start')} size="lg" className="shadow-sm">
-            Start with the Prompting Quick Start <Zap className="w-4 h-4 ml-2" />
+          <Button onClick={() => push('/quick-start')} size="md">
+            Start Prompting Quickstart <Zap className="w-4 h-4 ml-2" />
           </Button>
-          <button 
-            onClick={() => push('/reference')}
-            className="text-slate-600 font-medium hover:text-blue-600 hover:underline px-2"
-          >
-            See prompt templates →
-          </button>
+          <Button onClick={() => push('/reference')} variant="outline" size="md">
+            Browse Prompt Templates <BookOpen className="w-4 h-4 ml-2" />
+          </Button>
+          <Button onClick={() => push('/reference/resources')} variant="outline" size="md">
+            See Advanced Resources <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
         </div>
       </div>
 

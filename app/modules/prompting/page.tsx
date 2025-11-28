@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, PromptCard, Button } from '../../../components/ui';
@@ -67,7 +68,7 @@ Requirements:
               <ul className="space-y-3 text-sm text-slate-700">
                 <li className="flex gap-3">
                    <div className="font-bold bg-white border border-slate-200 px-2 rounded text-slate-900">P</div>
-                   <span><strong>Role:</strong> "Strategy Analyst" sets the tone (analytical, concise).</span>
+                   <span><strong>Persona:</strong> "Strategy Analyst" sets the tone (analytical, concise).</span>
                 </li>
                 <li className="flex gap-3">
                    <div className="font-bold bg-white border border-slate-200 px-2 rounded text-slate-900">C</div>
@@ -289,22 +290,11 @@ Requirements:
       duration="20 mins"
       audience="All Employees"
       sections={sections}
-      nextModulePath="/modules/workflow"
+      currentStep={currentStep}
+      totalSteps={totalSteps}
+      onNext={handleNext}
+      onPrev={handlePrev}
     >
-      {/* Progress Bar */}
-      <div className="mb-10">
-        <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
-          <span>Step {currentStep + 1} of {totalSteps}</span>
-          <span>{Math.round(((currentStep + 1) / totalSteps) * 100)}%</span>
-        </div>
-        <div className="w-full bg-slate-200 rounded-full h-2.5">
-          <div 
-            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
-            style={{ width: `${Math.round(((currentStep + 1) / totalSteps) * 100)}%` }}
-          ></div>
-        </div>
-      </div>
-
       {/* Current Section Content */}
       <div className="min-h-[400px]">
         {renderStepContent()}

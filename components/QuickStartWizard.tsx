@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Button, Card, ProgressBar, Badge } from './ui';
-import { generateAIResponse } from '../services/geminiService';
 import { ShieldCheck, Zap, Mail, FileText, ArrowRight, CheckCircle, AlertTriangle } from 'lucide-react';
 
 export const QuickStartWizard: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
@@ -29,27 +28,37 @@ export const QuickStartWizard: React.FC<{ onComplete: () => void }> = ({ onCompl
 
   const handleSummarize = async () => {
     setIsSummarizing(true);
-    const prompt = `
-      You are an expert Project Manager assistant. 
-      Please summarize the following messy meeting note into a clean, professional bulleted list for a status update.
-      Highlight the budget issue and key timeline risks.
-      
-      Note: "${messyNote}"
-    `;
-    const result = await generateAIResponse(prompt);
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    const result = `**Meeting Summary: Client (Acme Corp)**
+- **Timeline Risk:** Launch likely delayed by ~2 weeks due to backend issues (vs. scope creep debate).
+- **Budget Issue:** Extra requests after Sept 1st are out of scope. Estimated overage: $4,500. Remaining budget: $1,000.
+- **Action Item:** Need to review SOW Section 4.a and likely issue a Change Order.`;
+
     setClaimSummary(result);
     setIsSummarizing(false);
   };
 
   const handleDraftEmail = async () => {
     setIsDrafting(true);
-    const prompt = `
-      You are a polite and professional Account Manager.
-      Draft a respectful email to the client (Acme Corp) explaining that we reviewed the request but it falls outside the original scope.
-      Explain that unfortunately, the contract does not cover changes requested after Sept 1st without a Change Order.
-      Be professional, clear, but kind. Do not use jargon. Offer to discuss via phone.
-    `;
-    const result = await generateAIResponse(prompt);
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    const result = `Subject: Regarding recent change requests - Acme Corp
+
+Dear Client,
+
+I hope you're having a good week.
+
+I've reviewed the additional requests discussed in our last meeting. While we want to accommodate these changes, they fall outside the original scope outlined in our agreement. As per Section 4.a of our contract, any changes requested after September 1st require a separate Change Order.
+
+We are happy to proceed with these updates, but we will need to formalize the budget adjustment first. Let me know if you'd like to discuss this over a quick call.
+
+Best regards,
+
+[Your Name]`;
+    
     setEmailDraft(result);
     setIsDrafting(false);
   };

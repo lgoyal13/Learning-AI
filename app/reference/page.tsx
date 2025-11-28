@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { PageLayout, Heading, Card, Callout, PromptCard, Button, Badge } from '../../components/ui';
 import { useRouter } from '../../lib/routerContext';
@@ -59,7 +60,7 @@ export default function Page() {
 
   // Helper to format the prompt string from the structured data
   const formatPromptText = (t: PromptTemplate) => {
-    let text = `Role: ${t.role}\n\nTask: ${t.task}\n\nContext:\n${t.context.map(c => `- ${c}`).join('\n')}\n\nRequirements:\n${t.requirements.map(r => `- ${r}`).join('\n')}`;
+    let text = `Persona: ${t.role}\n\nTask: ${t.task}\n\nContext:\n${t.context.map(c => `- ${c}`).join('\n')}\n\nRequirements:\n${t.requirements.map(r => `- ${r}`).join('\n')}`;
     
     if (t.examples && t.examples.length > 0) {
       text += `\n\nExamples:\n${t.examples.map(e => `- ${e}`).join('\n')}`;

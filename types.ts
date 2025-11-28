@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type View = 'home' | 'quick-start' | 'modules' | 'playground' | 'reference';
+export type View = 'home' | 'quick-start' | 'modules' | 'reference';
 
 export interface Module {
   id: string;

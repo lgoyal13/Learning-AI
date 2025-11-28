@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, Button } from '../../../components/ui';
 import { 
-  Zap, BrainCircuit, Globe, Paperclip, Monitor, Mic, Image, Search,
-  ArrowRight, ArrowLeft, CheckCircle2, Check, BookOpen, Layers, PenTool, Bot
+  Zap, BrainCircuit, Globe, Paperclip, Mic, Image, Search,
+  ArrowRight, ArrowLeft, CheckCircle2, Check, Layers, PenTool
 } from 'lucide-react';
 import { useRouter } from '../../../lib/routerContext';
 
@@ -269,24 +269,13 @@ export default function Page() {
       title="Modern Chatbots & Modes"
       description="Your AI is more than one chat window. Learn when to use fast modes, when to slow down for deep reasoning, and how to use web search and attachments wisely."
       duration="20 mins"
-      audience="Level 2–3 users"
+      audience="Intermediate Users"
       sections={sections}
-      nextModulePath="/modules/tool-research"
+      currentStep={currentStep}
+      totalSteps={totalSteps}
+      onNext={handleNext}
+      onPrev={handlePrev}
     >
-      {/* Progress Bar */}
-      <div className="mb-10">
-        <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
-          <span>Step {currentStep + 1} of {totalSteps}</span>
-          <span>{Math.round(((currentStep + 1) / totalSteps) * 100)}%</span>
-        </div>
-        <div className="w-full bg-slate-200 rounded-full h-2.5">
-          <div 
-            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
-            style={{ width: `${Math.round(((currentStep + 1) / totalSteps) * 100)}%` }}
-          ></div>
-        </div>
-      </div>
-
       {/* Current Section Content */}
       <div className="min-h-[400px]">
         {sectionContent[currentStep]}

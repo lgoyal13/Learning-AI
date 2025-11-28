@@ -1,11 +1,12 @@
 import React from 'react';
-import { Playground } from '../../components/Playground'; // Reusing existing component
 import { PageLayout } from '../../components/ui';
 
 export default function Page() {
   return (
-    <PageLayout title="AI Playground" description="Safe sandboxed environment for experimentation.">
-       <Playground />
+    <PageLayout title="Playground" description="Feature Unavailable">
+       <div className="p-8 text-center text-slate-600">
+         The Playground is no longer part of this Academy.
+       </div>
     </PageLayout>
   );
 }

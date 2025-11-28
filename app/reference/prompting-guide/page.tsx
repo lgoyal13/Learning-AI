@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { PageLayout, Heading, Card, Callout, PromptCard } from '../../../components/ui';
 import { PenTool, Target, FileText, CheckCircle, AlertTriangle } from 'lucide-react';
@@ -13,22 +14,22 @@ export default function Page() {
       <section>
         <Heading level={2} className="mb-6 flex items-center gap-2">
           <Target className="w-6 h-6 text-blue-600" />
-          The Core Framework (C.T.F.)
+          The Core Framework (P.C.T.R.)
         </Heading>
         <p className="text-slate-600 mb-6 text-lg">
-          Every great prompt contains three specific ingredients. If you are getting bad results, you are likely missing one of these.
+          Every great prompt contains four specific ingredients. If you are getting bad results, you are likely missing one of these.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="border-t-4 border-t-blue-500 bg-white">
             <div className="flex items-center gap-2 mb-3">
               <div className="p-2 bg-blue-100 rounded text-blue-700 font-bold text-xs uppercase tracking-wider">
-                1. Context
+                1. Persona
               </div>
             </div>
-            <h3 className="font-bold text-slate-900 mb-2">Set the Stage</h3>
+            <h3 className="font-bold text-slate-900 mb-2">Set the Role</h3>
             <p className="text-slate-600 text-sm mb-4">
-              Who is the AI? What background does it need?
+              Who is the AI? What perspective should it take?
             </p>
             <div className="bg-slate-50 p-3 rounded text-sm font-mono text-slate-700">
               "Act as a Senior Project Manager..."
@@ -38,7 +39,22 @@ export default function Page() {
           <Card className="border-t-4 border-t-purple-500 bg-white">
              <div className="flex items-center gap-2 mb-3">
               <div className="p-2 bg-purple-100 rounded text-purple-700 font-bold text-xs uppercase tracking-wider">
-                2. Task
+                2. Context
+              </div>
+            </div>
+            <h3 className="font-bold text-slate-900 mb-2">Give Background</h3>
+            <p className="text-slate-600 text-sm mb-4">
+              What does the AI need to know to do the job?
+            </p>
+            <div className="bg-slate-50 p-3 rounded text-sm font-mono text-slate-700">
+              "I am writing an update for the VP..."
+            </div>
+          </Card>
+
+          <Card className="border-t-4 border-t-emerald-500 bg-white">
+             <div className="flex items-center gap-2 mb-3">
+              <div className="p-2 bg-emerald-100 rounded text-emerald-700 font-bold text-xs uppercase tracking-wider">
+                3. Task
               </div>
             </div>
             <h3 className="font-bold text-slate-900 mb-2">Define the Action</h3>
@@ -50,15 +66,15 @@ export default function Page() {
             </div>
           </Card>
 
-          <Card className="border-t-4 border-t-emerald-500 bg-white">
+          <Card className="border-t-4 border-t-amber-500 bg-white">
              <div className="flex items-center gap-2 mb-3">
-              <div className="p-2 bg-emerald-100 rounded text-emerald-700 font-bold text-xs uppercase tracking-wider">
-                3. Format
+              <div className="p-2 bg-amber-100 rounded text-amber-700 font-bold text-xs uppercase tracking-wider">
+                4. Requirements
               </div>
             </div>
             <h3 className="font-bold text-slate-900 mb-2">Specify Output</h3>
             <p className="text-slate-600 text-sm mb-4">
-              What should the result look like? Length? Tone?
+              Format? Tone? Length? Constraints?
             </p>
             <div className="bg-slate-50 p-3 rounded text-sm font-mono text-slate-700">
               "...keep it under 200 words, no jargon."
@@ -106,7 +122,7 @@ export default function Page() {
              <h3 className="font-bold text-slate-900 mb-4">The "Golden Prompt" Template</h3>
              <PromptCard 
                 label="Copy this Structure"
-                prompt="Act as a [ROLE]. \nI need you to [TASK]. \nHere is the background info: [CONTEXT]. \nPlease format your response as [FORMAT]."
+                prompt="Act as a [PERSONA]. \nI need you to [TASK]. \nHere is the background info: [CONTEXT]. \nPlease format your response as follows: [REQUIREMENTS]."
              />
           </div>
         </div>

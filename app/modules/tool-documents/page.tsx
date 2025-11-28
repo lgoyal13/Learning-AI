@@ -47,7 +47,7 @@ export default function Page() {
             </p>
 
             <div className="my-8">
-              <h3 className="text-xl font-bold text-slate-900 mb-4">Best Use Cases for Level 2–3 Workers</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">Best Use Cases for Daily Work</h3>
               
               <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
                  <ul className="space-y-4 text-sm text-slate-700">
@@ -345,22 +345,11 @@ Present the answer as a table with one row per vendor, and add a short "One-line
       duration="15 mins"
       audience="All Employees"
       sections={sections}
-      nextModulePath="/modules/tool-builder"
+      currentStep={currentStep}
+      totalSteps={totalSteps}
+      onNext={handleNext}
+      onPrev={handlePrev}
     >
-      {/* Progress Bar */}
-      <div className="mb-10">
-        <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
-          <span>Step {currentStep + 1} of {totalSteps}</span>
-          <span>{Math.round(((currentStep + 1) / totalSteps) * 100)}%</span>
-        </div>
-        <div className="w-full bg-slate-200 rounded-full h-2.5">
-          <div 
-            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
-            style={{ width: `${Math.round(((currentStep + 1) / totalSteps) * 100)}%` }}
-          ></div>
-        </div>
-      </div>
-
       {/* Current Section Content */}
       <div className="min-h-[400px]">
         {renderStepContent()}

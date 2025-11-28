@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from '../types';
-import { LayoutDashboard, Zap, BookOpen, MessageSquare, Book, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Zap, BookOpen, Book, Menu, X } from 'lucide-react';
 
 interface LayoutProps {
   currentView: View;
@@ -45,7 +45,6 @@ export const Layout: React.FC<LayoutProps> = ({ currentView, onNavigate, childre
           <NavItem view="home" icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" />
           <NavItem view="quick-start" icon={<Zap className="w-5 h-5" />} label="Quick Start" />
           <NavItem view="modules" icon={<Book className="w-5 h-5" />} label="Learning Modules" />
-          <NavItem view="playground" icon={<MessageSquare className="w-5 h-5" />} label="Playground" />
           <NavItem view="reference" icon={<BookOpen className="w-5 h-5" />} label="Reference Guide" />
         </nav>
 
@@ -80,7 +79,6 @@ export const Layout: React.FC<LayoutProps> = ({ currentView, onNavigate, childre
             <NavItem view="home" icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" />
             <NavItem view="quick-start" icon={<Zap className="w-5 h-5" />} label="Quick Start" />
             <NavItem view="modules" icon={<Book className="w-5 h-5" />} label="Learning Modules" />
-            <NavItem view="playground" icon={<MessageSquare className="w-5 h-5" />} label="Playground" />
             <NavItem view="reference" icon={<BookOpen className="w-5 h-5" />} label="Reference Guide" />
            </nav>
         </div>

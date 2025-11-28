@@ -297,26 +297,15 @@ Include:
       duration="20 mins"
       audience="Employees in Google Workspace"
       sections={sections}
-      nextModulePath="/modules"
+      currentStep={currentStep}
+      totalSteps={totalSteps}
+      onNext={handleNext}
+      onPrev={handlePrev}
     >
       <div className="mb-8 not-prose">
         <Callout variant="info" title="Optional Module">
           This module is best for power users who are already comfortable with basic prompting and want to explore the wider ecosystem.
         </Callout>
-      </div>
-
-      {/* Progress Bar */}
-      <div className="mb-10">
-        <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
-          <span>Step {currentStep + 1} of {totalSteps}</span>
-          <span>{Math.round(((currentStep + 1) / totalSteps) * 100)}%</span>
-        </div>
-        <div className="w-full bg-slate-200 rounded-full h-2.5">
-          <div 
-            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
-            style={{ width: `${Math.round(((currentStep + 1) / totalSteps) * 100)}%` }}
-          ></div>
-        </div>
       </div>
 
       {/* Current Section Content */}

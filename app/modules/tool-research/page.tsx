@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, PromptCard, Button } from '../../../components/ui';
-import { Globe, Search, CheckCircle2, AlertTriangle, ArrowLeft, ArrowRight, Zap, BrainCircuit, Target, BookOpen, MousePointerClick, List, Clock, ExternalLink } from 'lucide-react';
+import { Globe, Search, CheckCircle2, AlertTriangle, ArrowLeft, ArrowRight, Zap, BrainCircuit, Target, BookOpen } from 'lucide-react';
 import { useRouter } from '../../../lib/routerContext';
 
 export default function Page() {
@@ -308,22 +308,11 @@ Finally, write a short narrative summary of the overall market trend.`}
       duration="15 mins"
       audience="All Employees"
       sections={sections}
-      nextModulePath="/modules/tool-documents"
+      currentStep={currentStep}
+      totalSteps={totalSteps}
+      onNext={handleNext}
+      onPrev={handlePrev}
     >
-      {/* Progress Bar */}
-      <div className="mb-8">
-        <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
-          <span>Step {currentStep + 1} of {totalSteps}</span>
-          <span>{Math.round(((currentStep + 1) / totalSteps) * 100)}%</span>
-        </div>
-        <div className="w-full bg-slate-200 rounded-full h-2.5">
-          <div 
-            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
-            style={{ width: `${Math.round(((currentStep + 1) / totalSteps) * 100)}%` }}
-          ></div>
-        </div>
-      </div>
-
       {/* Content Area */}
       <div className="min-h-[400px]">
         {renderStepContent()}

@@ -31,16 +31,16 @@ export default function Page() {
           <Badge variant="blue" className="mb-4 bg-blue-500/20 text-blue-100 border-blue-500/50">Internal Academy</Badge>
           
           <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
-            Learn to Talk to AI <br/>
-            <span className="text-blue-400">Like a Pro.</span>
+            Get ahead of <br/>
+            <span className="text-blue-400">90% of AI users.</span>
           </h1>
           
           <div className="text-slate-300 text-lg md:text-xl mb-10 leading-relaxed max-w-2xl space-y-4">
             <p className="font-medium text-white">
-              AI stops feeling mysterious once you know what to ask. This academy turns prompting into a practical skill you can rely on at work—so you feel faster, clearer, and a little bit unfairly effective.
+              AI stops feeling mysterious once you know what to ask. This academy turns prompting into a practical skill you can rely on at work, so you feel faster, clearer, and a little bit unfairly effective.
             </p>
             <p className="text-base text-slate-400">
-              You can use any modern chatbot—Gemini, ChatGPT, or Claude. We’ll just show you how to talk to them.
+              You can use any modern chatbot like Gemini, ChatGPT, or Claude. We will just show you how to talk to them.
             </p>
           </div>
 
@@ -57,7 +57,7 @@ export default function Page() {
                size="lg" 
                variant="outline" 
                onClick={() => push('/modules/fundamentals')}
-               className="border-slate-600 text-slate-200 hover:bg-slate-800 hover:text-white h-14 px-8"
+               className="bg-white/5 border-white/30 text-white hover:bg-white/10 h-14 px-8 font-medium backdrop-blur-sm transition-all"
             >
               Get Started with the Basics
             </Button>
@@ -136,7 +136,7 @@ export default function Page() {
           <p className="text-slate-600 mt-1">Already know what you’re doing? Grab the templates and tool guides directly.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card 
             className="p-5 bg-white hover:border-blue-300 transition-colors cursor-pointer group"
             onClick={() => push('/reference')}
@@ -176,20 +176,6 @@ export default function Page() {
             <p className="text-sm text-slate-600 mb-4">What’s okay to paste into AI—and what should stay out.</p>
             <span className="text-xs font-bold text-emerald-600 flex items-center group-hover:translate-x-1 transition-transform">
               Read policy snapshot <ArrowRight className="w-3 h-3 ml-1" />
-            </span>
-          </Card>
-
-          <Card 
-            className="p-5 bg-white hover:border-amber-300 transition-colors cursor-pointer group"
-            onClick={() => push('/reference')}
-          >
-            <div className="flex items-center gap-2 mb-3 text-amber-600 font-bold text-sm uppercase tracking-wider">
-              <Globe className="w-4 h-4" /> Research
-            </div>
-            <h3 className="font-bold text-slate-900 mb-2 group-hover:text-amber-600">Competitive Research Starter</h3>
-            <p className="text-sm text-slate-600 mb-4">A ready-to-go template for market and competitive intel using Gemini or Perplexity.</p>
-            <span className="text-xs font-bold text-amber-600 flex items-center group-hover:translate-x-1 transition-transform">
-              Try the research template <ArrowRight className="w-3 h-3 ml-1" />
             </span>
           </Card>
         </div>

@@ -6,14 +6,13 @@ import {
   Search, 
   AlertTriangle, 
   CheckCircle2, 
-  XCircle, 
   ArrowLeft, 
   ArrowRight, 
   ShieldAlert,
   FileText,
-  Lock,
   Eye,
-  MessageSquare
+  MessageSquare,
+  XCircle
 } from 'lucide-react';
 import { useRouter } from '../../../lib/routerContext';
 
@@ -303,22 +302,11 @@ export default function Page() {
       duration="15 mins"
       audience="All Employees"
       sections={sections}
-      nextModulePath="/modules/prompting"
+      currentStep={currentStep}
+      totalSteps={totalSteps}
+      onNext={handleNext}
+      onPrev={handlePrev}
     >
-      {/* Progress Bar */}
-      <div className="mb-10">
-        <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
-          <span>Step {currentStep + 1} of {totalSteps}</span>
-          <span>{Math.round(((currentStep + 1) / totalSteps) * 100)}%</span>
-        </div>
-        <div className="w-full bg-slate-200 rounded-full h-2.5">
-          <div 
-            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
-            style={{ width: `${Math.round(((currentStep + 1) / totalSteps) * 100)}%` }}
-          ></div>
-        </div>
-      </div>
-
       {/* Current Section Content */}
       <div className="min-h-[400px]">
         {renderStepContent()}

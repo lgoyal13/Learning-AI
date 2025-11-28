@@ -23,7 +23,6 @@ import ModulesToolsBuilderPage from './app/modules/tool-builder/page';
 import ReferencePage from './app/reference/page';
 import PolicyQuickViewPage from './app/reference/policy-quick-view/page';
 import ReferencePromptingGuidePage from './app/reference/prompting-guide/page';
-import PlaygroundPage from './app/playground/page';
 import AdvancedPage from './app/advanced/page';
 
 const RouteHandler = () => {
@@ -54,8 +53,7 @@ const RouteHandler = () => {
   if (cleanPath === '/reference/policy-quick-view') return <PolicyQuickViewPage />;
   if (cleanPath === '/reference/prompting-guide') return <ReferencePromptingGuidePage />;
 
-  // Playground & advanced tools
-  if (cleanPath === '/playground') return <PlaygroundPage />;
+  // Advanced tools
   if (cleanPath === '/advanced') return <AdvancedPage />;
 
   // Fallback – if nothing matched, send them home
