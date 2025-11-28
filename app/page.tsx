@@ -15,14 +15,15 @@ import {
   BrainCircuit,
   Image as ImageIcon,
   Clock,
-  Lock
+  Lock,
+  ExternalLink
 } from 'lucide-react';
 
 export default function Page() {
   const { push } = useRouter();
 
   return (
-    <div className="max-w-6xl mx-auto space-y-12 animate-fade-in pb-12">
+    <div className="max-w-6xl mx-auto space-y-16 animate-fade-in pb-12">
       
       {/* Hero Section */}
       <section className="bg-slate-900 rounded-2xl p-8 md:p-16 text-white shadow-xl relative overflow-hidden">
@@ -36,10 +37,10 @@ export default function Page() {
           
           <div className="text-slate-300 text-lg md:text-xl mb-10 leading-relaxed max-w-2xl space-y-4">
             <p className="font-medium text-white">
-              You already have Gemini, ChatGPT, or Claude. This site shows you how to actually talk to them so they stop giving mushy answers and start doing real work for you.
+              AI stops feeling mysterious once you know what to ask. This academy turns prompting into a practical skill you can rely on at work—so you feel faster, clearer, and a little bit unfairly effective.
             </p>
             <p className="text-base text-slate-400">
-              A few simple prompting habits will quietly put you ahead of most people using AI.
+              You can use any modern chatbot—Gemini, ChatGPT, or Claude. We’ll just show you how to talk to them.
             </p>
           </div>
 
@@ -55,10 +56,10 @@ export default function Page() {
             <Button 
                size="lg" 
                variant="outline" 
-               onClick={() => push('/modules')}
+               onClick={() => push('/modules/fundamentals')}
                className="border-slate-600 text-slate-200 hover:bg-slate-800 hover:text-white h-14 px-8"
             >
-              Browse All Modules
+              Get Started with the Basics
             </Button>
           </div>
         </div>
@@ -68,101 +69,12 @@ export default function Page() {
         <div className="absolute bottom-0 right-20 -mb-20 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
       </section>
 
-      {/* Pick Your AI Strip */}
-      <section>
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-slate-900">Use whatever AI you already have.</h2>
-          <p className="text-slate-600">Everything in this academy works with Gemini, ChatGPT, or Claude.</p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Gemini */}
-          <Card className="p-5 flex items-start gap-4 bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-            <div className="p-2 bg-blue-50 rounded-lg text-blue-600 shrink-0">
-              <Zap className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 mb-1">Gemini</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">
-                Great inside Google Docs, Sheets, and for long, detailed reasoning.
-              </p>
-            </div>
-          </Card>
-
-          {/* ChatGPT */}
-          <Card className="p-5 flex items-start gap-4 bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-            <div className="p-2 bg-green-50 rounded-lg text-green-600 shrink-0">
-              <MessageSquare className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 mb-1">ChatGPT</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">
-                Strong for writing, coding, and image generation.
-              </p>
-            </div>
-          </Card>
-
-          {/* Claude */}
-          <Card className="p-5 flex items-start gap-4 bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-            <div className="p-2 bg-purple-50 rounded-lg text-purple-600 shrink-0">
-              <BrainCircuit className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 mb-1">Claude</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">
-                Excellent at careful reading of long documents, with strong privacy defaults.
-              </p>
-            </div>
-          </Card>
-        </div>
-      </section>
-
-      {/* What You'll Learn This Week */}
-      <section className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-slate-900">What You’ll Learn This Week</h2>
-          <p className="text-slate-600 mt-1">You don’t have to become an AI engineer. You just need a few reliable habits.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="space-y-3">
-            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 mb-2">
-              <PenTool className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-lg">Prompt Patterns That Just Work</h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              How to turn vague asks like "make this better" into prompts that actually save you hours.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center text-rose-600 mb-2">
-              <Clock className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-lg">Fast vs Deep Models</h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              Why your AI sometimes feels "dumb"—and when to flip into the slower, more careful mode.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mb-2">
-              <Shield className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-lg">Safe & Responsible Prompting</h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              How to stay within policy while still getting honest, useful help on real work problems.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Jobs to be Done / Module Access */}
+      {/* Task Cards Section */}
       <section>
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold text-slate-900">How can AI help you today?</h2>
-            <p className="text-slate-600 mt-1">Select a task to see how AI speeds it up.</p>
+            <p className="text-slate-600 mt-1">Select a task to see the playbook.</p>
           </div>
         </div>
         
@@ -174,102 +86,181 @@ export default function Page() {
              <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform">
                 <PenTool className="w-6 h-6" />
              </div>
-             <h3 className="text-xl font-bold text-slate-900 mb-3">"I write a lot of emails."</h3>
+             <h3 className="text-xl font-bold text-slate-900 mb-3">I write a lot of emails & docs.</h3>
              <p className="text-slate-600 text-sm mb-6 leading-relaxed">
-               Staring at a blank page? Learn how to generate drafts for client updates, project announcements, and difficult feedback instantly.
+               Client updates, project announcements, feedback notes—learn how to go from blank page to solid draft in minutes.
              </p>
              <div className="flex items-center text-blue-600 font-medium text-sm">
-               Go to Drafting <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"/>
+               Go to Drafting Playbook <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"/>
              </div>
           </Card>
 
           <Card 
             className="p-6 hover:shadow-lg transition-all border-t-4 border-t-purple-500 cursor-pointer group"
-            onClick={() => push('/modules/fundamentals')}
+            onClick={() => push('/modules/tool-documents')}
           >
              <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600 mb-6 group-hover:scale-110 transition-transform">
                 <FileText className="w-6 h-6" />
              </div>
-             <h3 className="text-xl font-bold text-slate-900 mb-3">"I read long documents."</h3>
+             <h3 className="text-xl font-bold text-slate-900 mb-3">I read long documents.</h3>
              <p className="text-slate-600 text-sm mb-6 leading-relaxed">
-               Drowning in vendor contracts or 50-page reports? Learn to extract the dates, dollars, and decisions without reading every word.
+               Contracts, vendor proposals, strategy decks—pull out dates, decisions, and risks without reading every word.
              </p>
              <div className="flex items-center text-purple-600 font-medium text-sm">
-               Go to Summarization <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"/>
+               Go to Summarization Playbook <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"/>
              </div>
           </Card>
 
           <Card 
             className="p-6 hover:shadow-lg transition-all border-t-4 border-t-emerald-500 cursor-pointer group"
-            onClick={() => push('/reference')}
+            onClick={() => push('/modules/tool-research')}
           >
              <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform">
                 <Search className="w-6 h-6" />
              </div>
-             <h3 className="text-xl font-bold text-slate-900 mb-3">"I need to look things up."</h3>
+             <h3 className="text-xl font-bold text-slate-900 mb-3">I need to look things up.</h3>
              <p className="text-slate-600 text-sm mb-6 leading-relaxed">
-               Need to clarify a policy or check a regulation? Use our approved tools to find answers faster than traditional search.
+               Policies, market trends, regulations—learn how to get grounded answers faster than scrolling search results.
              </p>
              <div className="flex items-center text-emerald-600 font-medium text-sm">
-               Go to Tools <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"/>
+               Go to Research Playbook <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"/>
              </div>
           </Card>
         </div>
       </section>
 
-      {/* Curriculum Overview */}
-      <section className="bg-white rounded-xl p-8 border border-slate-200">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-4">What's in the Academy?</h2>
-            <p className="text-slate-600 mb-6">
-              Our curriculum is designed for busy professionals. 
-              No coding. No hype. Just practical skills you can use today.
-            </p>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                <span className="text-slate-700"><strong className="text-slate-900">Fundamentals:</strong> What is LLM, Hallucination, and how to spot errors.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                <span className="text-slate-700"><strong className="text-slate-900">Prompt Engineering:</strong> The P.C.T.F. framework for getting perfect answers.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                <span className="text-slate-700"><strong className="text-slate-900">Responsible Use:</strong> Data privacy, PII protection, and ethical guidelines.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                <span className="text-slate-700"><strong className="text-slate-900">Advanced Tools:</strong> Agents, workflows, and piloting new features.</span>
-              </li>
-            </ul>
+      {/* Jump into Resources Section */}
+      <section className="bg-slate-50 rounded-xl p-8 border border-slate-200">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-slate-900">Jump into resources</h2>
+          <p className="text-slate-600 mt-1">Already know what you’re doing? Grab the templates and tool guides directly.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card 
+            className="p-5 bg-white hover:border-blue-300 transition-colors cursor-pointer group"
+            onClick={() => push('/reference')}
+          >
+            <div className="flex items-center gap-2 mb-3 text-blue-600 font-bold text-sm uppercase tracking-wider">
+              <FileText className="w-4 h-4" /> Templates
+            </div>
+            <h3 className="font-bold text-slate-900 mb-2 group-hover:text-blue-600">Prompt Template Library</h3>
+            <p className="text-sm text-slate-600 mb-4">Reusable patterns for drafting, summarizing, research, and more.</p>
+            <span className="text-xs font-bold text-blue-600 flex items-center group-hover:translate-x-1 transition-transform">
+              Browse templates <ArrowRight className="w-3 h-3 ml-1" />
+            </span>
+          </Card>
+
+          <Card 
+            className="p-5 bg-white hover:border-purple-300 transition-colors cursor-pointer group"
+            onClick={() => push('/reference/resources')}
+          >
+            <div className="flex items-center gap-2 mb-3 text-purple-600 font-bold text-sm uppercase tracking-wider">
+              <Layers className="w-4 h-4" /> Tutorials
+            </div>
+            <h3 className="font-bold text-slate-900 mb-2 group-hover:text-purple-600">Advanced Tools & Workflow</h3>
+            <p className="text-sm text-slate-600 mb-4">Short guides for NotebookLM, Perplexity, Gemini Workspace, and more.</p>
+            <span className="text-xs font-bold text-purple-600 flex items-center group-hover:translate-x-1 transition-transform">
+              See tool tutorials <ArrowRight className="w-3 h-3 ml-1" />
+            </span>
+          </Card>
+
+          <Card 
+            className="p-5 bg-white hover:border-emerald-300 transition-colors cursor-pointer group"
+            onClick={() => push('/reference/policy-quick-view')}
+          >
+            <div className="flex items-center gap-2 mb-3 text-emerald-600 font-bold text-sm uppercase tracking-wider">
+              <Shield className="w-4 h-4" /> Safety
+            </div>
+            <h3 className="font-bold text-slate-900 mb-2 group-hover:text-emerald-600">AI Policy & Safe Use</h3>
+            <p className="text-sm text-slate-600 mb-4">What’s okay to paste into AI—and what should stay out.</p>
+            <span className="text-xs font-bold text-emerald-600 flex items-center group-hover:translate-x-1 transition-transform">
+              Read policy snapshot <ArrowRight className="w-3 h-3 ml-1" />
+            </span>
+          </Card>
+
+          <Card 
+            className="p-5 bg-white hover:border-amber-300 transition-colors cursor-pointer group"
+            onClick={() => push('/reference')}
+          >
+            <div className="flex items-center gap-2 mb-3 text-amber-600 font-bold text-sm uppercase tracking-wider">
+              <Globe className="w-4 h-4" /> Research
+            </div>
+            <h3 className="font-bold text-slate-900 mb-2 group-hover:text-amber-600">Competitive Research Starter</h3>
+            <p className="text-sm text-slate-600 mb-4">A ready-to-go template for market and competitive intel using Gemini or Perplexity.</p>
+            <span className="text-xs font-bold text-amber-600 flex items-center group-hover:translate-x-1 transition-transform">
+              Try the research template <ArrowRight className="w-3 h-3 ml-1" />
+            </span>
+          </Card>
+        </div>
+      </section>
+
+      {/* Ready to try this for real? */}
+      <section className="mb-12">
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-slate-900">Ready to try this for real?</h2>
+          <p className="text-slate-600 text-sm">Use whichever AI you already have. These links open in a new tab so you can practice your new prompts immediately.</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="flex items-start gap-4 p-4 rounded-lg bg-white border border-slate-200 hover:border-blue-300 transition-colors group">
+            <div className="p-2 bg-blue-50 rounded text-blue-600 shrink-0">
+              <Zap className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">Gemini</h3>
+              <p className="text-xs text-slate-500 mb-3 leading-relaxed">
+                Great inside Google Docs, Sheets, and for long, detailed reasoning.
+              </p>
+              <a 
+                href="https://gemini.google.com" 
+                target="_blank" 
+                rel="noreferrer"
+                className="text-xs font-bold text-blue-600 flex items-center group-hover:underline"
+              >
+                Open Gemini <ExternalLink className="w-3 h-3 ml-1" />
+              </a>
+            </div>
           </div>
-          <div className="relative">
-             <div className="absolute inset-0 bg-blue-100 rounded-full filter blur-3xl opacity-40"></div>
-             <Card className="relative p-6 border-slate-200 shadow-lg">
-                <div className="flex items-center gap-3 mb-4 text-slate-900 font-bold border-b border-slate-100 pb-3">
-                   <Shield className="w-5 h-5 text-blue-600" />
-                   Company AI Policy Snapshot
-                </div>
-                <div className="space-y-3">
-                  <div className="flex gap-2 text-sm">
-                    <span className="text-green-600 font-bold">✅</span>
-                    <span className="text-slate-600">Always review AI output for accuracy.</span>
-                  </div>
-                  <div className="flex gap-2 text-sm">
-                    <span className="text-green-600 font-bold">✅</span>
-                    <span className="text-slate-600">Use only approved internal tools.</span>
-                  </div>
-                  <div className="flex gap-2 text-sm">
-                    <span className="text-red-500 font-bold">❌</span>
-                    <span className="text-slate-600">Never input PII (Names, SSNs, Accounts).</span>
-                  </div>
-                </div>
-                <Button variant="secondary" className="w-full mt-6 text-sm" onClick={() => push('/reference')}>
-                   Read Full Guidelines
-                </Button>
-             </Card>
+
+          <div className="flex items-start gap-4 p-4 rounded-lg bg-white border border-slate-200 hover:border-green-300 transition-colors group">
+            <div className="p-2 bg-green-50 rounded text-green-600 shrink-0">
+              <MessageSquare className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">ChatGPT</h3>
+              <p className="text-xs text-slate-500 mb-3 leading-relaxed">
+                Strong for writing, coding, and image generation.
+              </p>
+              <a 
+                href="https://chatgpt.com" 
+                target="_blank" 
+                rel="noreferrer"
+                className="text-xs font-bold text-green-600 flex items-center group-hover:underline"
+              >
+                Open ChatGPT <ExternalLink className="w-3 h-3 ml-1" />
+              </a>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4 p-4 rounded-lg bg-white border border-slate-200 hover:border-purple-300 transition-colors group">
+            <div className="p-2 bg-purple-50 rounded text-purple-600 shrink-0">
+              <BrainCircuit className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 mb-1">Claude</h3>
+              <p className="text-xs text-slate-500 mb-3 leading-relaxed">
+                Excellent at careful reading of long documents, with strong privacy defaults.
+              </p>
+              <a 
+                href="https://claude.ai" 
+                target="_blank" 
+                rel="noreferrer"
+                className="text-xs font-bold text-purple-600 flex items-center group-hover:underline"
+              >
+                Open Claude <ExternalLink className="w-3 h-3 ml-1" />
+              </a>
+            </div>
           </div>
         </div>
       </section>

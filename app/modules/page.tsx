@@ -1,70 +1,151 @@
 import React from 'react';
-import { Card, Badge, Button, PageLayout, Callout } from '../../components/ui';
+import { Card, Badge, Button, PageLayout } from '../../components/ui';
 import { useRouter } from '../../lib/routerContext';
-import { BookOpen, Shield, MessageSquare, Briefcase, Lock, ArrowRight, Globe } from 'lucide-react';
+import { 
+  BookOpen, 
+  Shield, 
+  MessageSquare, 
+  Briefcase, 
+  Lock, 
+  ArrowRight, 
+  Globe, 
+  Zap, 
+  Layers, 
+  PenTool, 
+  Cpu, 
+  Workflow 
+} from 'lucide-react';
 import { Module } from '../../types';
 
-// Updated track data with friendlier, blog-style copy
-const tracks = [
-  {
-    id: 'foundations',
-    title: 'Track 1: The Mental Model',
-    description: 'Start here if you want to understand **how AI actually works** and **how to talk to it** (Prompting) without wasting time.',
-    moduleIds: ['fundamentals', 'prompting', 'responsible-use'],
-  },
-  {
-    id: 'applied',
-    title: 'Track 2: Applying It to Real Work',
-    description: 'Once you know the basics, this track helps you **pick the right tool** (Research vs Docs vs Chat) and build **repeatable workflows**.',
-    moduleIds: ['tools-overview', 'workflow'],
-  },
-];
+// Extended Module type locally to include path
+interface ModuleWithRoute extends Omit<Module, 'icon'> {
+  icon: string;
+  path: string;
+  tag?: string;
+  tagVariant?: 'blue' | 'warning' | 'neutral' | 'success';
+}
+
+interface Track {
+  id: string;
+  title: string;
+  description: string;
+  modules: ModuleWithRoute[];
+}
 
 export default function Page() {
   const { push } = useRouter();
 
-  // Module Data - Updated descriptions for punchiness
-  const modules: Module[] = [
+  const tracks: Track[] = [
     {
-      id: 'fundamentals',
-      title: '1. AI Fundamentals',
-      description: 'Look under the hood. Learn why AI hallucinates and when to trust it (vs when to doubt it).',
-      duration: '15 min',
-      icon: 'BookOpen',
-      locked: false
+      id: 'core',
+      title: 'Core Skillset: Foundations',
+      description: 'Build the fundamentals first. These modules explain what AI is actually doing, how to stay safe, and how to talk to it like a capable teammate.',
+      modules: [
+        {
+          id: 'fundamentals',
+          title: 'AI Fundamentals & Safe Use',
+          description: 'Understand what modern AI is actually doing under the hood, why it sometimes makes things up, and the simple habits that keep you safe at work.',
+          duration: '15 min',
+          icon: 'BookOpen',
+          path: '/modules/fundamentals',
+          tag: 'Level 1–2',
+          tagVariant: 'blue',
+          locked: false
+        },
+        {
+          id: 'prompting',
+          title: 'Prompting Foundations',
+          description: 'Learn the PCTR pattern and how to talk to AI like a capable intern. Practice turning vague asks into clear tasks and running reliable back-and-forth conversations.',
+          duration: '20 min',
+          icon: 'MessageSquare',
+          path: '/modules/prompting',
+          tag: 'Core Prompting',
+          tagVariant: 'success',
+          locked: false
+        },
+        {
+          id: 'workflow',
+          title: 'Modern Chatbots & Modes',
+          description: 'See how fast vs deep modes work in practice, when to turn on web search or Deep Research, and how to use attachments and screenshots as part of your prompt.',
+          duration: '20 min',
+          icon: 'Zap',
+          path: '/modules/workflow',
+          tag: 'Fast vs Deep',
+          tagVariant: 'neutral',
+          locked: false
+        }
+      ]
     },
     {
-      id: 'prompting',
-      title: '2. Prompting Patterns',
-      description: 'Stop guessing. Learn the TCRE framework (Task, Context, Requirements, Examples) to get better answers instantly.',
-      duration: '20 min',
-      icon: 'MessageSquare',
-      locked: false
+      id: 'tools',
+      title: 'Tools & Deep Dives',
+      description: 'Once the core skills feel natural, these modules show you how power users combine chat, research engines, and your-docs tools to do real projects.',
+      modules: [
+        {
+          id: 'tools-overview',
+          title: 'Tools Overview: Your AI Toolkit',
+          description: 'Get the high-level map. Learn the four job types (chat, research, your docs, builders) and play a quick "which tool should I use?" game.',
+          duration: '15 min',
+          icon: 'Briefcase',
+          path: '/modules/tools-overview',
+          locked: false
+        },
+        {
+          id: 'tool-research',
+          title: 'Research & Web',
+          description: 'Use Perplexity and Deep Research features for live web research, market scans, and competitive intel with citations you can click and check.',
+          duration: '15 min',
+          icon: 'Globe',
+          path: '/modules/tool-research',
+          locked: false
+        },
+        {
+          id: 'tool-documents',
+          title: 'Your Documents (NotebookLM)',
+          description: 'Turn piles of PDFs, decks, and notes into a private research space with NotebookLM and similar "your docs" tools.',
+          duration: '15 min',
+          icon: 'Layers',
+          path: '/modules/tool-documents',
+          locked: false
+        },
+        {
+          id: 'tool-builder',
+          title: 'Gemini & Workspace',
+          description: 'Use Gemini for briefings with links, inside Docs, Sheets, Gmail, and Slides, and experiment with its image and video tools for internal campaigns.',
+          duration: '20 min',
+          icon: 'PenTool',
+          path: '/modules/tool-builder',
+          locked: false
+        }
+      ]
     },
     {
-      id: 'responsible-use',
-      title: '3. Safety & Ethics',
-      description: 'The rules of the road. How to protect PII and use AI without leaking company data.',
-      duration: '10 min',
-      icon: 'Shield',
-      locked: false
-    },
-    {
-      id: 'tools-overview',
-      title: '4. Tools & Research Hub',
-      description: 'You have more than just a chatbot. Learn when to use Perplexity, NotebookLM, or Gemini Deep Research.',
-      duration: '15 min',
-      icon: 'Globe',
-      locked: false
-    },
-    {
-      id: 'workflow',
-      title: '5. Business Workflows',
-      description: 'Real scenarios: Summarizing minutes, comparing contracts, and drafting client emails.',
-      duration: '25 min',
-      icon: 'Briefcase',
-      locked: false
-    },
+      id: 'advanced',
+      title: 'Advanced & Coming Soon',
+      description: 'For Level 3+ power users who want to turn good prompts into reusable workflows and pilots. These are optional and may require extra approvals.',
+      modules: [
+        {
+          id: 'advanced-hub',
+          title: 'Advanced Workflows & Pilots',
+          description: 'Explore early pilots, advanced workflows, and automation experiments. Best for champions and people who already live in the tools.',
+          duration: 'Ongoing',
+          icon: 'Cpu',
+          path: '/advanced',
+          tag: 'Level 3+',
+          tagVariant: 'warning',
+          locked: false
+        },
+        {
+          id: 'automation-future',
+          title: 'Workflow Automation',
+          description: 'Future modules on connecting AI to other tools and automating parts of your job.',
+          duration: 'TBD',
+          icon: 'Workflow',
+          path: '',
+          locked: true
+        }
+      ]
+    }
   ];
 
   const getIcon = (name: string) => {
@@ -74,90 +155,94 @@ export default function Page() {
       case 'Briefcase': return <Briefcase className="w-6 h-6" />;
       case 'Shield': return <Shield className="w-6 h-6" />;
       case 'Globe': return <Globe className="w-6 h-6" />;
+      case 'Zap': return <Zap className="w-6 h-6" />;
+      case 'Layers': return <Layers className="w-6 h-6" />;
+      case 'PenTool': return <PenTool className="w-6 h-6" />;
+      case 'Cpu': return <Cpu className="w-6 h-6" />;
+      case 'Workflow': return <Workflow className="w-6 h-6" />;
       default: return <BookOpen className="w-6 h-6" />;
     }
   };
 
-  const handleModuleClick = (moduleId: string) => {
-    // Direct routing based on ID
-    push(`/modules/${moduleId}`);
-  };
-
   return (
     <PageLayout 
-      title="AI Academy Syllabus" 
-      description="Your guided path from 'curious' to 'competent.' Follow the tracks below, or jump straight to the specific skill you need right now."
+      title="Learning modules" 
+      description="Follow the core path to get comfortable with AI, then dive into specialist tools. Start at the top, move left to right, and you will pick up the habits real power users rely on."
     >
-      {/* Recommended Path Hint */}
-      <div className="text-sm text-slate-500 mb-8 bg-slate-50 p-3 rounded border border-slate-200 inline-block">
-        <strong>Recommended Path:</strong> Fundamentals → Prompting → Safety → Tools → Workflows.
+      {/* Hero / Path Hint */}
+      <div className="mb-8">
+        <div className="text-sm text-slate-500 mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200 inline-block leading-relaxed">
+          <strong className="text-slate-700">Recommended path:</strong> Quick Start → AI Fundamentals & Safe Use → Prompting Foundations → Modern Chatbots & Modes → Tools Overview → the specific tool modules.
+        </div>
+        
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+          <Button onClick={() => push('/quick-start')} size="lg" className="shadow-sm">
+            Start with the Prompting Quick Start <Zap className="w-4 h-4 ml-2" />
+          </Button>
+          <button 
+            onClick={() => push('/reference')}
+            className="text-slate-600 font-medium hover:text-blue-600 hover:underline px-2"
+          >
+            See prompt templates →
+          </button>
+        </div>
       </div>
 
-      <div className="space-y-12">
-        {tracks.map((track) => {
-          const trackModules = modules.filter((m) => track.moduleIds.includes(m.id));
-          
-          return (
-            <section key={track.id}>
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">{track.title}</h2>
-                <div className="text-slate-600 mt-2 max-w-3xl prose prose-slate">
-                   {/* Render simple markdown-like bolding */}
-                   {track.description.split('**').map((part, i) => 
-                      i % 2 === 1 ? <strong key={i} className="text-slate-900">{part}</strong> : part
-                   )}
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {trackModules.map((module) => (
-                  <Card 
-                    key={module.id} 
-                    className={`group h-full flex flex-col ${module.locked ? 'opacity-75 bg-slate-50' : 'bg-white'}`}
-                    hover={!module.locked}
-                    onClick={() => !module.locked && handleModuleClick(module.id)}
-                  >
-                    <div className="p-6 flex-1 flex flex-col">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className={`p-3 rounded-lg ${module.locked ? 'bg-slate-200 text-slate-500' : 'bg-blue-100 text-blue-600'}`}>
-                          {getIcon(module.icon)}
-                        </div>
-                        <div className="flex flex-col items-end gap-2">
-                          {module.id === 'fundamentals' && (
-                            <Badge variant="blue">Start Here</Badge>
-                          )}
-                          {module.id === 'tools-overview' && (
-                            <Badge variant="warning">New: Deep Dives</Badge>
-                          )}
-                          <Badge variant={module.locked ? 'neutral' : 'success'}>
-                            {module.locked ? <Lock className="w-3 h-3 mr-1 inline" /> : null}
-                            {module.locked ? 'Locked' : module.duration}
-                          </Badge>
-                        </div>
+      <div className="space-y-16">
+        {tracks.map((track) => (
+          <section key={track.id} className="animate-fade-in">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-slate-900">{track.title}</h2>
+              <p className="text-lg text-slate-600 mt-2 max-w-3xl">
+                {track.description}
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+              {track.modules.map((module) => (
+                <Card 
+                  key={module.id} 
+                  className={`group h-full flex flex-col ${module.locked ? 'opacity-75 bg-slate-50' : 'bg-white'}`}
+                  hover={!module.locked}
+                  onClick={() => !module.locked && push(module.path)}
+                >
+                  <div className="p-6 flex-1 flex flex-col">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className={`p-3 rounded-lg ${module.locked ? 'bg-slate-200 text-slate-500' : 'bg-blue-100 text-blue-600'}`}>
+                        {getIcon(module.icon)}
                       </div>
-                      
-                      <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
-                        {module.title}
-                      </h3>
-                      <p className="text-slate-600 mb-6 text-sm leading-relaxed flex-1">
-                        {module.description}
-                      </p>
-
-                      <Button 
-                        variant={module.locked ? 'secondary' : 'outline'} 
-                        className="w-full justify-between group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-200"
-                        disabled={module.locked}
-                      >
-                        {module.locked ? 'Complete previous modules' : 'Start Module'}
-                        {!module.locked && <ArrowRight className="w-4 h-4" />}
-                      </Button>
+                      <div className="flex flex-col items-end gap-2">
+                        {module.tag && (
+                          <Badge variant={module.tagVariant || 'neutral'}>{module.tag}</Badge>
+                        )}
+                        <Badge variant={module.locked ? 'neutral' : 'success'}>
+                          {module.locked ? <Lock className="w-3 h-3 mr-1 inline" /> : null}
+                          {module.locked ? 'Coming Soon' : module.duration}
+                        </Badge>
+                      </div>
                     </div>
-                  </Card>
-                ))}
-              </div>
-            </section>
-          );
-        })}
+                    
+                    <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
+                      {module.title}
+                    </h3>
+                    <p className="text-slate-600 mb-6 text-sm leading-relaxed flex-1">
+                      {module.description}
+                    </p>
+
+                    <Button 
+                      variant={module.locked ? 'secondary' : 'outline'} 
+                      className="w-full justify-between group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-200"
+                      disabled={module.locked}
+                    >
+                      {module.locked ? 'Not available yet' : 'Start module'}
+                      {!module.locked && <ArrowRight className="w-4 h-4" />}
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </section>
+        ))}
       </div>
     </PageLayout>
   );

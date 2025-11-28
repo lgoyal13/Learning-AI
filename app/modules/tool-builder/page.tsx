@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
-import { Card, Callout, PromptCard, Button } from '../../../components/ui';
-import { PenTool, Sliders, Cpu, ShieldAlert, Hammer, ArrowRight, ArrowLeft, CheckCircle2, Bot, Wrench, Braces, Layers, Target, AlertTriangle, BookOpen } from 'lucide-react';
+import { Card, Callout, PromptCard, Button, Badge } from '../../../components/ui';
+import { 
+  Globe, Search, FileText, Mail, Table, Presentation, Image, Video, 
+  CheckCircle2, ArrowRight, ArrowLeft, AlertTriangle, ExternalLink, Zap, LayoutGrid, BookOpen
+} from 'lucide-react';
 import { useRouter } from '../../../lib/routerContext';
 
 export default function Page() {
@@ -9,11 +12,11 @@ export default function Page() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const sections = [
-    { id: 'why-builders', title: 'Why Use a Builder Instead of Chat?' },
-    { id: 'system-prompts', title: 'System Prompts and Personas' },
-    { id: 'structured-output', title: 'Designing Structured Outputs' },
-    { id: 'models-and-settings', title: 'Experimenting with Models & Settings' },
-    { id: 'mini-project', title: 'Mini Project: Your First Internal Tool' },
+    { id: 'gemini-web', title: 'Gemini for Web & Search' },
+    { id: 'gemini-workspace', title: 'Gemini in Workspace' },
+    { id: 'gemini-images', title: 'Images with Gemini' },
+    { id: 'veo-video', title: 'Video Concepts with Veo' },
+    { id: 'when-gemini', title: 'When Gemini Is Your Best Choice' },
   ];
 
   const totalSteps = sections.length;
@@ -30,237 +33,258 @@ export default function Page() {
 
   const renderStepContent = () => {
     switch (currentStep) {
-      case 0:
+      case 0: // Gemini for Web & Search
         return (
-          <section id="why-builders" className="mb-12 animate-fade-in">
-            <h2>The "Copy-Paste" Trap</h2>
-            <p className="text-lg text-slate-700">
-              We've all been there: You have a prompt that works perfectly, but you have to copy-paste it from a Google Doc every time you need it. 
-              Or worse, you try to teach a colleague how to use it, and they change one word that breaks everything.
-            </p>
-            <p className="text-slate-600 mb-8">
-              <strong>Builder tools</strong> (like Google AI Studio or custom GPTs) solve this. They let you "freeze" a great prompt into a reusable button that anyone on your team can click.
+          <section id="gemini-web" className="mb-12 animate-fade-in">
+            <h2>Gemini for Web & Search</h2>
+            <p className="text-lg text-slate-700 mb-6">
+              Traditional search gives you ten blue links. Gemini gives you a synthesized answer with clickable references. 
+              It's often faster to ask for a "briefing" than to open five tabs yourself.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 not-prose">
+            <div className="mb-8">
               <Card className="p-6 bg-slate-50 border-slate-200">
-                <div className="flex items-center gap-2 mb-4 text-slate-500 font-bold uppercase text-xs tracking-wider">
-                  <span className="text-lg">💬</span> Chat Mode
+                <div className="flex items-center gap-2 mb-4 text-blue-600 font-bold uppercase text-xs tracking-wider">
+                  <Globe className="w-4 h-4" /> Use Case: The Instant Briefing
                 </div>
-                <h3 className="font-bold text-slate-900 mb-2">The Ad-Hoc Brainstormer</h3>
-                <ul className="space-y-2 text-sm text-slate-600">
-                  <li>"Draft an email..."</li>
-                  <li>"Summarize this doc..."</li>
-                  <li>"Give me 5 ideas for..."</li>
-                </ul>
-              </Card>
+                <h3 className="font-bold text-slate-900 mb-4">Scenario: You need to understand a new regulation quickly.</h3>
+                
+                <PromptCard 
+                  label="Briefing Prompt"
+                  prompt={`Give me a concise briefing on [Topic, e.g., EV roadside charging policy in California] for a [Role, e.g., Product Manager].
 
-              <Card className="p-6 bg-white border-blue-200 shadow-md">
-                 <div className="flex items-center gap-2 mb-4 text-blue-600 font-bold uppercase text-xs tracking-wider">
-                  <Wrench className="w-4 h-4" /> Builder Mode
-                </div>
-                <h3 className="font-bold text-slate-900 mb-2">The Reusable Assistant</h3>
-                <ul className="space-y-2 text-sm text-slate-600">
-                  <li>"The 'Customer Feedback Triage' Bot"</li>
-                  <li>"The 'Meeting Notes to Tasks' Generator"</li>
-                  <li>"The 'Invoice Data Extractor'"</li>
-                </ul>
+Include:
+- 3–5 key points in plain language
+- Any major recent changes in the last 12 months
+- 3 links I can click to read more`}
+                />
               </Card>
             </div>
 
-            <div className="bg-blue-50 p-6 rounded-xl border border-blue-100">
-              <h3 className="font-bold text-blue-900 mb-2 flex items-center gap-2">
-                <Target className="w-5 h-5" /> The Secret
+            <div className="bg-green-50 p-6 rounded-xl border border-green-100">
+              <h3 className="font-bold text-green-900 mb-2 flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5" /> Good Habits
               </h3>
-              <p className="text-sm text-blue-800">
-                Building an internal tool isn't about coding. It's about taking a prompt you <em>already use</em> and giving it a permanent home.
-              </p>
+              <ul className="space-y-2 text-sm text-green-800">
+                <li className="flex gap-2">• Always skim the sources cited at the bottom or inline.</li>
+                <li className="flex gap-2">• Click at least one link to verify the context matches the summary.</li>
+                <li className="flex gap-2">• If the topic is very recent (last 24h), explicitly ask it to "Check Google Search."</li>
+              </ul>
             </div>
           </section>
         );
-      case 1:
+
+      case 1: // Gemini in Workspace
         return (
-          <section id="system-prompts" className="mb-12 animate-fade-in">
-            <h2>The "Hidden Prompt"</h2>
-            <p className="mb-6">
-              In a normal chat, you type instructions every time. In a builder, you set a <strong>System Instruction</strong> once.
-              This is the "god mode" prompt that defines who the AI is, what it knows, and what it is allowed to say.
+          <section id="gemini-workspace" className="mb-12 animate-fade-in">
+            <h2>Gemini in Workspace</h2>
+            <p className="mb-8 text-lg text-slate-700">
+              You don't always need to leave your tab. Gemini is integrated directly into the apps you use every day. 
+              Look for the <strong>"Help me write"</strong> (pencil) or star icon.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 not-prose">
-              <Card className="p-6 border-l-4 border-l-slate-300 bg-slate-50">
-                <h3 className="font-bold text-slate-900 mb-2">Basic System Prompt</h3>
-                <p className="font-mono text-sm text-slate-600 italic mb-4">
-                  "You are a helpful assistant."
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* GMAIL */}
+              <Card className="p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-3 text-red-600 font-bold">
+                  <Mail className="w-5 h-5" /> Gmail
+                </div>
+                <p className="text-sm text-slate-600 mb-4 h-10">
+                  Best for summarizing long threads and drafting polite replies.
                 </p>
-                <p className="text-xs text-slate-500">
-                  <strong>Result:</strong> Polite, generic, and eager to please (sometimes too eager).
-                </p>
+                <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-700 border border-slate-100">
+                  "Draft a reply thanking them for the update and asking to reschedule to next Tuesday."
+                </div>
               </Card>
 
+              {/* DOCS */}
+              <Card className="p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-3 text-blue-600 font-bold">
+                  <FileText className="w-5 h-5" /> Docs
+                </div>
+                <p className="text-sm text-slate-600 mb-4 h-10">
+                  Best for outlining, rewriting for tone, and summarizing.
+                </p>
+                <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-700 border border-slate-100">
+                  "Turn these messy meeting notes into a one-page project brief with goals, status, and next steps."
+                </div>
+              </Card>
+
+              {/* SHEETS */}
+              <Card className="p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-3 text-emerald-600 font-bold">
+                  <Table className="w-5 h-5" /> Sheets
+                </div>
+                <p className="text-sm text-slate-600 mb-4 h-10">
+                  Best for creating trackers, organizing data, and simple analysis.
+                </p>
+                <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-700 border border-slate-100">
+                  "Create a project tracker for a website launch with columns for Task, Owner, Status, and Deadline."
+                </div>
+              </Card>
+
+              {/* SLIDES */}
+              <Card className="p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-3 text-amber-500 font-bold">
+                  <Presentation className="w-5 h-5" /> Slides
+                </div>
+                <p className="text-sm text-slate-600 mb-4 h-10">
+                  Best for generating visuals and slide outlines.
+                </p>
+                <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-700 border border-slate-100">
+                  "Create an outline for a 5-slide deck pitching our Q3 marketing strategy."
+                </div>
+              </Card>
+            </div>
+          </section>
+        );
+
+      case 2: // Images with Gemini
+        return (
+          <section id="gemini-images" className="mb-12 animate-fade-in">
+            <h2>Images with Gemini</h2>
+            <p className="mb-6 text-lg text-slate-700">
+              Sometimes you need a visual placeholder, a mood board, or a quick mockup. 
+              Gemini models (like the NanoBanana series) can generate images from text descriptions instantly.
+            </p>
+
+            <div className="mb-8">
               <Card className="p-6 border-l-4 border-l-purple-500 bg-white">
-                <h3 className="font-bold text-slate-900 mb-2">Strong System Prompt</h3>
-                <p className="font-mono text-sm text-slate-800 mb-4">
-                  "You are a Senior Business Analyst at [Company]. You speak in concise, plain English. You prioritize accuracy over politeness. If you lack data, state 'Insufficient Data' rather than guessing."
-                </p>
-                <p className="text-xs text-purple-600 font-medium">
-                  <strong>Result:</strong> Professional, grounded, consistent, and safe for work.
-                </p>
-              </Card>
-            </div>
-
-            <h3 className="font-bold text-slate-900 mb-4">Mini Exercise: The Tone Shift</h3>
-            <p className="text-sm text-slate-600 mb-4">
-              Imagine running the prompt "Write an apology email" through these two personas:
-            </p>
-            <ul className="space-y-2 text-sm text-slate-700 list-disc pl-5">
-              <li><strong>Persona A:</strong> "You are an empathetic customer support agent." (Result: Warm, apologetic, maybe offers a refund).</li>
-              <li><strong>Persona B:</strong> "You are a strict legal compliance officer." (Result: Formal, liability-focused, no admissions of fault).</li>
-            </ul>
-          </section>
-        );
-      case 2:
-        return (
-          <section id="structured-output" className="mb-12 animate-fade-in">
-            <h2>Make it talk to spreadsheets</h2>
-            <p className="mb-6">
-              One of the best uses for a custom tool is to force the AI to stop "chatting" and start "structuring."
-              You can tell it: "Do not write paragraphs. Output <strong>only JSON</strong> or a CSV table."
-            </p>
-
-            <div className="bg-slate-900 text-slate-200 p-6 rounded-xl font-mono text-sm shadow-xl mb-8 overflow-x-auto not-prose">
-              <div className="flex items-center gap-2 mb-4 text-slate-400 border-b border-slate-700 pb-2">
-                <Braces className="w-4 h-4" /> JSON Schema Example
-              </div>
-              <div className="space-y-1">
-                <p><span className="text-purple-400">product_name</span>: string</p>
-                <p><span className="text-blue-400">headline</span>: string</p>
-                <p><span className="text-green-400">tone</span>: "serious" | "playful"</p>
-                <p><span className="text-amber-400">CTA</span>: string</p>
-              </div>
-            </div>
-
-            <h3 className="font-bold text-slate-900 mb-4">Why do this?</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
-              <Card className="p-4 bg-white border-slate-200">
-                <h4 className="font-bold text-slate-900 mb-2">For Humans</h4>
-                <p className="text-sm text-slate-600">
-                  Clean tables you can copy-paste directly into Google Sheets or Excel without spending 20 minutes reformatting.
-                </p>
-              </Card>
-              <Card className="p-4 bg-white border-slate-200">
-                <h4 className="font-bold text-slate-900 mb-2">For Engineers</h4>
-                <p className="text-sm text-slate-600">
-                  If you ever want to turn your prototype into a real app, this schema is the "contract" developers need to connect it to code.
-                </p>
-              </Card>
-            </div>
-          </section>
-        );
-      case 3:
-        return (
-          <section id="models-and-settings" className="mb-12 animate-fade-in">
-            <h2>Under the hood: Speed vs. Smarts</h2>
-            <p className="mb-6">
-              In a builder tool, you aren't stuck with the default brain. You can choose the engine that fits the job.
-            </p>
-
-            <div className="space-y-6 mb-8">
-              <div className="flex gap-4 items-start">
-                <div className="p-2 bg-blue-100 rounded text-blue-600 shrink-0 mt-1">
-                   <Cpu className="w-5 h-5" />
+                <div className="flex items-center gap-2 mb-4">
+                  <Image className="w-5 h-5 text-purple-600" />
+                  <h3 className="font-bold text-slate-900">Visual Exploration</h3>
                 </div>
-                <div>
-                  <h3 className="font-bold text-slate-900">Model Choice</h3>
-                  <p className="text-sm text-slate-600">
-                    <strong>Flash (Fast/Cheap):</strong> Perfect for high-volume tasks like summarizing 50 emails or extracting data. <br/>
-                    <strong>Pro (Deep/Reasoning):</strong> Better for complex logic, creative writing, or nuanced strategic analysis.
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <p className="text-sm font-bold text-slate-700 mb-2">Best For:</p>
+                    <ul className="text-sm text-slate-600 space-y-1 list-disc pl-4">
+                      <li>Internal mockups & storyboards</li>
+                      <li>Presentation title slides</li>
+                      <li>Visualizing abstract concepts</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-700 mb-2">Example Prompt:</p>
+                    <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-700 border border-slate-100">
+                      "Create a simple flat-style illustration of a roadside assistance van parked next to an EV on a highway at sunset."
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            <Callout variant="warning" title="Watch Out">
+              Generated images are synthetic. Do not use them as "real" photos of customers or products in external regulated materials without approval.
+            </Callout>
+          </section>
+        );
+
+      case 3: // Video Concepts with Veo
+        return (
+          <section id="veo-video" className="mb-12 animate-fade-in">
+            <h2>Video Concepts with Veo</h2>
+            <p className="mb-6 text-lg text-slate-700">
+              Veo is Google's video generation model. While you might not be making feature films yet, it is a powerful tool for storyboarding and brainstorming visual concepts.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="md:col-span-2">
+                <Card className="p-6 h-full bg-slate-50 border-slate-200">
+                  <div className="flex items-center gap-2 mb-4 text-pink-600 font-bold uppercase text-xs tracking-wider">
+                    <Video className="w-4 h-4" /> Scenario
+                  </div>
+                  <h3 className="font-bold text-slate-900 mb-2">Internal Training Teaser</h3>
+                  <p className="text-sm text-slate-600 mb-4">
+                    You need to explain the vibe of a new training video to an agency or creative team.
                   </p>
-                </div>
+                  
+                  <p className="text-xs font-bold text-slate-700 mb-2">Prompt:</p>
+                  <div className="bg-white p-4 rounded-lg border border-slate-200 font-mono text-sm text-slate-700 leading-relaxed">
+                    I am planning a 60-second internal video to explain our new roadside EV benefits.
+                    <br/><br/>
+                    Draft a visual treatment using Veo concepts:
+                    <br/>- 3–4 scenes
+                    <br/>- Suggested on-screen text
+                    <br/>- Notes on pacing (slow, medium, fast)
+                  </div>
+                </Card>
               </div>
 
-              <div className="flex gap-4 items-start">
-                <div className="p-2 bg-purple-100 rounded text-purple-600 shrink-0 mt-1">
-                   <Sliders className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-900">Temperature</h3>
-                  <p className="text-sm text-slate-600">
-                    Controls the "wildness." <br/>
-                    <strong>Low (0.0 - 0.3):</strong> Predictable, factual. Good for data extraction. <br/>
-                    <strong>High (0.7 - 1.0):</strong> Creative, varied. Good for brainstorming 50 different taglines.
+              <div className="md:col-span-1">
+                <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 h-full">
+                  <h3 className="font-bold text-blue-900 mb-2">Why use AI for video?</h3>
+                  <p className="text-sm text-blue-800 mb-4">
+                    It's faster to <strong>show</strong> a generated clip or storyboard than to write three paragraphs describing "a cinematic pan over a futuristic city."
                   </p>
                 </div>
               </div>
             </div>
 
-            <Card className="p-6 bg-slate-50 border-slate-200">
-               <h3 className="font-bold text-slate-900 mb-3">Mini Lab Experiment</h3>
-               <p className="text-sm text-slate-600 mb-4">
-                 Try running a "Campaign Idea Generator" with these settings:
-               </p>
-               <ul className="space-y-2 text-sm text-slate-700 list-disc pl-5">
-                 <li><strong>Flash, Temp 0.2:</strong> Safe, consistent, standard corporate ideas.</li>
-                 <li><strong>Flash, Temp 0.9:</strong> Wild, unexpected, sometimes weird ideas.</li>
-                 <li><strong>Pro, Temp 0.5:</strong> Deep, strategic concepts that connect dots.</li>
-               </ul>
-            </Card>
+            <p className="text-sm text-slate-500 italic">
+              Note: Veo is best for brainstorming visuals, not for final legal review.
+            </p>
           </section>
         );
-      case 4:
+
+      case 4: // When Gemini Is Your Best Choice
         return (
-          <section id="mini-project" className="mb-12 animate-fade-in">
-            <h2>Mini Project: Build Your Own Assistant</h2>
-            <p className="mb-6">
-              Ready to build? Don't start with a blank page. Pick a real, annoying task from your week and automate it.
+          <section id="when-gemini" className="mb-12 animate-fade-in">
+            <h2>When Gemini is your best choice</h2>
+            <p className="mb-8 text-lg text-slate-700">
+              You have a lot of tools. Here is when you should reach for Gemini specifically.
             </p>
 
-            <Card className="p-6 border-l-4 border-l-emerald-500 bg-white mb-8">
-              <h3 className="font-bold text-lg text-slate-900 mb-2 flex items-center gap-2">
-                <Bot className="w-5 h-5 text-emerald-600" /> Example: The "Meeting Action Item" Bot
-              </h3>
-              <div className="space-y-4 text-sm text-slate-700">
-                <div>
-                  <strong className="block text-slate-900">System Instruction:</strong>
-                  You are an efficient Executive Assistant. You extract action items from messy notes.
-                </div>
-                <div>
-                  <strong className="block text-slate-900">Input:</strong>
-                  Raw meeting transcript (pasted by the user).
-                </div>
-                <div>
-                  <strong className="block text-slate-900">Structured Output (JSON):</strong>
-                  List of objects with: Owner, Task, Due Date, Priority.
-                </div>
-                <div>
-                  <strong className="block text-slate-900">Guardrails:</strong>
-                  If no due date is mentioned, suggest one but mark it "Suggested." If owner is unclear, mark "Unassigned."
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+              <div>
+                <h3 className="font-bold text-slate-900 mb-4">Reach for Gemini when...</h3>
+                <ul className="space-y-3 text-sm text-slate-700">
+                  <li className="flex gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                    <span>You are deep in Docs, Sheets, or Slides and don't want to switch tabs.</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                    <span>You want a quick briefing on a topic with clickable links (Search grounding).</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                    <span>You need to mix text, simple images, and slide concepts in one workflow.</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
+                    <span>You are iterating on visual ideas or campaign concepts.</span>
+                  </li>
+                </ul>
               </div>
-            </Card>
-            
-            <div className="bg-slate-100 p-6 rounded-xl border border-slate-200 text-center">
-              <h3 className="font-bold text-slate-900 mb-4">Ready to try it?</h3>
-              <p className="text-slate-600 mb-6">
-                Go to the Playground now and try setting a System Instruction for your own task.
-              </p>
-              <Button onClick={() => push('/playground')} size="lg" className="w-full md:w-auto">
-                Open Playground <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
+
+              <div className="space-y-4">
+                <Callout variant="info" title="Need deeper citations?">
+                  For live web research with heavy sourcing, see the <strong>Research & Web</strong> module.
+                </Callout>
+                <Callout variant="info" title="Analyzing 50 PDFs?">
+                  For deep document analysis, see the <strong>Your Docs (NotebookLM)</strong> module.
+                </Callout>
+              </div>
             </div>
 
-            {/* Resource Hook */}
-            <div className="mt-8 flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
-               <BookOpen className="w-5 h-5 text-slate-500" />
-               <div className="flex-1 text-sm text-slate-600">
-                 Want to see Tina Huang build this live?
-               </div>
-               <Button variant="ghost" size="sm" onClick={() => push('/reference/resources')}>
-                 Open Resource Library
-               </Button>
+            <div className="bg-slate-50 border-t border-slate-200 pt-8">
+              <h3 className="font-bold text-slate-900 mb-4">Explore other specialized tools</h3>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button variant="secondary" onClick={() => push('/modules/tool-research')}>
+                  <Globe className="w-4 h-4 mr-2" /> Research Module
+                </Button>
+                <Button variant="secondary" onClick={() => push('/modules/tool-documents')}>
+                  <FileText className="w-4 h-4 mr-2" /> Your Docs Module
+                </Button>
+                <Button variant="outline" onClick={() => push('/advanced')}>
+                  <Zap className="w-4 h-4 mr-2" /> Advanced Builders
+                </Button>
+              </div>
             </div>
           </section>
         );
+
       default:
         return null;
     }
@@ -268,17 +292,16 @@ export default function Page() {
 
   return (
     <ModuleLayout
-      title="The Builder's Lab: Prototyping AI Tools"
-      description="Ready to move beyond basic chat? Learn how to use 'Playground' environments (like Google AI Studio) to build reusable, reliable AI assistants for your team."
+      title="Gemini: Web, Workspace, Images, and Veo"
+      description="Use Gemini as more than a chat box. Learn when to open Gemini instead of search, how to use it inside Docs, Sheets, Gmail, and how to tap into its image and video tools."
       duration="20 mins"
-      audience="Power Users & Champions"
+      audience="Employees in Google Workspace"
       sections={sections}
-      nextModulePath="/playground"
+      nextModulePath="/modules"
     >
-      {/* HEADER ALERT */}
       <div className="mb-8 not-prose">
-        <Callout variant="warning" title="Advanced Module">
-          This module is optional. It is intended for employees who are comfortable with technology and want to build tools for others.
+        <Callout variant="info" title="Optional Module">
+          This module is best for power users who are already comfortable with basic prompting and want to explore the wider ecosystem.
         </Callout>
       </div>
 
