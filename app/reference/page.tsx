@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { PageLayout, Heading, Card, Callout, PromptCard, Button, Badge } from '../../components/ui';
 import { useRouter } from '../../lib/routerContext';
@@ -32,29 +31,63 @@ type PromptCategory = {
 export default function Page() {
   const { push } = useRouter();
   
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    'templates': true,
-    'safety': false,
-    'tools': false,
-    'resources': false
+  const [openSections, setOpenSections] = useState({
+    guide: false,
+    templates: true,
+    safety: false,
+    tools: false,
+    resources: false
   });
 
-  const toggleSection = (id: string) => {
+  const toggleSection = (id: keyof typeof openSections) => {
     setOpenSections(prev => ({ ...prev, [id]: !prev[id] }));
   };
+  
+  const jumpTo = (id: 'templates' | 'safety' | 'tools') => {
+    setOpenSections(prev => ({ ...prev, [id]: true }));
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
-  const SectionHeader = ({ id, title, icon: Icon }: { id: string, title: string, icon: any }) => (
+  const SectionHeader = ({ 
+    id, 
+    title, 
+    description,
+    isOpen,
+    onToggle,
+    icon: Icon 
+  }: { 
+    id?: string, 
+    title: string, 
+    description?: string,
+    isOpen: boolean,
+    onToggle: () => void,
+    icon: any 
+  }) => (
     <button 
-      onClick={() => toggleSection(id)}
-      className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors border-b border-slate-100"
+      id={id}
+      type="button"
+      onClick={onToggle}
+      className="w-full flex items-start justify-between p-4 bg-slate-50 hover:bg-slate-100 transition-colors border-b border-slate-100 text-left"
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-start gap-3">
         <div className="p-2 bg-white border border-slate-200 rounded-lg text-slate-600">
           <Icon className="w-5 h-5" />
         </div>
-        <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+        <div>
+          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+          {description && (
+            <p className="mt-1 text-sm text-slate-600">
+              {description}
+            </p>
+          )}
+        </div>
       </div>
-      {openSections[id] ? <ChevronUp className="w-5 h-5 text-slate-400" /> : <ChevronDown className="w-5 h-5 text-slate-400" />}
+      <div className="mt-2 text-slate-400">
+        {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+      </div>
     </button>
   );
 
@@ -310,195 +343,296 @@ export default function Page() {
         </div>
       }
     >
-      <div className="space-y-6 max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 md:p-8 space-y-6 shadow-sm">
+          
+          <p className="text-slate-600 mb-4">
+            Use this page as your AI companion. Start with templates if you want a prompt you can paste, or jump to policy if you feel unsure about what is safe to share.
+          </p>
 
-        {/* SECTION 1: PROMPT TEMPLATES */}
-        <Card className="overflow-hidden p-0">
-          <SectionHeader id="templates" title="Prompt Template Library" icon={FileText} />
-          {openSections['templates'] && (
-            <div className="p-6 animate-fade-in bg-white">
-              <p className="text-slate-600 mb-8 text-lg">
-                Pick a job you are trying to do and grab a template. Every prompt follows the same pattern (PCTR) and works in any modern chatbot.
-              </p>
-              
-              <div className="space-y-10">
-                {categories.map((cat) => (
-                  <div key={cat.id}>
-                    <div className="mb-4">
-                      <h4 className="text-lg font-bold text-slate-900">{cat.title}</h4>
-                      <p className="text-sm text-slate-600">{cat.description}</p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {cat.templates.map((template) => (
-                        <div key={template.id} className="flex flex-col h-full">
-                           <div className="mb-2">
-                             <div className="flex items-center justify-between mb-1">
-                                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{template.title}</span>
-                                {template.toolHint && (
-                                   <Badge variant="blue" className="text-[10px] py-0">{template.toolHint}</Badge>
-                                )}
-                             </div>
-                             <p className="text-xs text-slate-500 italic">{template.useWhen}</p>
-                           </div>
-                           <div className="flex-1">
-                             <PromptCard 
-                               label={template.title}
-                               prompt={formatPromptText(template)}
-                             />
-                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+          <div className="flex flex-wrap gap-2 mb-6">
+            <Button variant="outline" size="sm" onClick={() => jumpTo('templates')}>Templates</Button>
+            <Button variant="outline" size="sm" onClick={() => jumpTo('safety')}>Policy</Button>
+            <Button variant="outline" size="sm" onClick={() => jumpTo('tools')}>Tools</Button>
+          </div>
+
+          {/* SECTION 0: PROMPTING GUIDE SHORTCUT */}
+          <Card className="overflow-hidden p-0">
+            <SectionHeader 
+              id="guide" 
+              title="Prompting Guide (PCTR)" 
+              description="Understand the pattern behind every good prompt."
+              isOpen={openSections.guide} 
+              onToggle={() => toggleSection('guide')} 
+              icon={Target} 
+            />
+            {openSections.guide && (
+              <div className="p-6 animate-fade-in bg-white">
+                <Card className="border-slate-200 shadow-none bg-slate-50">
+                   <div className="flex flex-col sm:flex-row gap-4 items-start justify-between">
+                      <p className="text-sm text-slate-700 leading-relaxed">
+                         The Prompting Guide walks through the Persona, Context, Task, Requirements pattern with examples.
+                      </p>
+                      <Button variant="outline" size="sm" onClick={() => push('/reference/prompting-guide')} className="shrink-0">
+                         Open full Prompting Guide
+                      </Button>
+                   </div>
+                </Card>
               </div>
-            </div>
-          )}
-        </Card>
+            )}
+          </Card>
 
-        {/* SECTION 2: APPROVED USE CASES & SAFETY */}
-        <Card className="overflow-hidden p-0">
-          <SectionHeader id="safety" title="Approved Use Cases & Safety" icon={Shield} />
-          {openSections['safety'] && (
-            <div className="p-6 animate-fade-in bg-white">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* SECTION 1: PROMPT TEMPLATES */}
+          <Card className="overflow-hidden p-0">
+            <SectionHeader 
+              id="templates" 
+              title="Prompt Template Library" 
+              description="Job based prompts for writing, analysis, research, and more."
+              isOpen={openSections.templates} 
+              onToggle={() => toggleSection('templates')} 
+              icon={FileText} 
+            />
+            {openSections.templates && (
+              <div className="p-6 animate-fade-in bg-white">
+                <p className="text-slate-600 mb-8 text-lg">
+                  Pick a job you are trying to do and grab a template. Every prompt follows the same pattern (PCTR) and works in any modern chatbot.
+                </p>
                 
-                {/* Use Cases */}
-                <div>
-                  <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600" /> Green Light (Go)
-                  </h4>
-                  <ul className="space-y-3 text-sm text-slate-700">
-                    <li className="flex items-start gap-2">
-                      <span className="text-green-500 font-bold">•</span>
-                      <span><strong>Drafting:</strong> Internal comms, marketing copy, newsletters.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-green-500 font-bold">•</span>
-                      <span><strong>Brainstorming:</strong> Agendas, interview questions, slide outlines.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-green-500 font-bold">•</span>
-                      <span><strong>Summarizing:</strong> <em>Anonymized</em> feedback, public industry reports.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-green-500 font-bold">•</span>
-                      <span><strong>Technical:</strong> Explaining Excel formulas, debugging snippets.</span>
-                    </li>
-                  </ul>
-                </div>
+                <div className="space-y-12">
+                  {categories.map((cat) => {
+                    let badgeVariant: 'blue' | 'success' | 'warning' | 'neutral' = 'neutral';
+                    let badgeClass = '';
 
-                {/* Safety Rules */}
-                <div>
-                  <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                    <XCircle className="w-5 h-5 text-red-600" /> Red Light (Stop)
-                  </h4>
-                  <Callout variant="danger" className="mb-4">
-                    <ul className="space-y-2 text-sm">
-                      <li>❌ <strong>PII:</strong> Names, SSNs, Addresses, Phone Numbers.</li>
-                      <li>❌ <strong>Financials:</strong> Account numbers, precise salary data.</li>
-                      <li>❌ <strong>Secrets:</strong> Unannounced strategy, passwords, keys.</li>
+                    switch (cat.id) {
+                      case 'writing':
+                        badgeVariant = 'blue';
+                        break;
+                      case 'summarizing':
+                        badgeVariant = 'success';
+                        break;
+                      case 'analysis':
+                        badgeVariant = 'warning';
+                        break;
+                      case 'research':
+                        badgeVariant = 'neutral';
+                        badgeClass = 'bg-purple-100 text-purple-800 border-purple-200';
+                        break;
+                      case 'coaching':
+                        badgeVariant = 'neutral';
+                        badgeClass = 'bg-rose-100 text-rose-800 border-rose-200';
+                        break;
+                      default:
+                        badgeVariant = 'neutral';
+                    }
+
+                    return (
+                      <div key={cat.id}>
+                        <div className="mb-6">
+                          <div className="mb-2">
+                             <span className={`inline-flex items-center rounded-full text-xs font-medium px-2 py-1 ${badgeClass || (badgeVariant === 'blue' ? 'bg-blue-100 text-blue-800' : badgeVariant === 'success' ? 'bg-emerald-100 text-emerald-800' : badgeVariant === 'warning' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-800')}`}>
+                               {cat.title}
+                             </span>
+                          </div>
+                          <h3 className="mt-2 text-sm font-semibold text-slate-900">{cat.title}</h3>
+                          <p className="text-sm text-slate-600 mt-1 max-w-2xl">{cat.description}</p>
+                        </div>
+                        <div className="mt-3 grid gap-4 md:grid-cols-2">
+                          {cat.templates.map((template) => (
+                            <div key={template.id} className="flex flex-col h-full">
+                              <div className="mb-2">
+                                <div className="flex items-center justify-between mb-1">
+                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{template.title}</span>
+                                    {template.toolHint && (
+                                      <Badge variant="blue" className="text-[10px] py-0">{template.toolHint}</Badge>
+                                    )}
+                                </div>
+                                <p className="text-xs text-slate-500 italic">{template.useWhen}</p>
+                              </div>
+                              <div className="flex-1">
+                                <PromptCard 
+                                  label={template.title}
+                                  prompt={formatPromptText(template)}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </Card>
+
+          {/* SECTION 2: AI POLICY & SAFE USE */}
+          <Card className="overflow-hidden p-0">
+            <SectionHeader 
+              id="safety" 
+              title="AI Policy & Safe Use" 
+              description="What is safe to paste and what should stay out."
+              isOpen={openSections.safety} 
+              onToggle={() => toggleSection('safety')} 
+              icon={Shield} 
+            />
+            {openSections.safety && (
+              <div className="p-6 animate-fade-in bg-white">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  
+                  {/* Use Cases */}
+                  <div>
+                    <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-green-600" /> Green Light (Go)
+                    </h4>
+                    <ul className="space-y-3 text-sm text-slate-700">
+                      <li className="flex items-start gap-2">
+                        <span className="text-green-500 font-bold">•</span>
+                        <span><strong>Drafting:</strong> Internal comms, marketing copy, newsletters.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-green-500 font-bold">•</span>
+                        <span><strong>Brainstorming:</strong> Agendas, interview questions, slide outlines.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-green-500 font-bold">•</span>
+                        <span><strong>Summarizing:</strong> <em>Anonymized</em> feedback, public industry reports.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-green-500 font-bold">•</span>
+                        <span><strong>Technical:</strong> Explaining Excel formulas, debugging snippets.</span>
+                      </li>
                     </ul>
-                  </Callout>
-                  <p className="text-sm text-slate-500">
-                    *When in doubt, use placeholders (e.g., "Client X", "Project Y") or ask the Governance team.
-                  </p>
+                  </div>
+
+                  {/* Safety Rules */}
+                  <div>
+                    <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                      <XCircle className="w-5 h-5 text-red-600" /> Red Light (Stop)
+                    </h4>
+                    <Callout variant="danger" className="mb-4">
+                      <ul className="space-y-2 text-sm">
+                        <li>❌ <strong>PII:</strong> Names, SSNs, Addresses, Phone Numbers.</li>
+                        <li>❌ <strong>Financials:</strong> Account numbers, precise salary data.</li>
+                        <li>❌ <strong>Secrets:</strong> Unannounced strategy, passwords, keys.</li>
+                      </ul>
+                    </Callout>
+                    <p className="text-sm text-slate-500">
+                      *When in doubt, use placeholders (e.g., "Client X", "Project Y") or ask the Governance team.
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </Card>
+            )}
+          </Card>
 
-        {/* SECTION 3: TOOL QUICK REFERENCE */}
-        <Card className="overflow-hidden p-0">
-          <SectionHeader id="tools" title="Tool Quick Reference" icon={Target} />
-          {openSections['tools'] && (
-            <div className="p-6 animate-fade-in bg-white">
-              <p className="text-slate-600 mb-6">
-                Which engine should you use? Pick the right tool for the job.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                  <div className="flex items-center gap-2 mb-2 text-blue-700 font-bold">
-                    <MessageSquare className="w-4 h-4" /> Chat
+          {/* SECTION 3: TOOLS & WORKFLOWS */}
+          <Card className="overflow-hidden p-0">
+            <SectionHeader 
+              id="tools" 
+              title="Advanced Tools & Workflows" 
+              description="When to reach for NotebookLM, Perplexity, and Gemini."
+              isOpen={openSections.tools} 
+              onToggle={() => toggleSection('tools')} 
+              icon={Target} 
+            />
+            {openSections.tools && (
+              <div className="p-6 animate-fade-in bg-white">
+                <p className="text-slate-600 mb-6">
+                  Which engine should you use? Pick the right tool for the job.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-2 mb-2 text-blue-700 font-bold">
+                      <MessageSquare className="w-4 h-4" /> Chat
+                    </div>
+                    <div className="text-xs font-bold text-slate-500 uppercase mb-2">Gemini / ChatGPT</div>
+                    <p className="text-sm text-slate-700">Best for drafting, rewriting, and quick explanations.</p>
                   </div>
-                  <div className="text-xs font-bold text-slate-500 uppercase mb-2">Gemini / ChatGPT</div>
-                  <p className="text-sm text-slate-700">Best for drafting, rewriting, and quick explanations.</p>
-                </div>
 
-                <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                  <div className="flex items-center gap-2 mb-2 text-purple-700 font-bold">
-                    <Globe className="w-4 h-4" /> Research
+                  <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-2 mb-2 text-purple-700 font-bold">
+                      <Globe className="w-4 h-4" /> Research
+                    </div>
+                    <div className="text-xs font-bold text-slate-500 uppercase mb-2">Perplexity</div>
+                    <p className="text-sm text-slate-700">Best for facts, citations, and market intel.</p>
                   </div>
-                  <div className="text-xs font-bold text-slate-500 uppercase mb-2">Perplexity</div>
-                  <p className="text-sm text-slate-700">Best for facts, citations, and market intel.</p>
-                </div>
 
-                <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                  <div className="flex items-center gap-2 mb-2 text-emerald-700 font-bold">
-                    <Layers className="w-4 h-4" /> Docs
+                  <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-2 mb-2 text-emerald-700 font-bold">
+                      <Layers className="w-4 h-4" /> Docs
+                    </div>
+                    <div className="text-xs font-bold text-slate-500 uppercase mb-2">NotebookLM</div>
+                    <p className="text-sm text-slate-700">Best for summarizing and querying 50+ page PDFs.</p>
                   </div>
-                  <div className="text-xs font-bold text-slate-500 uppercase mb-2">NotebookLM</div>
-                  <p className="text-sm text-slate-700">Best for summarizing and querying 50+ page PDFs.</p>
-                </div>
 
-                <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                  <div className="flex items-center gap-2 mb-2 text-amber-700 font-bold">
-                    <PenTool className="w-4 h-4" /> Builder
+                  <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-2 mb-2 text-amber-700 font-bold">
+                      <PenTool className="w-4 h-4" /> Builder
+                    </div>
+                    <div className="text-xs font-bold text-slate-500 uppercase mb-2">AI Studio</div>
+                    <p className="text-sm text-slate-700">Best for creating reusable prompts and mini-apps.</p>
                   </div>
-                  <div className="text-xs font-bold text-slate-500 uppercase mb-2">AI Studio</div>
-                  <p className="text-sm text-slate-700">Best for creating reusable prompts and mini-apps.</p>
                 </div>
               </div>
-            </div>
-          )}
-        </Card>
+            )}
+          </Card>
 
-        {/* SECTION 4: RESOURCE LIBRARY PREVIEW */}
-        <Card className="overflow-hidden p-0 border-blue-200 shadow-sm">
-          <SectionHeader id="resources" title="Deep Dive: Videos, Guides, & Docs" icon={BookOpen} />
-          {openSections['resources'] && (
-            <div className="p-6 animate-fade-in bg-white">
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="flex-1">
-                  <p className="text-slate-600 mb-4 leading-relaxed">
-                    We’ve curated the best external content from experts like <strong>Tina Huang</strong> and <strong>Jeff Su</strong>, alongside official Google documentation.
-                  </p>
-                  <ul className="space-y-3 mb-6">
-                    <li className="flex items-center gap-3 text-sm text-slate-700">
-                      <div className="p-1.5 bg-red-100 text-red-600 rounded">
-                        <Youtube className="w-4 h-4" />
-                      </div>
-                      "Google AI Studio in 26 Minutes" (Video)
-                    </li>
-                    <li className="flex items-center gap-3 text-sm text-slate-700">
-                      <div className="p-1.5 bg-blue-100 text-blue-600 rounded">
-                        <FileText className="w-4 h-4" />
-                      </div>
-                      Official HubSpot x Tina Huang Prompting Guide (PDF)
-                    </li>
-                    <li className="flex items-center gap-3 text-sm text-slate-700">
-                      <div className="p-1.5 bg-purple-100 text-purple-600 rounded">
-                        <Map className="w-4 h-4" />
-                      </div>
-                      3-Hour Recommended Learning Path
-                    </li>
-                  </ul>
-                </div>
-                <div className="w-full md:w-auto bg-blue-50 p-6 rounded-xl border border-blue-100 flex flex-col items-center text-center">
-                  <h4 className="font-bold text-blue-900 mb-2">Ready to master the tools?</h4>
-                  <p className="text-sm text-blue-700 mb-4 max-w-xs">
-                    Access the full library of hand-picked resources to accelerate your learning.
-                  </p>
-                  <Button onClick={() => push('/reference/resources')} className="w-full">
-                    Open Resource Library <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
+          {/* SECTION 4: RESOURCE LIBRARY PREVIEW */}
+          <Card className="overflow-hidden p-0 border-blue-200 shadow-sm">
+            <SectionHeader 
+              id="resources" 
+              title="Deep Dive: Videos, Guides, & Docs" 
+              description="Curated external content from experts."
+              isOpen={openSections.resources} 
+              onToggle={() => toggleSection('resources')} 
+              icon={BookOpen} 
+            />
+            {openSections.resources && (
+              <div className="p-6 animate-fade-in bg-white">
+                <div className="flex flex-col md:flex-row gap-8 items-start">
+                  <div className="flex-1">
+                    <p className="text-slate-600 mb-4 leading-relaxed">
+                      We’ve curated the best external content from experts like <strong>Tina Huang</strong> and <strong>Jeff Su</strong>, alongside official Google documentation.
+                    </p>
+                    <ul className="space-y-3 mb-6">
+                      <li className="flex items-center gap-3 text-sm text-slate-700">
+                        <div className="p-1.5 bg-red-100 text-red-600 rounded">
+                          <Youtube className="w-4 h-4" />
+                        </div>
+                        "Google AI Studio in 26 Minutes" (Video)
+                      </li>
+                      <li className="flex items-center gap-3 text-sm text-slate-700">
+                        <div className="p-1.5 bg-blue-100 text-blue-600 rounded">
+                          <FileText className="w-4 h-4" />
+                        </div>
+                        Official HubSpot x Tina Huang Prompting Guide (PDF)
+                      </li>
+                      <li className="flex items-center gap-3 text-sm text-slate-700">
+                        <div className="p-1.5 bg-purple-100 text-purple-600 rounded">
+                          <Map className="w-4 h-4" />
+                        </div>
+                        3-Hour Recommended Learning Path
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="w-full md:w-auto bg-blue-50 p-6 rounded-xl border border-blue-100 flex flex-col items-center text-center">
+                    <span className="inline-flex items-center rounded-full bg-slate-100 text-slate-700 text-xs font-medium px-2 py-1 mb-2">
+                      Coming soon
+                    </span>
+                    <h4 className="font-bold text-blue-900 mb-2">Ready to master the tools?</h4>
+                    <p className="text-sm text-blue-700 mb-4 max-w-xs">
+                      Access the full library of hand-picked resources to accelerate your learning.
+                    </p>
+                    <Button variant="outline" disabled className="w-full">
+                      Resource Library (coming soon)
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </Card>
+            )}
+          </Card>
 
+        </div>
       </div>
     </PageLayout>
   );

@@ -31,6 +31,11 @@ export default function Page() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleJumpTo = (step: number) => {
+    setCurrentStep(step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
@@ -349,6 +354,7 @@ Present the answer as a table with one row per vendor, and add a short "One-line
       totalSteps={totalSteps}
       onNext={handleNext}
       onPrev={handlePrev}
+      onJumpTo={handleJumpTo}
     >
       {/* Current Section Content */}
       <div className="min-h-[400px]">

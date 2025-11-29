@@ -42,6 +42,11 @@ export default function Page() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleJumpTo = (step: number) => {
+    setCurrentStep(step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 0: // What an AI Model Actually Does
@@ -306,6 +311,7 @@ export default function Page() {
       totalSteps={totalSteps}
       onNext={handleNext}
       onPrev={handlePrev}
+      onJumpTo={handleJumpTo}
     >
       {/* Current Section Content */}
       <div className="min-h-[400px]">

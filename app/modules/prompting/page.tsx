@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, PromptCard, Button } from '../../../components/ui';
@@ -26,6 +25,11 @@ export default function Page() {
 
   const handlePrev = () => {
     setCurrentStep(prev => Math.max(0, prev - 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleJumpTo = (step: number) => {
+    setCurrentStep(step);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -294,6 +298,7 @@ Requirements:
       totalSteps={totalSteps}
       onNext={handleNext}
       onPrev={handlePrev}
+      onJumpTo={handleJumpTo}
     >
       {/* Current Section Content */}
       <div className="min-h-[400px]">

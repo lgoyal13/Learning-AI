@@ -31,6 +31,11 @@ export default function Page() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleJumpTo = (step: number) => {
+    setCurrentStep(step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 0: // Gemini for Web & Search
@@ -301,6 +306,7 @@ Include:
       totalSteps={totalSteps}
       onNext={handleNext}
       onPrev={handlePrev}
+      onJumpTo={handleJumpTo}
     >
       <div className="mb-8 not-prose">
         <Callout variant="info" title="Optional Module">

@@ -29,6 +29,11 @@ export default function Page() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleJumpTo = (step: number) => {
+    setCurrentStep(step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
@@ -312,6 +317,7 @@ Finally, write a short narrative summary of the overall market trend.`}
       totalSteps={totalSteps}
       onNext={handleNext}
       onPrev={handlePrev}
+      onJumpTo={handleJumpTo}
     >
       {/* Content Area */}
       <div className="min-h-[400px]">

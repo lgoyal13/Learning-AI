@@ -1,6 +1,6 @@
 import React from 'react';
-import { PageLayout, Badge, Card, Button, ProgressBar } from './ui';
-import { Clock, Users, ArrowLeft, ChevronLeft, ChevronRight, LayoutGrid } from 'lucide-react';
+import { PageLayout, Badge, Button, ProgressBar } from './ui';
+import { Clock, Users, ArrowLeft, ChevronLeft, ChevronRight, LayoutGrid, CheckCircle2, Circle } from 'lucide-react';
 import { useRouter } from '../lib/routerContext';
 
 interface ModuleSection {
@@ -21,6 +21,7 @@ interface ModuleLayoutProps {
   totalSteps: number;
   onNext: () => void;
   onPrev: () => void;
+  onJumpTo: (step: number) => void;
   isNextDisabled?: boolean;
 }
 
@@ -35,16 +36,10 @@ export const ModuleLayout: React.FC<ModuleLayoutProps> = ({
   totalSteps,
   onNext,
   onPrev,
+  onJumpTo,
   isNextDisabled = false
 }) => {
   const { push } = useRouter();
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
 
   return (
     <div className="max-w-6xl mx-auto animate-fade-in pb-20">
@@ -76,61 +71,62 @@ export const ModuleLayout: React.FC<ModuleLayoutProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Left Sidebar - Table of Contents */}
         <div className="hidden lg:block col-span-1">
-          <div className="sticky top-8 space-y-4">
-            <h3 className="font-bold text-slate-900 uppercase text-xs tracking-wider">In this module</h3>
+          <div className="sticky top-8 space-y-6">
+            
+            {/* Progress Section */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-bold text-slate-900 uppercase text-xs tracking-wider">In this module</h3>
+                <span className="text-xs font-bold text-slate-500">
+                  {Math.round(((currentStep + 1) / totalSteps) * 100)}%
+                </span>
+              </div>
+              <ProgressBar current={currentStep + 1} total={totalSteps} />
+              <p className="text-xs text-slate-400 font-medium mt-2">
+                 Step {currentStep + 1} of {totalSteps}
+               </p>
+            </div>
+
             <nav className="space-y-1">
-              {sections.map((section, idx) => (
-                <button
-                  key={section.id}
-                  onClick={() => scrollToSection(section.id)}
-                  className={`block w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${
-                    idx === currentStep 
-                      ? 'text-blue-700 bg-blue-50 font-medium' 
-                      : 'text-slate-600 hover:text-blue-600 hover:bg-slate-50'
-                  }`}
-                >
-                  {section.title}
-                </button>
-              ))}
+              {sections.map((section, idx) => {
+                const isComplete = idx < currentStep;
+                const isCurrent = idx === currentStep;
+
+                return (
+                  <button
+                    key={section.id}
+                    onClick={() => onJumpTo(idx)}
+                    className={`group flex items-start gap-3 w-full text-left p-2 rounded-lg transition-colors ${
+                       isCurrent ? 'bg-blue-50' : 'hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className={`mt-0.5 shrink-0 ${
+                      isComplete ? 'text-green-600' : isCurrent ? 'text-blue-600' : 'text-slate-300'
+                    }`}>
+                      {isComplete ? (
+                        <CheckCircle2 className="w-5 h-5" />
+                      ) : isCurrent ? (
+                        <div className="w-5 h-5 rounded-full border-[2.5px] border-current relative">
+                           <div className="absolute inset-1 bg-current rounded-full opacity-0" />
+                        </div>
+                      ) : (
+                        <Circle className="w-5 h-5" />
+                      )}
+                    </div>
+                    <span className={`text-sm ${
+                      isCurrent ? 'font-bold text-blue-900' : 'font-medium text-slate-600 group-hover:text-slate-900'
+                    }`}>
+                      {section.title}
+                    </span>
+                  </button>
+                );
+              })}
             </nav>
           </div>
         </div>
 
         {/* Main Content */}
         <div className="col-span-1 lg:col-span-3">
-          
-          {/* Top Step Navigation & Progress */}
-          <div className="mb-10 bg-white border border-slate-200 rounded-xl p-4 shadow-sm sticky top-4 z-20">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-bold text-slate-700">
-                Step {currentStep + 1} of {totalSteps}
-              </span>
-              <div className="flex gap-2">
-                <Button 
-                  variant="secondary" 
-                  size="sm" 
-                  onClick={onPrev} 
-                  disabled={currentStep === 0}
-                  className="h-8 w-8 p-0"
-                  title="Previous Step"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-                <Button 
-                  variant="primary" 
-                  size="sm" 
-                  onClick={onNext} 
-                  disabled={currentStep === totalSteps - 1 ? false : isNextDisabled} 
-                  className="h-8 w-8 p-0"
-                  title="Next Step"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-            <ProgressBar current={currentStep + 1} total={totalSteps} />
-          </div>
-
           <article className="prose prose-slate max-w-none prose-headings:scroll-mt-24 prose-headings:text-slate-900 prose-a:text-blue-600">
             {children}
           </article>

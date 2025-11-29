@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
-import { Card, Button, Badge, Callout } from '../../../components/ui';
+import { Card, Button, Badge, Callout, PromptCard, Heading } from '../../../components/ui';
 import { useRouter } from '../../../lib/routerContext';
-import { Globe, Layers, PenTool, MessageSquare, ArrowRight, ArrowLeft, CheckCircle2, Target, BookOpen, BrainCircuit, Hammer, Zap } from 'lucide-react';
+import { Globe, Layers, PenTool, MessageSquare, ArrowRight, ArrowLeft, CheckCircle2, Target, BookOpen, BrainCircuit, Lightbulb, Briefcase, FileText, Zap, Layout, ExternalLink } from 'lucide-react';
 
 // Import Deep Dive Modules
 import ResearchPage from '../tool-research/page';
@@ -16,13 +16,16 @@ export default function Page() {
   const [activeView, setActiveView] = useState<ActiveView>('overview');
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Interactive Quiz State
-  const [activeJobId, setActiveJobId] = useState<string | null>(null);
-  const [selectedJobOptions, setSelectedJobOptions] = useState<Record<string, string>>({});
-
-  // Steps array for navigation - REORDERED: Intro -> Categories -> Decision -> Deep Dives
-  const stepIds = ['intro', 'categories', 'decision', 'deep-dives'];
-  const totalSteps = stepIds.length;
+  // Steps array for navigation
+  const sections = [
+    { id: 'start-here', title: 'Start here' },
+    { id: 'ma-analyst', title: 'M&A analyst workflow' },
+    { id: 'project-manager', title: 'Project manager workflow' },
+    { id: 'analytics-bi', title: 'Analytics and BI workflow' },
+    { id: 'automated-builder', title: 'Automated workflow builder' },
+  ];
+  
+  const totalSteps = sections.length;
 
   const scrollToTop = () => {
     if (typeof window !== 'undefined') window.scrollTo(0, 0);
@@ -38,6 +41,11 @@ export default function Page() {
     scrollToTop();
   };
 
+  const handleJumpTo = (step: number) => {
+    setCurrentStep(step);
+    scrollToTop();
+  };
+
   // If in a deep dive, render that component with a back button
   if (activeView === 'research') {
     return (
@@ -45,7 +53,7 @@ export default function Page() {
         <div className="bg-slate-50 border-b border-slate-200 p-4 sticky top-0 z-10">
            <div className="max-w-6xl mx-auto">
              <Button variant="ghost" onClick={() => setActiveView('overview')} className="text-slate-600 hover:text-blue-600 pl-0">
-               <ArrowLeft className="w-4 h-4 mr-2" /> Back to Tools Overview
+               <ArrowLeft className="w-4 h-4 mr-2" /> Back to Workflow Playbook
              </Button>
            </div>
         </div>
@@ -60,7 +68,7 @@ export default function Page() {
         <div className="bg-slate-50 border-b border-slate-200 p-4 sticky top-0 z-10">
            <div className="max-w-6xl mx-auto">
              <Button variant="ghost" onClick={() => setActiveView('overview')} className="text-slate-600 hover:text-purple-600 pl-0">
-               <ArrowLeft className="w-4 h-4 mr-2" /> Back to Tools Overview
+               <ArrowLeft className="w-4 h-4 mr-2" /> Back to Workflow Playbook
              </Button>
            </div>
         </div>
@@ -75,7 +83,7 @@ export default function Page() {
          <div className="bg-slate-50 border-b border-slate-200 p-4 sticky top-0 z-10">
            <div className="max-w-6xl mx-auto">
              <Button variant="ghost" onClick={() => setActiveView('overview')} className="text-slate-600 hover:text-emerald-600 pl-0">
-               <ArrowLeft className="w-4 h-4 mr-2" /> Back to Tools Overview
+               <ArrowLeft className="w-4 h-4 mr-2" /> Back to Workflow Playbook
              </Button>
            </div>
         </div>
@@ -84,372 +92,446 @@ export default function Page() {
     );
   }
 
-  // Quiz Data
-  const jobs = [
-    {
-      id: 'job1',
-      title: 'Job 1: I need words (emails, drafts, ideas)',
-      description: 'e.g., "Write a polite decline," "Give me 5 taglines"',
-      correctTool: 'chat',
-      options: [
-        { id: 'chat', label: 'Chat Assistant' },
-        { id: 'research', label: 'Research Tool' },
-        { id: 'docs', label: 'Your Docs' },
-        { id: 'builder', label: 'Builder' },
-      ],
-      successMessage: 'Correct. For pure drafting and reasoning, standard chat is best.',
-      successPrompt: '"Act as a polite Account Manager. Draft an email to [Client]..."',
-      errorMessage: 'Not quite. Chat is fastest for open-ended writing.',
-    },
-    {
-      id: 'job2',
-      title: 'Job 2: I need facts (news, stats, market intel)',
-      description: 'e.g., "What did Competitor X launch?" "Latest FDA regulations"',
-      correctTool: 'research',
-      options: [
-        { id: 'chat', label: 'Chat Assistant' },
-        { id: 'research', label: 'Research Tool' },
-        { id: 'docs', label: 'Your Docs' },
-        { id: 'builder', label: 'Builder' },
-      ],
-      successMessage: 'Correct. Research tools browse the live web and cite sources.',
-      successPrompt: '"What are the latest regulatory changes for [Industry]...? Cite sources."',
-      errorMessage: 'Careful. Standard chat has knowledge cutoffs. Use Research tools for fresh facts.',
-    },
-    {
-      id: 'job3',
-      title: 'Job 3: I need to understand my own files',
-      description: 'e.g., "Summarize these 50 pages," "Compare these two contracts"',
-      correctTool: 'docs',
-      options: [
-        { id: 'chat', label: 'Chat Assistant' },
-        { id: 'research', label: 'Research Tool' },
-        { id: 'docs', label: 'Your Docs' },
-        { id: 'builder', label: 'Builder' },
-      ],
-      successMessage: 'Spot on. NotebookLM creates a private knowledge base for your files.',
-      successPrompt: '"Based on these 5 PDFs, what are the top 3 risks? Cite page numbers."',
-      errorMessage: 'Standard chat has context limits. Use "Your Docs" tools for large files.',
-    },
-    {
-      id: 'job4',
-      title: 'Job 4: I need a reusable mini-app',
-      description: 'e.g., "I re-type this same complex prompt every week"',
-      correctTool: 'builder',
-      options: [
-        { id: 'chat', label: 'Chat Assistant' },
-        { id: 'research', label: 'Research Tool' },
-        { id: 'docs', label: 'Your Docs' },
-        { id: 'builder', label: 'Builder' },
-      ],
-      successMessage: 'Yes. If you do it 3+ times, freeze the prompt into a tool.',
-      successPrompt: 'System Instruction: "You are an expert editor. Always rewrite input to be..."',
-      errorMessage: 'Chat is fine for one-offs, but Builder ensures consistency.',
-    },
-  ];
-
-  const handleQuizSelection = (jobId: string, optionId: string) => {
-    setSelectedJobOptions(prev => ({ ...prev, [jobId]: optionId }));
-  };
-
-  // Step Contents
   const sectionContent = [
-    // Step 1: INTRO
-    {
-      id: 'intro',
-      node: (
-        <section id="intro" className="mb-16 animate-fade-in">
-          <h2>Stop using a hammer for everything</h2>
-          <p className="text-lg text-slate-700 mb-8">
-            You have a toolkit of specialized AI engines, and using the right one saves you hours of frustration. 
-            Don't just open a generic chat window for every task.
-          </p>
+    // STEP 1: START HERE (Intro)
+    (
+      <section key="start-here" className="animate-fade-in mb-12">
+        <div className="max-w-3xl mx-auto space-y-8">
+           <Heading level={2}>You know the tools. Now see the workflows.</Heading>
+           
+           <p className="text-lg text-slate-700 leading-relaxed">
+              You have seen how to prompt and how tools like NotebookLM, Perplexity, Gemini, and ChatGPT work on their own. This module shows how power users chain them together to run projects from start to finish.
+           </p>
 
-          <Card className="bg-slate-50 border-slate-200 p-8">
-             <h3 className="font-bold text-slate-900 mb-4">Know your toolkit</h3>
-             <ul className="space-y-4">
-               <li className="flex items-start gap-3">
-                 <MessageSquare className="w-5 h-5 text-yellow-600 mt-1" />
-                 <div>
-                   <strong className="text-slate-900">Chat Assistants (Gemini, ChatGPT):</strong>
-                   <p className="text-slate-600 text-sm">Best for drafting, brainstorming, and editing.</p>
-                 </div>
-               </li>
-               <li className="flex items-start gap-3">
-                 <Globe className="w-5 h-5 text-blue-600 mt-1" />
-                 <div>
-                   <strong className="text-slate-900">Research Tools (Perplexity):</strong>
-                   <p className="text-slate-600 text-sm">Best for facts, citations, and market intel.</p>
-                 </div>
-               </li>
-               <li className="flex items-start gap-3">
-                 <Layers className="w-5 h-5 text-purple-600 mt-1" />
-                 <div>
-                   <strong className="text-slate-900">Your Docs (NotebookLM):</strong>
-                   <p className="text-slate-600 text-sm">Best for summarizing and querying your own files.</p>
-                 </div>
-               </li>
-               <li className="flex items-start gap-3">
-                 <PenTool className="w-5 h-5 text-emerald-600 mt-1" />
-                 <div>
-                   <strong className="text-slate-900">Builders (AI Studio):</strong>
-                   <p className="text-slate-600 text-sm">Best for creating reusable workflows.</p>
-                 </div>
-               </li>
-             </ul>
-          </Card>
-        </section>
-      )
-    },
-    // Step 2: CATEGORIES (Moved up)
-    {
-      id: 'categories',
-      node: (
-        <section id="categories" className="mb-16 animate-fade-in">
-          <h2>Your 4 Core Toolboxes</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
-            
-            <Card className="p-6 border-t-4 border-t-yellow-500">
-              <div className="flex items-center gap-2 mb-3">
-                <MessageSquare className="w-6 h-6 text-yellow-600" />
-                <h3 className="font-bold text-lg text-slate-900">Chat Assistants</h3>
-              </div>
-              <p className="text-sm text-slate-600 mb-2">
-                 <strong>Best for:</strong> Drafting, rephrasing, brainstorming.
-              </p>
-              <p className="text-sm text-slate-600 mb-2">
-                 <strong>Signature move:</strong> "Turn this blank page into a first draft."
-              </p>
-              <p className="text-sm text-slate-500 italic">
-                 <strong>Watch out for:</strong> Hallucinations on facts.
-              </p>
-            </Card>
+           <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
+              <h3 className="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">After this module you will be able to:</h3>
+              <ul className="space-y-3 text-sm text-slate-700">
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+                  Spot when to use a docs tool, a research engine, or chat.
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+                  Borrow three ready made workflows for your own projects.
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+                  Start sketching your own workflows using the same patterns.
+                </li>
+              </ul>
+           </div>
 
-            <Card className="p-6 border-t-4 border-t-blue-500">
-              <div className="flex items-center gap-2 mb-3">
-                <Globe className="w-6 h-6 text-blue-600" />
-                <h3 className="font-bold text-lg text-slate-900">Research Tools</h3>
-              </div>
-              <p className="text-sm text-slate-600 mb-2">
-                 <strong>Best for:</strong> Facts, citations, news.
-              </p>
-              <p className="text-sm text-slate-600 mb-2">
-                 <strong>Signature move:</strong> "Write a report with 5 citations."
-              </p>
-              <p className="text-sm text-slate-500 italic">
-                 <strong>Watch out for:</strong> Using it for simple creative writing.
-              </p>
-            </Card>
-
-            <Card className="p-6 border-t-4 border-t-purple-500">
-              <div className="flex items-center gap-2 mb-3">
-                <Layers className="w-6 h-6 text-purple-600" />
-                <h3 className="font-bold text-lg text-slate-900">"Your Docs" Tools</h3>
-              </div>
-              <p className="text-sm text-slate-600 mb-2">
-                 <strong>Best for:</strong> Summarizing your own files.
-              </p>
-              <p className="text-sm text-slate-600 mb-2">
-                 <strong>Signature move:</strong> "Turn these 50 PDFs into a briefing doc."
-              </p>
-              <p className="text-sm text-slate-500 italic">
-                 <strong>Watch out for:</strong> Privacy (use internal tools).
-              </p>
-            </Card>
-
-            <Card className="p-6 border-t-4 border-t-emerald-500">
-              <div className="flex items-center gap-2 mb-3">
-                <PenTool className="w-6 h-6 text-emerald-600" />
-                <h3 className="font-bold text-lg text-slate-900">Builder Tools</h3>
-              </div>
-              <p className="text-sm text-slate-600 mb-2">
-                 <strong>Best for:</strong> Reusable workflows.
-              </p>
-              <p className="text-sm text-slate-600 mb-2">
-                 <strong>Signature move:</strong> "Freeze this prompt into a button."
-              </p>
-              <p className="text-sm text-slate-500 italic">
-                 <strong>Watch out for:</strong> Over-engineering simple tasks.
-              </p>
-            </Card>
-          </div>
-        </section>
-      )
-    },
-    // Step 3: DECISION QUIZ (Moved down)
-    {
-      id: 'decision',
-      node: (
-        <section id="decision" className="mb-16 animate-fade-in">
-          <h2>Routing Game: Pick the Right Tool</h2>
-          <p className="mb-6">
-             The most common mistake is using a chatbot when you needed a research engine. Let's practice.
-          </p>
-
-          <div className="space-y-4 not-prose">
-            {jobs.map((job) => {
-              const isExpanded = activeJobId === job.id;
-              const selectedOption = selectedJobOptions[job.id];
-              const isCorrect = selectedOption === job.correctTool;
-              const isIncorrect = selectedOption && !isCorrect;
-
-              return (
-                <Card key={job.id} className={`transition-all ${isExpanded ? 'ring-2 ring-blue-100 shadow-md' : 'hover:bg-slate-50'}`}>
-                  <div 
-                    className="p-4 flex items-center justify-between cursor-pointer"
-                    onClick={() => setActiveJobId(isExpanded ? null : job.id)}
-                  >
-                    <div>
-                      <h3 className={`font-bold ${isExpanded ? 'text-blue-700' : 'text-slate-900'}`}>{job.title}</h3>
-                      <p className="text-sm text-slate-500">{job.description}</p>
-                    </div>
-                    <div className={`transform transition-transform ${isExpanded ? 'rotate-90' : ''}`}>
-                      <ArrowRight className="w-5 h-5 text-slate-400" />
-                    </div>
-                  </div>
-
-                  {isExpanded && (
-                    <div className="px-4 pb-6 pt-2 border-t border-slate-100 animate-fade-in">
-                      <p className="text-sm font-semibold text-slate-700 mb-3">Which tool category wins?</p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                        {job.options.map((option) => (
-                          <button
-                            key={option.id}
-                            onClick={() => handleQuizSelection(job.id, option.id)}
-                            className={`
-                              text-left px-4 py-3 rounded-lg text-sm font-medium border transition-all
-                              ${selectedOption === option.id 
-                                ? (option.id === job.correctTool ? 'bg-green-50 border-green-500 text-green-800' : 'bg-red-50 border-red-500 text-red-800')
-                                : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600'}
-                            `}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-
-                      {selectedOption && isCorrect && (
-                        <div className="bg-green-50 border border-green-200 rounded-lg p-4 animate-fade-in">
-                          <div className="flex gap-2 items-start mb-2">
-                             <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
-                             <p className="text-sm text-green-900 font-bold">{job.successMessage}</p>
-                          </div>
-                          <div className="ml-7 mt-2">
-                             <p className="text-xs font-bold text-slate-500 uppercase mb-1">Example Prompt:</p>
-                             <div className="bg-white p-2 rounded border border-green-100 font-mono text-xs text-slate-600">
-                               {job.successPrompt}
-                             </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {selectedOption && isIncorrect && (
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-4 animate-fade-in flex gap-2 items-start">
-                           <Target className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
-                           <p className="text-sm text-red-900">{job.errorMessage} Try again!</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
+           <div className="space-y-4">
+             <h3 className="font-bold text-slate-900">Preview the workflows:</h3>
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="p-4 bg-white border-slate-200 hover:border-blue-300 transition-colors">
+                   <h4 className="font-bold text-slate-900 mb-1 text-sm">M&A analyst</h4>
+                   <p className="text-xs text-slate-500 mb-3">Due diligence summary.</p>
+                   <div className="flex flex-wrap gap-1">
+                     <Badge className="text-[10px] py-0 px-1.5" variant="neutral">NotebookLM</Badge>
+                     <Badge className="text-[10px] py-0 px-1.5" variant="neutral">Perplexity</Badge>
+                   </div>
                 </Card>
-              );
-            })}
-          </div>
-        </section>
-      )
-    },
-    // Step 4: DEEP DIVES
-    {
-      id: 'deep-dives',
-      node: (
-        <div className="animate-fade-in">
-          <section id="deep-dives" className="mb-16">
-            <h2>Ready to master a specific tool?</h2>
-            <p className="mb-6">Click below to start an interactive deep dive.</p>
-            
-            <div className="space-y-4 not-prose">
-              <Card 
-                className="p-4 hover:border-blue-300 cursor-pointer group flex items-center justify-between"
-                onClick={() => setActiveView('research')}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-blue-100 text-blue-600 rounded">
-                    <Globe className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900">Research & Web Deep Dive</h3>
-                    <p className="text-sm text-slate-500">How to get cited, factual answers from the web.</p>
-                  </div>
-                </div>
-                <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-blue-500" />
-              </Card>
+                <Card className="p-4 bg-white border-slate-200 hover:border-emerald-300 transition-colors">
+                   <h4 className="font-bold text-slate-900 mb-1 text-sm">Project manager</h4>
+                   <p className="text-xs text-slate-500 mb-3">Launch planning.</p>
+                   <div className="flex flex-wrap gap-1">
+                     <Badge className="text-[10px] py-0 px-1.5" variant="neutral">Docs</Badge>
+                     <Badge className="text-[10px] py-0 px-1.5" variant="neutral">Sheets</Badge>
+                   </div>
+                </Card>
+                <Card className="p-4 bg-white border-slate-200 hover:border-purple-300 transition-colors">
+                   <h4 className="font-bold text-slate-900 mb-1 text-sm">Analytics and BI partner</h4>
+                   <p className="text-xs text-slate-500 mb-3">Metric investigation.</p>
+                   <div className="flex flex-wrap gap-1">
+                     <Badge className="text-[10px] py-0 px-1.5" variant="neutral">NotebookLM</Badge>
+                     <Badge className="text-[10px] py-0 px-1.5" variant="neutral">Chat</Badge>
+                   </div>
+                </Card>
+             </div>
+           </div>
 
-              <Card 
-                className="p-4 hover:border-purple-300 cursor-pointer group flex items-center justify-between"
-                onClick={() => setActiveView('documents')}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-purple-100 text-purple-600 rounded">
-                    <Layers className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900">"Your Docs" Deep Dive</h3>
-                    <p className="text-sm text-slate-500">How to chat with internal files securely.</p>
-                  </div>
-                </div>
-                <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-purple-500" />
-              </Card>
-
-              <Card 
-                className="p-4 hover:border-emerald-300 cursor-pointer group flex items-center justify-between bg-slate-50"
-                onClick={() => setActiveView('builder')}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-emerald-100 text-emerald-600 rounded">
-                    <PenTool className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-slate-900">Builder's Lab</h3>
-                      <Badge variant="neutral">Advanced</Badge>
-                    </div>
-                    <p className="text-sm text-slate-500">Create your own reusable AI assistants.</p>
-                  </div>
-                </div>
-                <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-emerald-500" />
-              </Card>
-            </div>
-          </section>
-
-          {/* Resource Hook */}
-          <section className="mb-12">
-             <div className="mt-8 flex items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
-               <BookOpen className="w-5 h-5 text-slate-500" />
-               <div className="flex-1 text-sm text-slate-600">
-                 Want real-world walkthroughs of NotebookLM, Perplexity, Gemini, and AI Studio?
-               </div>
-               <Button variant="ghost" size="sm" onClick={() => push('/reference/resources')}>
-                 Open Resource Library
-               </Button>
-            </div>
-          </section>
+           <div className="pt-8 border-t border-slate-200">
+              <p className="text-sm text-slate-600 mb-4 font-medium">Explore these tools directly:</p>
+              <div className="flex flex-wrap gap-3">
+                 <a href="https://notebooklm.google.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 border border-slate-300 bg-transparent hover:bg-slate-50 text-slate-700 focus:ring-slate-500 h-8 px-3 text-sm">
+                   NotebookLM <ExternalLink className="w-3 h-3 ml-2 opacity-50" />
+                 </a>
+                 <a href="https://www.perplexity.ai/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 border border-slate-300 bg-transparent hover:bg-slate-50 text-slate-700 focus:ring-slate-500 h-8 px-3 text-sm">
+                   Perplexity <ExternalLink className="w-3 h-3 ml-2 opacity-50" />
+                 </a>
+                 <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 border border-slate-300 bg-transparent hover:bg-slate-50 text-slate-700 focus:ring-slate-500 h-8 px-3 text-sm">
+                   Gemini <ExternalLink className="w-3 h-3 ml-2 opacity-50" />
+                 </a>
+                 <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 border border-slate-300 bg-transparent hover:bg-slate-50 text-slate-700 focus:ring-slate-500 h-8 px-3 text-sm">
+                   ChatGPT <ExternalLink className="w-3 h-3 ml-2 opacity-50" />
+                 </a>
+              </div>
+           </div>
         </div>
-      )
-    }
-  ];
+      </section>
+    ),
 
-  // Updated Section Metadata with new order
-  const sections = [
-    { id: 'intro', title: 'The Toolkit' },
-    { id: 'categories', title: 'Tool Categories' },
-    { id: 'decision', title: 'Quick Decision Guide' },
-    { id: 'deep-dives', title: 'Deep Dives' },
+    // STEP 2: M&A ANALYST
+    (
+      <section key="ma-analyst" className="animate-fade-in mb-12">
+        <div className="max-w-3xl mx-auto space-y-6">
+          
+          {/* Scenario Card */}
+          <Card className="p-5 md:p-6 border-slate-200 bg-white rounded-2xl shadow-sm space-y-3">
+            <div className="flex items-center gap-2 text-slate-500 font-bold uppercase text-xs tracking-wider">
+               <Briefcase className="w-4 h-4" /> Scenario 1
+            </div>
+            <h3 className="font-bold text-slate-900 text-xl">Evaluate an acquisition target without drowning in PDFs</h3>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              You are an M&A analyst with a messy data room and a noisy news feed about the target and its competitors. You need to get from scattered PDFs and headlines to a clear deal story your leadership can react to.
+            </p>
+            
+            <div className="flex flex-wrap gap-2 py-2">
+               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 border border-purple-200">
+                 NotebookLM
+               </span>
+               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 border border-blue-200">
+                 Perplexity or Gemini Deep Research
+               </span>
+               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                 Gemini or ChatGPT
+               </span>
+            </div>
+            
+            <div className="pt-3 border-t border-slate-100 text-xs text-slate-500 font-medium">
+              Pattern: your docs plus web research plus chat synthesis.
+            </div>
+          </Card>
+
+          {/* Workflow Card */}
+          <Card className="p-5 md:p-6 border-slate-200 bg-slate-50 rounded-2xl space-y-6">
+             <p className="font-semibold text-slate-700 text-sm">Here is how a power user might run this week of due diligence.</p>
+             
+             <div className="space-y-8 relative before:absolute before:inset-0 before:ml-3.5 before:-translate-x-px before:h-full before:w-0.5 before:bg-slate-200 before:-z-10">
+                
+                {/* Step 1 */}
+                <div className="relative pl-10">
+                   <div className="absolute left-0 top-1 w-7 h-7 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">1</div>
+                   <h4 className="font-bold text-slate-900 text-sm mb-1">Tame the data room</h4>
+                   <p className="text-xs text-slate-600 mb-3">Upload financials, contracts, and key decks into NotebookLM so you work from a structured summary instead of raw files.</p>
+                   <PromptCard 
+                      label="NotebookLM prompt"
+                      prompt="From these sources, create a study guide that summarizes revenue streams, cost structure, and major contractual obligations."
+                   />
+                </div>
+
+                {/* Step 2 */}
+                <div className="relative pl-10">
+                   <div className="absolute left-0 top-1 w-7 h-7 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">2</div>
+                   <h4 className="font-bold text-slate-900 text-sm mb-1">Scan the market</h4>
+                   <p className="text-xs text-slate-600 mb-3">Use a research engine to see what has happened around the target and its competitors in the last year.</p>
+                   <PromptCard 
+                      label="Perplexity or Deep Research prompt"
+                      prompt="For the last 12 to 18 months, summarize major moves by {{target}} and its 3 main competitors in {{industry}}. Focus on product launches, partnerships, regulation, and funding. Include citations."
+                   />
+                </div>
+
+                {/* Step 3 */}
+                <div className="relative pl-10">
+                   <div className="absolute left-0 top-1 w-7 h-7 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">3</div>
+                   <h4 className="font-bold text-slate-900 text-sm mb-1">Draft the deal rationale</h4>
+                   <p className="text-xs text-slate-600 mb-3">Bring the internal summary and the external scan into chat and draft a clean one page narrative.</p>
+                   <PromptCard 
+                      label="Chat assistant prompt"
+                      prompt="Using this NotebookLM summary and this competitive scan, outline a one page deal rationale. Include strategic fit, key risks, and 3 open questions."
+                   />
+                </div>
+
+                {/* Step 4 */}
+                <div className="relative pl-10">
+                   <div className="absolute left-0 top-1 w-7 h-7 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">4</div>
+                   <h4 className="font-bold text-slate-900 text-sm mb-1">Prepare leadership talking points</h4>
+                   <p className="text-xs text-slate-600 mb-3">Turn the deal rationale into concise talking points leaders can use with the board.</p>
+                   <PromptCard 
+                      label="Chat assistant prompt"
+                      prompt="Draft 5 bullet talking points for our CFO and CEO to use when discussing this potential acquisition with the board. Keep them punchy and focused on impact."
+                   />
+                </div>
+
+             </div>
+
+             <Callout variant="info" title="Why this combo works">
+               <ul className="list-disc pl-4 mt-1 space-y-1 text-sm">
+                 <li>Docs tool turns a pile of PDFs into something you can reason about.</li>
+                 <li>Research engine keeps you honest about what is happening outside your four walls.</li>
+                 <li>Chat stitches both together into a story that executives can act on.</li>
+               </ul>
+             </Callout>
+          </Card>
+        </div>
+      </section>
+    ),
+
+    // STEP 3: PROJECT MANAGER
+    (
+      <section key="project-manager" className="animate-fade-in mb-12">
+        <div className="max-w-3xl mx-auto space-y-6">
+          
+          {/* Scenario Card */}
+          <Card className="p-5 md:p-6 border-slate-200 bg-white rounded-2xl shadow-sm space-y-3">
+            <div className="flex items-center gap-2 text-slate-500 font-bold uppercase text-xs tracking-wider">
+               <Briefcase className="w-4 h-4" /> Scenario 2
+            </div>
+            <h3 className="font-bold text-slate-900 text-xl">Cross-Functional Launch</h3>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              You are running a launch with scattered notes, requirements docs, and stakeholders who want clear plans and concise updates.
+            </p>
+            
+            <div className="flex flex-wrap gap-2 py-2">
+               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 border border-blue-200">
+                 Docs
+               </span>
+               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-200">
+                 Sheets
+               </span>
+               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                 Chat Assistant
+               </span>
+            </div>
+            
+            <div className="pt-3 border-t border-slate-100 text-xs text-slate-500 font-medium">
+              Pattern: Consolidate -> Structure -> Communicate
+            </div>
+          </Card>
+
+          {/* Workflow Card */}
+          <Card className="p-5 md:p-6 border-slate-200 bg-slate-50 rounded-2xl space-y-6">
+             <p className="font-semibold text-slate-700 text-sm">Here is how a power user runs this workflow:</p>
+             
+             <div className="space-y-8 relative before:absolute before:inset-0 before:ml-3.5 before:-translate-x-px before:h-full before:w-0.5 before:bg-slate-200 before:-z-10">
+                
+                {/* Step 1 */}
+                <div className="relative pl-10">
+                   <div className="absolute left-0 top-1 w-7 h-7 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">1</div>
+                   <h4 className="font-bold text-slate-900 text-sm mb-1">Turn notes into a brief</h4>
+                   <p className="text-xs text-slate-600 mb-3">Consolidate messy inputs using "Help me write" in Docs.</p>
+                   <PromptCard 
+                      label="Prompt (in Docs)"
+                      prompt="From these meeting notes, create a concise project brief with goals, scope, key milestones, and dependencies."
+                   />
+                </div>
+
+                {/* Step 2 */}
+                <div className="relative pl-10">
+                   <div className="absolute left-0 top-1 w-7 h-7 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">2</div>
+                   <h4 className="font-bold text-slate-900 text-sm mb-1">Build a timeline</h4>
+                   <p className="text-xs text-slate-600 mb-3">Move from text to structure in Sheets.</p>
+                   <PromptCard 
+                      label="Prompt (in Sheets)"
+                      prompt="Create a table with columns: Workstream, Owner, Start date, End date, and Status. Suggest dates for a 6-week timeline."
+                   />
+                </div>
+
+                {/* Step 3 */}
+                <div className="relative pl-10">
+                   <div className="absolute left-0 top-1 w-7 h-7 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">3</div>
+                   <h4 className="font-bold text-slate-900 text-sm mb-1">Risk scan</h4>
+                   <p className="text-xs text-slate-600 mb-3">Proactively identify blockers.</p>
+                   <PromptCard 
+                      label="Prompt (in Chat Assistant)"
+                      prompt="Identify five likely risks to schedule or quality. Rate likelihood and impact (low/med/high) and propose a mitigation for each."
+                   />
+                </div>
+
+                {/* Step 4 */}
+                <div className="relative pl-10">
+                   <div className="absolute left-0 top-1 w-7 h-7 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">4</div>
+                   <h4 className="font-bold text-slate-900 text-sm mb-1">Executive update</h4>
+                   <p className="text-xs text-slate-600 mb-3">Communicate status clearly.</p>
+                   <PromptCard 
+                      label="Prompt (in Chat Assistant)"
+                      prompt="Draft an executive update email. Keep it under 200 words and end with a simple 'reply 1, 2, or 3' decision list."
+                   />
+                </div>
+
+             </div>
+
+             <Callout variant="info" title="Why this combo works">
+               <ul className="list-disc pl-4 mt-1 space-y-1 text-sm">
+                 <li>Workspace tools keep your data organized where you work.</li>
+                 <li>AI handles the formatting and translation (text to table).</li>
+                 <li>You focus on unblocking the team.</li>
+               </ul>
+             </Callout>
+          </Card>
+        </div>
+      </section>
+    ),
+
+    // STEP 4: ANALYTICS / BI
+    (
+      <section key="analytics-bi" className="animate-fade-in mb-12">
+        <div className="max-w-3xl mx-auto space-y-6">
+          
+          {/* Scenario Card */}
+          <Card className="p-5 md:p-6 border-slate-200 bg-white rounded-2xl shadow-sm space-y-3">
+            <div className="flex items-center gap-2 text-slate-500 font-bold uppercase text-xs tracking-wider">
+               <Briefcase className="w-4 h-4" /> Scenario 3
+            </div>
+            <h3 className="font-bold text-slate-900 text-xl">Explain a sudden change in a key metric</h3>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              You are an analytics or BI partner asked why a core metric moved. You have dashboards, QBR decks, and a vague ask to find the story.
+            </p>
+            
+            <div className="flex flex-wrap gap-2 py-2">
+               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 border border-purple-200">
+                 NotebookLM
+               </span>
+               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 border border-blue-200">
+                 Perplexity or Gemini Deep Research
+               </span>
+               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                 Chat assistant
+               </span>
+            </div>
+            
+            <div className="pt-3 border-t border-slate-100 text-xs text-slate-500 font-medium">
+              Pattern: your historical decks plus external context plus narrative.
+            </div>
+          </Card>
+
+          {/* Workflow Card */}
+          <Card className="p-5 md:p-6 border-slate-200 bg-slate-50 rounded-2xl space-y-6">
+             <p className="font-semibold text-slate-700 text-sm">Treat the model like an analyst in training who helps you connect internal and external signals.</p>
+             
+             <div className="space-y-8 relative before:absolute before:inset-0 before:ml-3.5 before:-translate-x-px before:h-full before:w-0.5 before:bg-slate-200 before:-z-10">
+                
+                {/* Step 1 */}
+                <div className="relative pl-10">
+                   <div className="absolute left-0 top-1 w-7 h-7 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">1</div>
+                   <h4 className="font-bold text-slate-900 text-sm mb-1">Summarize internal evidence</h4>
+                   <p className="text-xs text-slate-600 mb-3">Gather exports, decks, and memos into a single summary so you see what the team already knows.</p>
+                   <PromptCard 
+                      label="NotebookLM prompt"
+                      prompt="Summarize what we already know about trends in {{metric}} from these QBR decks and memos. Highlight any mentioned drivers, experiments, or external events."
+                   />
+                </div>
+
+                {/* Step 2 */}
+                <div className="relative pl-10">
+                   <div className="absolute left-0 top-1 w-7 h-7 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">2</div>
+                   <h4 className="font-bold text-slate-900 text-sm mb-1">Pull in external context</h4>
+                   <p className="text-xs text-slate-600 mb-3">Add what is happening in the market or environment that might explain the change.</p>
+                   <PromptCard 
+                      label="Research prompt"
+                      prompt="For the last 6 to 12 months, summarize industry level factors that could affect {{metric}} in {{industry}} and region. Include regulation, macro trends, competitor promotions, or major incidents. Cite sources."
+                   />
+                </div>
+
+                {/* Step 3 */}
+                <div className="relative pl-10">
+                   <div className="absolute left-0 top-1 w-7 h-7 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">3</div>
+                   <h4 className="font-bold text-slate-900 text-sm mb-1">Generate hypotheses</h4>
+                   <p className="text-xs text-slate-600 mb-3">Use chat to list plausible explanations and how you would test them.</p>
+                   <PromptCard 
+                      label="Chat assistant prompt"
+                      prompt="Using the internal summary and the external factors, list 5 plausible hypotheses for why {{metric}} changed. For each, note which data we would check, whether it is likely short term or structural, and a quick test we can run."
+                   />
+                </div>
+
+                {/* Step 4 */}
+                <div className="relative pl-10">
+                   <div className="absolute left-0 top-1 w-7 h-7 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-500">4</div>
+                   <h4 className="font-bold text-slate-900 text-sm mb-1">Draft a stakeholder deck outline</h4>
+                   <p className="text-xs text-slate-600 mb-3">Move from notes to a concrete deck outline you can fill in with real data.</p>
+                   <PromptCard 
+                      label="Deck outline prompt"
+                      prompt="Draft an outline for a 5 to 7 slide deck explaining what changed in {{metric}}, the hypotheses you explored, the supporting data you will show, and recommended next steps. Use slide titles and bullet points only."
+                   />
+                </div>
+
+             </div>
+
+             <Callout variant="info" title="Why this combo works">
+               <ul className="list-disc pl-4 mt-1 space-y-1 text-sm">
+                 <li>NotebookLM keeps history and prior work at your fingertips.</li>
+                 <li>Research fills in external context you might miss in your own data.</li>
+                 <li>Chat helps you turn analysis into a narrative without starting from a blank slide.</li>
+               </ul>
+             </Callout>
+          </Card>
+        </div>
+      </section>
+    ),
+
+    // STEP 5: AUTOMATED WORKFLOW BUILDER
+    (
+      <section key="automated-builder" className="animate-fade-in mb-16">
+         <div className="max-w-3xl mx-auto">
+            <Card className="p-12 border-dashed border-2 border-slate-200 bg-slate-50 flex flex-col items-center justify-center text-center">
+                <div className="p-4 bg-white rounded-full shadow-sm mb-4">
+                   <PenTool className="w-8 h-8 text-slate-400" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900">Automated workflow builder coming soon</h3>
+            </Card>
+         </div>
+
+        {/* Closing Deep Dive Panel */}
+        <div className="bg-white border-t border-slate-100 pt-8 mt-12">
+          <div className="flex items-center gap-2 mb-6">
+             <Layout className="w-6 h-6 text-slate-700" />
+             <h3 className="font-bold text-xl text-slate-900">Where to go next</h3>
+          </div>
+          <p className="text-slate-600 mb-6">Ready to see these tools in detail? Open a deep dive.</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card 
+              className="p-6 cursor-pointer hover:border-blue-400 group transition-all"
+              onClick={() => setActiveView('research')}
+            >
+              <div className="p-3 bg-blue-100 text-blue-600 rounded-lg w-fit mb-4">
+                 <Globe className="w-6 h-6" />
+              </div>
+              <h4 className="font-bold text-slate-900 mb-2 group-hover:text-blue-600">Research & Web</h4>
+              <p className="text-sm text-slate-500">Master Perplexity and citations.</p>
+              <div className="mt-4 flex items-center text-xs font-bold text-blue-600">
+                 Open Deep Dive <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Card>
+
+            <Card 
+              className="p-6 cursor-pointer hover:border-purple-400 group transition-all"
+              onClick={() => setActiveView('documents')}
+            >
+              <div className="p-3 bg-purple-100 text-purple-600 rounded-lg w-fit mb-4">
+                 <Layers className="w-6 h-6" />
+              </div>
+              <h4 className="font-bold text-slate-900 mb-2 group-hover:text-purple-600">Your Documents</h4>
+              <p className="text-sm text-slate-500">Master NotebookLM and summaries.</p>
+              <div className="mt-4 flex items-center text-xs font-bold text-purple-600">
+                 Open Deep Dive <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Card>
+
+            <Card 
+              className="p-6 cursor-pointer hover:border-emerald-400 group transition-all"
+              onClick={() => setActiveView('builder')}
+            >
+              <div className="p-3 bg-emerald-100 text-emerald-600 rounded-lg w-fit mb-4">
+                 <PenTool className="w-6 h-6" />
+              </div>
+              <h4 className="font-bold text-slate-900 mb-2 group-hover:text-emerald-600">Builder & Experiments</h4>
+              <p className="text-sm text-slate-500">Master Workspace and prompt tools.</p>
+              <div className="mt-4 flex items-center text-xs font-bold text-emerald-600">
+                 Open Deep Dive <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+    )
   ];
 
   return (
     <ModuleLayout
-      title="AI Tools & Research"
-      description="A quick tour of the AI toolbox. Don't use a hammer for everything."
+      title="Workflow Playbook: Combining Tools in Real Projects"
+      description="See how power users chain together chat, research engines, and your docs tools to run complex workflows in their day jobs."
       duration="15 mins"
       audience="All Employees"
       sections={sections}
@@ -457,10 +539,11 @@ export default function Page() {
       totalSteps={totalSteps}
       onNext={handleNextStep}
       onPrev={handlePrevStep}
+      onJumpTo={handleJumpTo}
     >
       {/* ACTIVE STEP CONTENT */}
       <div className="min-h-[400px]">
-        {sectionContent[currentStep].node}
+        {sectionContent[currentStep]}
       </div>
 
       {/* NAVIGATION BUTTONS */}

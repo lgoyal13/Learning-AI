@@ -153,7 +153,7 @@ export default function Page() {
 
           <Card 
             className="p-5 bg-white hover:border-purple-300 transition-colors cursor-pointer group"
-            onClick={() => push('/reference/resources')}
+            onClick={() => push('/modules/tools-overview')}
           >
             <div className="flex items-center gap-2 mb-3 text-purple-600 font-bold text-sm uppercase tracking-wider">
               <Layers className="w-4 h-4" /> Tutorials
