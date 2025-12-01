@@ -28,6 +28,7 @@ interface ModuleWithRoute extends Omit<Module, 'icon'> {
 interface Track {
   id: string;
   title: string;
+  tagline: string;
   description: string;
   modules: ModuleWithRoute[];
 }
@@ -39,6 +40,7 @@ export default function Page() {
     {
       id: 'core',
       title: 'Core Skillset: Foundations',
+      tagline: 'Build the habits that make every AI tool more useful.',
       description: 'Build the fundamentals first. These modules explain what AI is actually doing, how to stay safe, and how to talk to it like a capable teammate.',
       modules: [
         {
@@ -79,17 +81,9 @@ export default function Page() {
     {
       id: 'tools',
       title: 'Tools & Deep Dives',
-      description: 'Once the core skills feel natural, these modules show you how power users combine chat, research engines, and your-docs tools to do real projects.',
+      tagline: 'Learn how each tool works, then see how they combine inside real workflows.',
+      description: 'Once the core skills feel natural, these modules walk you through each tool on its own, then finish with a capstone module that chains them into full workflows.',
       modules: [
-        {
-          id: 'tools-overview',
-          title: 'Tools Overview: Your AI Toolkit',
-          description: 'Get the high-level map. Learn the four job types (chat, research, your docs, builders) and play a quick "which tool should I use?" game.',
-          duration: '15 min',
-          icon: 'Briefcase',
-          path: '/modules/tools-overview',
-          locked: false
-        },
         {
           id: 'tool-research',
           title: 'Research & Web',
@@ -116,13 +110,23 @@ export default function Page() {
           icon: 'PenTool',
           path: '/modules/tool-builder',
           locked: false
+        },
+        {
+          id: 'tools-overview',
+          title: 'Workflows: Your AI Toolkit in Action',
+          description: 'Use this capstone after you know the tools. Walk through three real workflows that combine NotebookLM, Perplexity, Gemini, and chat from first question to final output.',
+          duration: 'Capstone · 15 min',
+          icon: 'Briefcase',
+          path: '/modules/tools-overview',
+          locked: false
         }
       ]
     },
     {
       id: 'advanced',
       title: 'Advanced & Coming Soon',
-      description: 'For power users who want to turn good prompts into reusable workflows and pilots. These are optional and may require extra approvals.',
+      tagline: 'Look at pilots and automation ideas that require extra approvals.',
+      description: 'Come here after you have finished the foundations and tools tracks. These modules point you to the Advanced page, where pilots and automation experiments live under extra guardrails.',
       modules: [
         {
           id: 'advanced-hub',
@@ -167,8 +171,16 @@ export default function Page() {
   return (
     <PageLayout 
       title="Learning modules" 
-      description="Explore the core skills first, then dive into tools and advanced workflows. You can hop around, but most people start with the foundations."
+      description="Most people get the most value from the Academy by moving through three stages."
     >
+      <div className="max-w-4xl mb-8 -mt-2">
+        <ol className="space-y-3 text-slate-700 list-decimal pl-5">
+           <li className="pl-2"><span className="font-bold text-slate-900">Foundations:</span> Learn the core habits of prompting and safe use.</li>
+           <li className="pl-2"><span className="font-bold text-slate-900">Tools and deep dives:</span> Get hands on with research, your docs, and builder tools, and end with a workflows capstone.</li>
+           <li className="pl-2"><span className="font-bold text-slate-900">Advanced pilots:</span> Explore automation and experimental use cases on the Advanced page once you are comfortable with the basics.</li>
+        </ol>
+      </div>
+
       {/* Hero Buttons */}
       <div className="mb-12">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
@@ -189,6 +201,7 @@ export default function Page() {
           <section key={track.id} className="animate-fade-in">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-slate-900">{track.title}</h2>
+              <p className="text-lg font-medium text-slate-700 mt-1">{track.tagline}</p>
               <p className="text-lg text-slate-600 mt-2 max-w-3xl">
                 {track.description}
               </p>
@@ -200,7 +213,7 @@ export default function Page() {
                   key={module.id} 
                   className={`group h-full flex flex-col ${module.locked ? 'opacity-75 bg-slate-50' : 'bg-white'}`}
                   hover={!module.locked}
-                  onClick={() => !module.locked && push(module.path)}
+                  onClick={() => !module.locked && module.path && push(module.path)}
                 >
                   <div className="p-6 flex-1 flex flex-col">
                     <div className="flex justify-between items-start mb-4">

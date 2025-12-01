@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
-import { Card, Callout, PromptCard, Button } from '../../../components/ui';
-import { Globe, Search, CheckCircle2, AlertTriangle, ArrowLeft, ArrowRight, Zap, BrainCircuit, Target, BookOpen } from 'lucide-react';
+import { Card, Callout, PromptCard, Button, Badge } from '../../../components/ui';
+import { 
+  Globe, Search, CheckCircle2, AlertTriangle, ArrowLeft, ArrowRight, 
+  Zap, BrainCircuit, Target, BookOpen, Filter, MapPin, Calendar, 
+  FileText, ExternalLink, MousePointerClick
+} from 'lucide-react';
 import { useRouter } from '../../../lib/routerContext';
 
-export default function Page() {
+export default function Page({ onBack }: { onBack?: () => void }) {
   const { push } = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [researchMode, setResearchMode] = useState<'quick' | 'deep'>('quick');
 
   const sections = [
-    { id: 'why-research', title: 'Why Research Tools Exist' },
-    { id: 'fast-vs-deep', title: 'Fast vs Deep Research' },
-    { id: 'perplexity', title: 'Perplexity: The Citation Engine' },
-    { id: 'interaction', title: 'Quick Check vs Deep Research' },
-    { id: 'troubleshooting', title: 'Choosing & Troubleshooting' },
+    { id: 'intro', title: 'The Research Engine' },
+    { id: 'modes', title: 'Fast vs. Deep Mode' },
+    { id: 'formula', title: 'The Research Prompt Formula' },
+    { id: 'playbook', title: 'Role-Based Playbook' },
+    { id: 'trust', title: 'Trust & Verification' },
   ];
 
   const totalSteps = sections.length;
@@ -36,180 +40,123 @@ export default function Page() {
 
   const renderStepContent = () => {
     switch (currentStep) {
-      case 0:
+      case 0: // INTRO
         return (
-          <section id="why-research" className="mb-12 animate-fade-in">
-            <h2>When you need facts, not just chat</h2>
-            <p className="text-lg text-slate-700">
-              Standard chat models are great conversationalists, but they don't always know what happened this morning. 
-              <strong>Research tools</strong> are built differently: they read the live web first, then synthesize an answer.
-            </p>
-            <p className="text-slate-600">
-              Use these tools when accuracy, citations, and recency matter more than speed or creativity.
+          <section id="intro" className="mb-12 animate-fade-in">
+            <h2 className="text-3xl font-bold text-slate-900 mb-6">The Research Engine</h2>
+            
+            <p className="text-lg text-slate-700 leading-relaxed mb-8 max-w-3xl">
+              Standard chatbots are like very well-read improvisers—they know a lot, but they often guess when they don't know the specifics.
+              <br/><br/>
+              <strong>Research tools</strong> (like Perplexity or Gemini with Google Search) work differently. They browse the live web, read dozens of sources in seconds, and synthesize an answer with citations.
             </p>
 
-            <div className="my-8">
-              <h3 className="text-xl font-bold text-slate-900 mb-4">What you can do here</h3>
-              
-              <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                 <h4 className="font-bold text-slate-900 mb-3">Best use cases:</h4>
-                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-700">
-                   <li className="flex items-start gap-2">
-                     <CheckCircle2 className="w-4 h-4 text-blue-600 mt-0.5" />
-                     Market intelligence & competitor news
-                   </li>
-                   <li className="flex items-start gap-2">
-                     <CheckCircle2 className="w-4 h-4 text-blue-600 mt-0.5" />
-                     Checking recent regulation changes
-                   </li>
-                   <li className="flex items-start gap-2">
-                     <CheckCircle2 className="w-4 h-4 text-blue-600 mt-0.5" />
-                     Scanning news for specific topics ("telematics trends")
-                   </li>
-                   <li className="flex items-start gap-2">
-                     <CheckCircle2 className="w-4 h-4 text-blue-600 mt-0.5" />
-                     Fact-checking a claim with source links
-                   </li>
-                 </ul>
-              </div>
-            </div>
-          </section>
-        );
-      case 1:
-        return (
-          <section id="fast-vs-deep" className="mb-12 animate-fade-in">
-            <h2>Two speeds: Fast vs. Deep</h2>
-            <p className="mb-6">
-              Research tools usually offer two modes. Knowing which one to pick will save you time and frustration.
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 not-prose">
-              <Card className="p-6 border-t-4 border-t-blue-400">
-                <div className="flex items-center gap-2 mb-4">
-                  <Zap className="w-6 h-6 text-blue-500" />
-                  <h3 className="text-lg font-bold text-slate-900">Fast Mode</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <Card className="p-6 bg-blue-50 border-blue-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-white rounded-lg text-blue-600 shadow-sm">
+                    <Search className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-lg">It Reads for You</h3>
                 </div>
-                <p className="text-sm text-slate-600 mb-4 min-h-[40px]">
-                  <strong>Goal:</strong> Quick orientation. Good for scanning headlines, simple definitions, and getting the "gist."
+                <p className="text-slate-700">
+                  Instead of giving you 10 blue links to click through, it reads the pages and summarizes the answer.
                 </p>
-                <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-600 border border-slate-100">
-                  "Give me a quick overview of telematics-based auto insurance."
-                </div>
               </Card>
 
-              <Card className="p-6 border-t-4 border-t-purple-600">
-                <div className="flex items-center gap-2 mb-4">
-                  <BrainCircuit className="w-6 h-6 text-purple-600" />
-                  <h3 className="text-lg font-bold text-slate-900">Deep / Reasoning Mode</h3>
+              <Card className="p-6 bg-purple-50 border-purple-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-white rounded-lg text-purple-600 shadow-sm">
+                    <BookOpen className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-lg">It Cites Sources</h3>
                 </div>
-                <p className="text-sm text-slate-600 mb-4 min-h-[40px]">
-                  <strong>Goal:</strong> Strategic depth. Good for multi-step analysis, comparisons, and reports you'd show a manager.
+                <p className="text-slate-700">
+                  Good research tools show their work. Every claim usually has a little number [1] you can click to verify.
                 </p>
-                <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-600 border border-slate-100">
-                  "Compare how regulators in US vs EU talk about telematics privacy. Cite 3 recent rulings."
-                </div>
               </Card>
             </div>
 
-            <Callout variant="info" title="The Trade-off">
-              Deep mode takes longer (sometimes minutes) because it is literally "thinking," performing multiple searches, and verifying sources. Use it for high-stakes questions.
-            </Callout>
-          </section>
-        );
-      case 2:
-        return (
-          <section id="perplexity" className="mb-12 animate-fade-in">
-            <h2>Perplexity: The Citation Engine</h2>
-            <p className="mb-6">
-              Think of Perplexity as a search engine that answers you in paragraphs, not blue links. 
-              Its superpower is transparency—almost every sentence links back to a source.
-            </p>
-
-            <div className="mb-8">
-              <h3 className="font-bold text-slate-900 mb-4">Template: Competitive Intel Scan</h3>
-              <p className="text-sm text-slate-600 mb-4">
-                Use this template to generate a professional briefing doc in minutes. Fill in the placeholders (brackets).
-              </p>
-              
-              <PromptCard 
-                label="Competitive Intel Template"
-                prompt={`Conduct a competitive intelligence scan for the [Industry] industry in [Region] regarding [Topic]. Time window: last [Time Window].
-
-For each major competitor (find at least 3):
-1. Cite at least two reputable sources (news, press release, official blog).
-2. Summarize their recent activity in 1–2 sentences.
-3. Present a table with columns: Competitor, Launch Date, Source Link, Key Feature.
-
-Finally, write a short narrative summary of the overall market trend.`}
-              />
-            </div>
-
-            <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
-              <h3 className="font-bold text-slate-900 mb-3">Tailor it to your role</h3>
-              <ul className="space-y-3 text-sm text-slate-700">
-                <li className="flex gap-2">
-                  <Target className="w-4 h-4 text-purple-600 mt-0.5" />
-                  <strong>Product Manager:</strong> "Summarize user complaints about [Competitor App] from Reddit and Twitter."
-                </li>
-                <li className="flex gap-2">
-                  <Target className="w-4 h-4 text-purple-600 mt-0.5" />
-                  <strong>Marketer:</strong> "Find viral trends related to [Topic] in the last week."
-                </li>
-                <li className="flex gap-2">
-                  <Target className="w-4 h-4 text-purple-600 mt-0.5" />
-                  <strong>Risk/Ops:</strong> "List regulatory changes for [Industry] in [Region] effective 2025."
-                </li>
-              </ul>
+            <div className="bg-white p-6 rounded-xl border border-slate-200">
+               <h3 className="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">After this module you will be able to:</h3>
+               <ul className="space-y-3 text-sm text-slate-700">
+                 <li className="flex items-start gap-3">
+                   <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
+                   Choose between "Fast" and "Deep" research modes.
+                 </li>
+                 <li className="flex items-start gap-3">
+                   <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
+                   Write prompts that force the AI to look at specific timeframes and sources.
+                 </li>
+                 <li className="flex items-start gap-3">
+                   <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
+                   Quickly verify citations to catch hallucinations.
+                 </li>
+               </ul>
             </div>
           </section>
         );
-      case 3:
+
+      case 1: // MODES (Interactive)
         return (
-          <section id="interaction" className="mb-12 animate-fade-in">
-            <h2>Quick check vs Deep Research</h2>
-            <p className="mb-6">
-              Not every question needs a 5-minute deep dive. Toggle below to see how the answer shape changes based on the mode.
+          <section id="modes" className="mb-12 animate-fade-in">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Fast vs. Deep Mode</h2>
+            <p className="text-lg text-slate-700 mb-8 max-w-3xl">
+              Research tools usually offer two speeds. Knowing which one to pick will save you time and frustration.
             </p>
 
-            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm mb-8">
               <div className="bg-slate-50 border-b border-slate-200 p-2 flex gap-2">
                 <button
                   onClick={() => setResearchMode('quick')}
-                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-bold transition-all ${researchMode === 'quick' ? 'bg-white shadow text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
+                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${researchMode === 'quick' ? 'bg-white shadow text-blue-600 ring-1 ring-slate-200' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'}`}
                 >
-                  <Zap className="w-4 h-4 inline mr-2" /> Quick Check
+                  <Zap className="w-4 h-4" /> Quick Check
                 </button>
                 <button
                   onClick={() => setResearchMode('deep')}
-                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-bold transition-all ${researchMode === 'deep' ? 'bg-white shadow text-purple-600' : 'text-slate-500 hover:text-slate-700'}`}
+                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${researchMode === 'deep' ? 'bg-white shadow text-purple-600 ring-1 ring-slate-200' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'}`}
                 >
-                  <BrainCircuit className="w-4 h-4 inline mr-2" /> Deep Research
+                  <BrainCircuit className="w-4 h-4" /> Deep Research
                 </button>
               </div>
 
-              <div className="p-8 min-h-[300px]">
+              <div className="p-6 md:p-8 min-h-[400px]">
                 {researchMode === 'quick' && (
                   <div className="animate-fade-in">
-                    <div className="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-lg">
-                      <p className="text-xs font-bold text-blue-600 uppercase mb-2">Prompt</p>
-                      <p className="text-sm text-blue-900 font-mono">"What is the starting price of the Tesla Model 3?"</p>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      <h4 className="font-bold text-slate-900">Typical Output</h4>
-                      <div className="text-sm text-slate-700 leading-relaxed border-l-2 border-slate-300 pl-4">
-                        The Tesla Model 3 currently starts at approximately <strong>$38,990</strong> for the rear-wheel drive version in the US, before incentives. Prices vary by region.
-                        <br/><br/>
-                        <span className="text-xs text-slate-500">Source: tesla.com/model3</span>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                      <div className="md:col-span-1 space-y-4">
+                        <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+                          <p className="text-xs font-bold text-blue-600 uppercase mb-2">Best For</p>
+                          <ul className="text-sm text-blue-900 space-y-2">
+                            <li>• Fact checking</li>
+                            <li>• Definitions</li>
+                            <li>• Getting the "gist"</li>
+                          </ul>
+                        </div>
+                        <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                           <p className="text-xs font-bold text-slate-500 uppercase mb-2">Wait time</p>
+                           <p className="text-slate-900 font-bold">5-10 seconds</p>
+                        </div>
                       </div>
-
-                      <div className="mt-8 pt-4 border-t border-slate-100">
-                        <h4 className="font-bold text-slate-900 text-sm mb-2">When to use:</h4>
-                        <ul className="space-y-1 text-sm text-slate-600">
-                           <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-green-500"/> Fact checking a single number.</li>
-                           <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-green-500"/> Simple definitions.</li>
-                           <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-green-500"/> "Sanity check" before a meeting.</li>
-                        </ul>
+                      
+                      <div className="md:col-span-2 space-y-4">
+                        <div className="p-4 bg-white border border-slate-200 rounded-lg shadow-sm">
+                           <p className="text-xs font-bold text-slate-400 uppercase mb-2">Example Prompt</p>
+                           <p className="text-slate-900 font-mono text-sm">"What is the starting price of the Tesla Model 3 in the US right now?"</p>
+                        </div>
+                        
+                        <div className="relative pl-6 border-l-2 border-blue-200 space-y-2">
+                           <div className="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+                           <p className="text-xs font-bold text-blue-600 uppercase">Output</p>
+                           <p className="text-sm text-slate-700 leading-relaxed">
+                             The Tesla Model 3 currently starts at approximately <strong>$38,990</strong> for the rear-wheel drive version, before incentives. Prices vary by region.
+                           </p>
+                           <div className="flex gap-2 mt-2">
+                             <Badge variant="neutral" className="text-[10px]"><ExternalLink className="w-3 h-3 mr-1"/> tesla.com</Badge>
+                             <Badge variant="neutral" className="text-[10px]"><ExternalLink className="w-3 h-3 mr-1"/> caranddriver.com</Badge>
+                           </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -217,90 +164,233 @@ Finally, write a short narrative summary of the overall market trend.`}
 
                 {researchMode === 'deep' && (
                   <div className="animate-fade-in">
-                     <div className="mb-6 p-4 bg-purple-50 border border-purple-100 rounded-lg">
-                      <p className="text-xs font-bold text-purple-600 uppercase mb-2">Prompt</p>
-                      <p className="text-sm text-purple-900 font-mono">"Analyze EV pricing trends for Q3 2024. Compare Tesla, Ford, and BYD."</p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <h4 className="font-bold text-slate-900">Typical Output (Snippet)</h4>
-                      <div className="text-sm text-slate-700 leading-relaxed border-l-2 border-purple-300 pl-4">
-                        <strong className="block text-slate-900 mb-2">Executive Summary: Aggressive Price Cuts Continue</strong>
-                        <p className="mb-2">
-                          In Q3 2024, the EV market saw continued price wars driven by saturation in the Chinese market and interest rate pressures in the US.
-                        </p>
-                        <div className="bg-slate-50 p-3 rounded border border-slate-200 my-3 font-mono text-xs">
-                          | Brand | Strategy | Avg Price Change | Source |<br/>
-                          |-------|----------|------------------|--------|<br/>
-                          | Tesla | Volume   | -4.5%            | [1]    |<br/>
-                          | Ford  | Hybrid   | -2.0%            | [2]    |<br/>
-                          | BYD   | Export   | -8.0%            | [3]    |
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                      <div className="md:col-span-1 space-y-4">
+                        <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                          <p className="text-xs font-bold text-purple-600 uppercase mb-2">Best For</p>
+                          <ul className="text-sm text-purple-900 space-y-2">
+                            <li>• Market analysis</li>
+                            <li>• Competitor scans</li>
+                            <li>• Complex topics</li>
+                          </ul>
                         </div>
-                        <p>
-                          <strong>Key Driver:</strong> BYD's new export incentives have forced competitors to lower margins...
-                        </p>
+                        <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                           <p className="text-xs font-bold text-slate-500 uppercase mb-2">Wait time</p>
+                           <p className="text-slate-900 font-bold">1-5 minutes</p>
+                        </div>
                       </div>
-
-                      <div className="mt-8 pt-4 border-t border-slate-100">
-                        <h4 className="font-bold text-slate-900 text-sm mb-2">When to use:</h4>
-                        <ul className="space-y-1 text-sm text-slate-600">
-                           <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-green-500"/> Market analysis reports.</li>
-                           <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-green-500"/> Competitive landscape scans.</li>
-                           <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-green-500"/> Understanding complex cause-and-effect.</li>
-                        </ul>
+                      
+                      <div className="md:col-span-2 space-y-4">
+                        <div className="p-4 bg-white border border-slate-200 rounded-lg shadow-sm">
+                           <p className="text-xs font-bold text-slate-400 uppercase mb-2">Example Prompt</p>
+                           <p className="text-slate-900 font-mono text-sm">"Analyze EV pricing trends for Q3 2024. Compare Tesla, Ford, and BYD strategies."</p>
+                        </div>
+                        
+                        <div className="relative pl-6 border-l-2 border-purple-200 space-y-2">
+                           <div className="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-purple-500"></div>
+                           <p className="text-xs font-bold text-purple-600 uppercase">Output</p>
+                           <div className="text-sm text-slate-700 leading-relaxed space-y-3">
+                             <p><strong>Executive Summary:</strong> In Q3 2024, the EV market saw continued price wars driven by saturation in Asia and interest rates in the US.</p>
+                             <div className="bg-slate-50 p-2 rounded border border-slate-200 text-xs font-mono">
+                               | Brand | Strategy | Price Change |<br/>
+                               |-------|----------|--------------|<br/>
+                               | Tesla | Volume   | -4.5% [1]    |<br/>
+                               | Ford  | Hybrid   | -2.0% [2]    |<br/>
+                               | BYD   | Export   | -8.0% [3]    |
+                             </div>
+                             <p><strong>Key Insight:</strong> BYD's aggressive export incentives have forced competitors to defend market share at the cost of margin...</p>
+                           </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
             </div>
-          </section>
-        );
-      case 4:
-        return (
-          <section id="troubleshooting" className="mb-12 animate-fade-in">
-            <h2>Choosing & Troubleshooting</h2>
-            <p className="mb-8 text-lg text-slate-700">
-              Even powerful tools can fail. Here is how to fix common issues when researching with AI.
-            </p>
 
-            <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
-              <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-amber-500" /> Troubleshooting Guide
-              </h3>
-              <ul className="space-y-4 text-sm text-slate-700">
-                <li className="flex gap-3 items-start">
-                   <div className="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold shrink-0">1</div>
-                   <div>
-                     <strong>Generic answers?</strong>
-                     <p className="text-slate-600">The scope is too broad. Add constraints: "Focus only on the US market" or "Ignore articles older than 3 months."</p>
-                   </div>
-                </li>
-                <li className="flex gap-3 items-start">
-                   <div className="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold shrink-0">2</div>
-                   <div>
-                     <strong>Weird sources?</strong>
-                     <p className="text-slate-600">Explicitly ask it to exclude them: "Do not cite forums like Reddit or Quora. Use only major news outlets."</p>
-                   </div>
-                </li>
-                <li className="flex gap-3 items-start">
-                   <div className="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold shrink-0">3</div>
-                   <div>
-                     <strong>Too slow?</strong>
-                     <p className="text-slate-600">You might be using Deep Research for a simple fact check. Switch back to "Standard" or "Quick" mode.</p>
-                   </div>
-                </li>
-              </ul>
-            </div>
-
-            <Callout variant="info" title="Go Deeper" className="flex items-center justify-between">
-               <span>See advanced Deep Research guides in the Resource Library.</span>
-               <Button size="sm" variant="ghost" onClick={() => push('/reference/resources')}>
-                  Open Library <ArrowRight className="w-4 h-4 ml-1" />
-               </Button>
+            <Callout variant="info" title="Pro Tip">
+              Start with <strong>Quick Check</strong>. If the answer feels too shallow, tell the tool: "Go deeper and create a report on this."
             </Callout>
           </section>
         );
+
+      case 2: // FORMULA
+        return (
+          <section id="formula" className="mb-12 animate-fade-in">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">The Research Prompt Formula</h2>
+            <p className="text-lg text-slate-700 mb-8 max-w-3xl">
+              When searching the web, the AI needs boundaries. If you don't give it constraints, it will give you a generic Wikipedia-style summary.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+               <Card className="p-4 border-l-4 border-l-blue-500">
+                  <div className="flex items-center gap-2 mb-2 font-bold text-slate-900">
+                    <Calendar className="w-5 h-5 text-blue-500" /> Timeframe
+                  </div>
+                  <p className="text-sm text-slate-600">"In the last 6 months..." or "Projections for 2025..."</p>
+               </Card>
+               <Card className="p-4 border-l-4 border-l-purple-500">
+                  <div className="flex items-center gap-2 mb-2 font-bold text-slate-900">
+                    <MapPin className="w-5 h-5 text-purple-500" /> Geography
+                  </div>
+                  <p className="text-sm text-slate-600">"In the US Market..." or "EU Regulations..."</p>
+               </Card>
+               <Card className="p-4 border-l-4 border-l-emerald-500">
+                  <div className="flex items-center gap-2 mb-2 font-bold text-slate-900">
+                    <Filter className="w-5 h-5 text-emerald-500" /> Source Type
+                  </div>
+                  <p className="text-sm text-slate-600">"Cite only major news outlets..." or "Ignore forums/blogs..."</p>
+               </Card>
+            </div>
+
+            <div className="mb-8">
+              <h3 className="font-bold text-slate-900 mb-4">The Formula in Action</h3>
+              <PromptCard 
+                label="Research Prompt Template"
+                prompt={`Act as a Market Analyst.
+
+Task: Research [Topic, e.g., adoption of AI in legal firms].
+
+Constraints:
+1. Focus on [Geography, e.g., the UK market].
+2. Look for data from [Timeframe, e.g., the last 12 months].
+3. Cite only [Source Type, e.g., industry reports and reputable news].
+
+Output:
+- A summary of the top 3 trends.
+- A table of key statistics with source links.
+- 3 strategic implications.`}
+              />
+            </div>
+          </section>
+        );
+
+      case 3: // PLAYBOOK
+        return (
+          <section id="playbook" className="mb-12 animate-fade-in">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Role-Based Playbook</h2>
+            <p className="text-lg text-slate-700 mb-8 max-w-3xl">
+              Here is how different roles use research tools to save hours of Googling.
+            </p>
+
+            <div className="space-y-6">
+              {/* Marketing */}
+              <div className="flex flex-col md:flex-row gap-6 p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                <div className="shrink-0">
+                  <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-pink-600">
+                    <Target className="w-6 h-6" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-900 text-lg mb-2">Marketing & Strategy</h3>
+                  <p className="text-slate-600 text-sm mb-4">
+                    Use research tools to find trends, benchmarks, and competitor moves.
+                  </p>
+                  <div className="bg-slate-50 p-3 rounded border border-slate-100 font-mono text-xs text-slate-700">
+                    "Find the average email open rates for B2B SaaS in 2024. Cite 3 recent reports and break it down by region."
+                  </div>
+                </div>
+              </div>
+
+              {/* Ops */}
+              <div className="flex flex-col md:flex-row gap-6 p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                <div className="shrink-0">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                    <FileText className="w-6 h-6" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-900 text-lg mb-2">Ops & Project Management</h3>
+                  <p className="text-slate-600 text-sm mb-4">
+                    Use research tools to compare software, vendors, or regulations.
+                  </p>
+                  <div className="bg-slate-50 p-3 rounded border border-slate-100 font-mono text-xs text-slate-700">
+                    "Create a comparison table for Asana vs Monday.com vs ClickUp. Include pricing for enterprise tiers, AI features, and compliance certifications."
+                  </div>
+                </div>
+              </div>
+
+              {/* Sales/CS */}
+              <div className="flex flex-col md:flex-row gap-6 p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+                <div className="shrink-0">
+                  <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
+                    <Globe className="w-6 h-6" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-900 text-lg mb-2">Sales & Customer Success</h3>
+                  <p className="text-slate-600 text-sm mb-4">
+                    Use research tools to prep for a meeting by understanding the client's recent news.
+                  </p>
+                  <div className="bg-slate-50 p-3 rounded border border-slate-100 font-mono text-xs text-slate-700">
+                    "I have a meeting with [Company Name]. Summarize their last 2 earnings calls and any major product launches from the last 6 months."
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+
+      case 4: // TRUST
+        return (
+          <section id="trust" className="mb-12 animate-fade-in">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Trust & Verification</h2>
+            <p className="text-lg text-slate-700 mb-8 max-w-3xl">
+              Even with citations, AI can make mistakes. It might cite a 2019 article as "recent" or misinterpret a paywalled report.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <Card className="p-6 border-t-4 border-t-amber-500">
+                <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-amber-500" /> Common Pitfalls
+                </h3>
+                <ul className="space-y-4 text-sm text-slate-700">
+                  <li className="flex gap-3 items-start">
+                     <span className="font-bold text-amber-600">1.</span>
+                     <div>
+                       <strong>Date Confusion:</strong>
+                       <p className="text-slate-600">Always check the date of the citation. "Recent" might mean 3 years ago to an AI.</p>
+                     </div>
+                  </li>
+                  <li className="flex gap-3 items-start">
+                     <span className="font-bold text-amber-600">2.</span>
+                     <div>
+                       <strong>Paywalls:</strong>
+                       <p className="text-slate-600">If a source is paywalled, the AI might guess the content from the headline. Verify the actual text.</p>
+                     </div>
+                  </li>
+                </ul>
+              </Card>
+
+              <Card className="p-6 border-t-4 border-t-green-500">
+                <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-green-500" /> Verification Routine
+                </h3>
+                <ul className="space-y-4 text-sm text-slate-700">
+                  <li className="flex gap-3 items-start">
+                     <span className="font-bold text-green-600">1.</span>
+                     <div>
+                       <strong>Click One Link:</strong>
+                       <p className="text-slate-600">Randomly click one citation. Does it actually say what the AI claims it says?</p>
+                     </div>
+                  </li>
+                  <li className="flex gap-3 items-start">
+                     <span className="font-bold text-green-600">2.</span>
+                     <div>
+                       <strong>Ask for "Direct Quotes":</strong>
+                       <p className="text-slate-600">If a number looks wrong, ask: "Quote the specific sentence from the report where you found this number."</p>
+                     </div>
+                  </li>
+                </ul>
+              </Card>
+            </div>
+
+            <Callout variant="info" title="Final Rule">
+               Research tools are for <strong>discovery</strong>. You are still responsible for <strong>accuracy</strong>. Never paste a stat into a client deck without clicking the source link first.
+            </Callout>
+          </section>
+        );
+
       default:
         return null;
     }
@@ -308,8 +398,8 @@ Finally, write a short narrative summary of the overall market trend.`}
 
   return (
     <ModuleLayout
-      title="Research & Web: Perplexity and Deep Research"
-      description="Use AI research tools to go beyond simple chat. Learn when to use quick answers, when to turn on Deep Research, and how to run credible competitive and market scans."
+      title="Research & Web: The Citation Engine"
+      description="Learn how to use AI to scan the live web, find facts, and build reports with real citations—without getting lost in 50 open tabs."
       duration="15 mins"
       audience="All Employees"
       sections={sections}
@@ -318,6 +408,8 @@ Finally, write a short narrative summary of the overall market trend.`}
       onNext={handleNext}
       onPrev={handlePrev}
       onJumpTo={handleJumpTo}
+      onBack={onBack}
+      backLabel="Back to Workflow Playbook"
     >
       {/* Content Area */}
       <div className="min-h-[400px]">

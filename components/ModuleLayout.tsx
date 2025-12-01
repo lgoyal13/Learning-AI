@@ -23,6 +23,10 @@ interface ModuleLayoutProps {
   onPrev: () => void;
   onJumpTo: (step: number) => void;
   isNextDisabled?: boolean;
+  
+  // Back Navigation
+  onBack?: () => void;
+  backLabel?: string;
 }
 
 export const ModuleLayout: React.FC<ModuleLayoutProps> = ({
@@ -37,9 +41,15 @@ export const ModuleLayout: React.FC<ModuleLayoutProps> = ({
   onNext,
   onPrev,
   onJumpTo,
-  isNextDisabled = false
+  isNextDisabled = false,
+  onBack,
+  backLabel
 }) => {
   const { push } = useRouter();
+
+  const handleBack = onBack || (() => push('/modules'));
+  const backText = onBack ? (backLabel || 'Back') : 'Back to Curriculum';
+  const BackIcon = onBack ? ArrowLeft : LayoutGrid;
 
   return (
     <div className="max-w-6xl mx-auto animate-fade-in pb-20">
@@ -48,10 +58,10 @@ export const ModuleLayout: React.FC<ModuleLayoutProps> = ({
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => push('/modules')} 
+          onClick={handleBack} 
           className="mb-4 text-slate-500 pl-0 hover:bg-transparent hover:text-blue-600"
         >
-          <LayoutGrid className="w-4 h-4 mr-2" /> Back to Curriculum
+          <BackIcon className="w-4 h-4 mr-2" /> {backText}
         </Button>
         <h1 className="text-4xl font-bold text-slate-900 mb-4">{title}</h1>
         <p className="text-xl text-slate-600 max-w-3xl mb-6 leading-relaxed">{description}</p>
@@ -75,6 +85,19 @@ export const ModuleLayout: React.FC<ModuleLayoutProps> = ({
             
             {/* Progress Section */}
             <div>
+              {onBack && (
+                  <div className="mb-4 pb-4 border-b border-slate-100">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={onBack} 
+                      className="w-full justify-start pl-0 text-slate-600 hover:text-blue-600 -ml-2"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" /> {backLabel || 'Back'}
+                    </Button>
+                  </div>
+              )}
+
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-bold text-slate-900 uppercase text-xs tracking-wider">In this module</h3>
                 <span className="text-xs font-bold text-slate-500">

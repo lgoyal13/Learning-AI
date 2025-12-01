@@ -93,12 +93,14 @@ export const Button: React.FC<ButtonProps> = ({
 
 // --- Containers ---
 
-export const Card: React.FC<{ 
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode; 
   className?: string;
   onClick?: () => void;
   hover?: boolean;
-}> = ({ children, className = '', onClick, hover }) => (
+}
+
+export const Card: React.FC<CardProps> = ({ children, className = '', onClick, hover, ...props }) => (
   <div 
     onClick={onClick}
     className={`
@@ -106,6 +108,7 @@ export const Card: React.FC<{
       ${hover || onClick ? 'transition-all duration-200 hover:shadow-md hover:border-blue-200 cursor-pointer' : ''}
       ${className}
     `}
+    {...props}
   >
     {children}
   </div>
@@ -196,10 +199,15 @@ export const Callout: React.FC<{
 
   const s = styles[variant];
 
+  // Fix for success icon
+  const IconComponent = variant === 'success' ? CheckCircle : s.icon.type;
+  
   return (
     <div className={`p-4 rounded-lg border ${s.bg} ${s.border} ${className}`}>
       <div className="flex gap-3">
-        <div className="flex-shrink-0 mt-0.5">{s.icon}</div>
+        <div className="flex-shrink-0 mt-0.5">
+          {variant === 'success' ? <IconComponent className="w-5 h-5 text-emerald-600" /> : s.icon}
+        </div>
         <div className="flex-1">
           {title && <h4 className={`font-semibold mb-1 ${s.text}`}>{title}</h4>}
           <div className={`text-sm ${s.text} opacity-90`}>{children}</div>
@@ -209,29 +217,70 @@ export const Callout: React.FC<{
   );
 };
 
-export const PromptCard: React.FC<{ prompt: string; label?: string }> = ({ prompt, label = "Prompt Template" }) => {
+export const PromptCard: React.FC<{ prompt: string; label?: string }> = ({ prompt, label = "PROMPT TEMPLATE" }) => {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
     navigator.clipboard.writeText(prompt);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const processText = (text: string) => {
+    const parts = text.split(/(\{\{.*?\}\})/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('{{') && part.endsWith('}}')) {
+        return <span key={index} className="bg-amber-100 text-amber-800 font-semibold px-1 rounded mx-0.5 border border-amber-200/50">{part}</span>;
+      }
+      return part;
+    });
+  };
+
+  const renderContent = () => {
+    if (!prompt) return null;
+    return prompt.split('\n').map((line, i) => {
+      if (line.trim() === '') {
+        return <div key={i} className="h-3" />;
+      }
+      
+      // Check for structural keys like "Context:" or "Task:"
+      const keyMatch = line.match(/^([A-Za-z\s]+:)(.*)/);
+      // Heuristic: Key is short and at start of line
+      if (keyMatch && keyMatch[1].length < 40) {
+        return (
+          <div key={i} className="mb-1">
+            <span className="font-bold text-slate-800 mr-2">{keyMatch[1]}</span>
+            <span className="text-slate-600">{processText(keyMatch[2])}</span>
+          </div>
+        );
+      }
+      
+      // Check for numbered steps or bullets that act as headers
+      const headerMatch = line.match(/^(\d+\.|-)\s+(.*)/);
+      if (headerMatch && headerMatch[2].trim().endsWith(':')) {
+         return <div key={i} className="font-bold text-slate-900 mt-4 mb-2">{processText(line)}</div>;
+      }
+
+      return <div key={i} className="mb-1">{processText(line)}</div>;
+    });
+  };
+
   return (
-    <div className="relative group rounded-lg border border-slate-200 bg-slate-50 overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 bg-slate-100 border-b border-slate-200">
-        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</span>
+    <div className="relative group rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm hover:border-blue-300 transition-colors">
+      <div className="flex items-center justify-between px-4 py-2 bg-slate-50 border-b border-slate-100">
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</span>
         <button 
           onClick={handleCopy}
-          className="text-slate-500 hover:text-blue-600 transition-colors"
+          className="text-slate-400 hover:text-blue-600 transition-colors flex items-center gap-1.5"
           title="Copy to clipboard"
         >
-          {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+          {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+          {copied && <span className="text-xs font-medium">Copied</span>}
         </button>
       </div>
-      <div className="p-4 font-mono text-sm text-slate-700 whitespace-pre-wrap">
-        {prompt}
+      <div className="p-5 font-mono text-sm text-slate-600 leading-relaxed">
+        {renderContent()}
       </div>
     </div>
   );

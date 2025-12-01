@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
-import { Card, Callout, Button } from '../../../components/ui';
+import { Card, Callout, Button, Badge } from '../../../components/ui';
 import { 
   Zap, BrainCircuit, Globe, Paperclip, Mic, Image, Search,
-  ArrowRight, ArrowLeft, CheckCircle2, Check, Layers, PenTool
+  ArrowRight, ArrowLeft, CheckCircle2, Check, Layers, PenTool,
+  Video, Edit3, Settings, Lightbulb, MousePointerClick, Smartphone,
+  Target
 } from 'lucide-react';
 import { useRouter } from '../../../lib/routerContext';
 
 export default function Page() {
   const { push } = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
+  
+  // State for Practice Section
+  const [practiceAnswers, setPracticeAnswers] = useState<Record<string, string | null>>({});
 
   const sections = [
-    { id: 'speeds', title: 'Your AI Has More Than One Speed' },
-    { id: 'deep-research', title: 'Deep Research vs Normal Chat' },
-    { id: 'tooling', title: 'The Toolbar Is Part of Prompting' },
-    { id: 'tool-track', title: 'See Specialist Tools in Action' },
+    { id: 'speeds', title: 'Two Speeds: Fast vs Pro' },
+    { id: 'deep-research', title: 'Deep Research: Reports, Not Links' },
+    { id: 'visuals', title: 'Visuals: Images & Video' },
+    { id: 'quick-wins', title: 'Quick Wins: The Hidden Toolbar' },
+    { id: 'practice', title: 'Practice: Match the Tool' },
+    { id: 'toolkit', title: 'Your Daily Toolkit' },
   ];
 
   const totalSteps = sections.length;
@@ -35,13 +42,20 @@ export default function Page() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const togglePracticeAnswer = (scenarioId: string, answer: string) => {
+    setPracticeAnswers(prev => ({
+      ...prev,
+      [scenarioId]: prev[scenarioId] === answer ? null : answer
+    }));
+  };
+
   const sectionContent = [
-    // SECTION 1: SPEEDS
+    // SECTION 1: SPEEDS (Fast vs Pro)
     (
       <section key="speeds" id="speeds" className="mb-12 animate-fade-in">
-        <h2>Your AI has more than one speed</h2>
+        <h2 className="text-2xl font-bold text-slate-900 mb-4">Two Speeds: Fast vs Pro</h2>
         <p className="text-lg text-slate-700 mb-8">
-          Not all prompts are created equal. Modern models usually have two gears: a <strong>Fast Mode</strong> for quick tasks, and a <strong>Reasoning Mode</strong> for complex thinking.
+          Most modern AI tools have two gears. Knowing when to switch gears is the difference between a frustrating "hallucination" and a perfect answer.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 not-prose">
@@ -50,13 +64,27 @@ export default function Page() {
               <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
                 <Zap className="w-6 h-6" />
               </div>
-              <h3 className="font-bold text-slate-900 text-lg">Fast Mode</h3>
+              <div>
+                <h3 className="font-bold text-slate-900 text-lg">Fast Mode</h3>
+                <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Flash / Mini / Standard</span>
+              </div>
             </div>
             <p className="text-sm text-slate-600 mb-4">
-              <strong>When to use:</strong> Quick summaries, rewriting emails, brainstorming lists, or simple coding tasks.
+              <strong>Best for:</strong> 90% of daily tasks. Writing, summarizing, lists, and simple coding.
             </p>
-            <div className="bg-slate-50 p-3 rounded text-xs text-slate-700 italic border border-slate-100">
-              "Expect an answer in seconds. It relies on patterns and speed."
+            <div className="space-y-3">
+              <div className="bg-slate-50 p-3 rounded text-xs text-slate-700 border border-slate-100">
+                <span className="font-bold text-blue-700 block mb-1">Ops</span>
+                "Summarize this vendor proposal in 5 bullets."
+              </div>
+              <div className="bg-slate-50 p-3 rounded text-xs text-slate-700 border border-slate-100">
+                <span className="font-bold text-blue-700 block mb-1">Customer Success</span>
+                "Draft a short apology email for a late shipment."
+              </div>
+              <div className="bg-slate-50 p-3 rounded text-xs text-slate-700 border border-slate-100">
+                <span className="font-bold text-blue-700 block mb-1">Marketing</span>
+                "Write a 100-word LinkedIn post about our launch."
+              </div>
             </div>
           </Card>
 
@@ -65,205 +93,355 @@ export default function Page() {
               <div className="p-2 bg-purple-100 rounded-lg text-purple-600">
                 <BrainCircuit className="w-6 h-6" />
               </div>
-              <h3 className="font-bold text-slate-900 text-lg">Reasoning Mode</h3>
+              <div>
+                <h3 className="font-bold text-slate-900 text-lg">Pro Mode</h3>
+                <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Advanced / Reasoning / Plus</span>
+              </div>
             </div>
             <p className="text-sm text-slate-600 mb-4">
-              <strong>When to use:</strong> Financial analysis, strategic recommendations, complex logic puzzles, or high-stakes reports.
+              <strong>Best for:</strong> Complex analysis, comparisons, and high-stakes decisions. It "thinks" before answering.
             </p>
-            <div className="bg-slate-50 p-3 rounded text-xs text-slate-700 italic border border-slate-100">
-              "Expect it to 'think' for 10-30 seconds. It checks its own logic."
+            <div className="space-y-3">
+              <div className="bg-slate-50 p-3 rounded text-xs text-slate-700 border border-slate-100">
+                <span className="font-bold text-purple-700 block mb-1">Ops</span>
+                "Compare these 3 CRM pricing plans and recommend the best value."
+              </div>
+              <div className="bg-slate-50 p-3 rounded text-xs text-slate-700 border border-slate-100">
+                <span className="font-bold text-purple-700 block mb-1">Customer Success</span>
+                "Analyze these 50 feedback tickets and find the top 3 themes."
+              </div>
+              <div className="bg-slate-50 p-3 rounded text-xs text-slate-700 border border-slate-100">
+                <span className="font-bold text-purple-700 block mb-1">Marketing</span>
+                "Weigh the pros and cons of this campaign strategy based on Q3 data."
+              </div>
             </div>
           </Card>
         </div>
 
-        <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
-           <h3 className="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">Example: "Should we expand EV charging?"</h3>
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <div>
-                <p className="text-xs font-bold text-blue-600 mb-1">Fast Mode Answer:</p>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  "Yes, expanding EV charging is a good idea because the market is growing. You should look into government grants and partnerships..."
-                  <br/><span className="text-slate-400 italic">(Generic, predictable)</span>
-                </p>
-             </div>
-             <div>
-                <p className="text-xs font-bold text-purple-600 mb-1">Reasoning Mode Answer:</p>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  "Let's analyze the ROI. First, we need to consider installation costs vs. utilization rates. If utilization is under 15%, the break-even point pushes to 2030..."
-                  <br/><span className="text-slate-400 italic">(Nuanced, mathematically grounded)</span>
-                </p>
-             </div>
-           </div>
-        </div>
+        <Callout variant="info" title="Rule of Thumb">
+          Start in <strong>Fast Mode</strong>. If the answer is shallow or misses the nuance, switch to <strong>Pro Mode</strong>.
+        </Callout>
       </section>
     ),
 
     // SECTION 2: DEEP RESEARCH
     (
       <section key="deep-research" id="deep-research" className="mb-12 animate-fade-in">
-        <h2>Deep Research vs normal chat</h2>
+        <h2 className="text-2xl font-bold text-slate-900 mb-4">Deep Research: Reports, Not Links</h2>
         <p className="text-lg text-slate-700 mb-6">
-          Standard chat models (even in "Pro" mode) mostly rely on training data. They might do a quick Google search, but they aren't reading 50 websites for you.
-        </p>
-        <p className="text-slate-600 mb-8">
-          <strong>Deep Research</strong> tools (like Perplexity or Gemini Deep Research) actually run a structured, multi-step web search. They cite their sources.
+          Standard chat models might do a quick Google search, but they often hallucinate details. 
+          <strong>Deep Research</strong> tools (like Perplexity or Gemini Deep Research) actually read multiple sources and write a cited report.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 not-prose">
-          <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-            <h3 className="text-green-800 font-bold mb-4 flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5"/> Use Deep Research for:
-            </h3>
-            <ul className="space-y-2 text-sm text-slate-700">
-              <li className="flex gap-2"><Check className="w-4 h-4 text-green-600 shrink-0 mt-0.5" /> Market & competitor scans</li>
-              <li className="flex gap-2"><Check className="w-4 h-4 text-green-600 shrink-0 mt-0.5" /> Recent regulatory or policy changes</li>
-              <li className="flex gap-2"><Check className="w-4 h-4 text-green-600 shrink-0 mt-0.5" /> Checking facts for a presentation</li>
-              <li className="flex gap-2"><Check className="w-4 h-4 text-green-600 shrink-0 mt-0.5" /> Finding specific statistics with links</li>
-            </ul>
-          </div>
+        <div className="bg-slate-50 rounded-xl p-8 border border-slate-200 mb-8">
+           <h3 className="font-bold text-slate-900 mb-6">What "Deep Research" looks like at work</h3>
+           
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                 <div className="flex items-center gap-2 text-purple-700 font-bold">
+                    <Target className="w-4 h-4" /> Ops & Admin
+                 </div>
+                 <p className="text-sm text-slate-600 bg-white p-3 rounded border border-slate-200 shadow-sm">
+                   "Create a comparison table of the top 5 OKR software tools including pricing, setup time, and pros/cons."
+                 </p>
+              </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-lg p-6">
-            <h3 className="text-slate-600 font-bold mb-4 flex items-center gap-2">
-              <div className="w-5 h-5 rounded-full border-2 border-slate-400 flex items-center justify-center text-[10px]">✕</div>
-              Skip it for:
-            </h3>
-            <ul className="space-y-2 text-sm text-slate-600">
-              <li className="flex gap-2"><span className="text-slate-400">•</span> Rewording emails or polite drafts</li>
-              <li className="flex gap-2"><span className="text-slate-400">•</span> Brainstorming creative names</li>
-              <li className="flex gap-2"><span className="text-slate-400">•</span> Summarizing a doc you already have</li>
-              <li className="flex gap-2"><span className="text-slate-400">•</span> Simple coding questions</li>
-            </ul>
-          </div>
+              <div className="space-y-2">
+                 <div className="flex items-center gap-2 text-blue-700 font-bold">
+                    <Target className="w-4 h-4" /> Marketing
+                 </div>
+                 <p className="text-sm text-slate-600 bg-white p-3 rounded border border-slate-200 shadow-sm">
+                   "Find email open rate benchmarks for the B2B SaaS industry in 2024, citing at least 3 recent reports."
+                 </p>
+              </div>
+
+              <div className="space-y-2">
+                 <div className="flex items-center gap-2 text-emerald-700 font-bold">
+                    <Target className="w-4 h-4" /> Customer Success
+                 </div>
+                 <p className="text-sm text-slate-600 bg-white p-3 rounded border border-slate-200 shadow-sm">
+                   "Research common causes of churn in enterprise software and summarize 3 recent case studies on fixing it."
+                 </p>
+              </div>
+           </div>
         </div>
 
-        <Callout variant="info" title="Pro Tip: Fast vs Deep Research">
-          <p className="mb-2">
-             Even research tools have a toggle. 
-          </p>
-          <p className="font-bold text-blue-900">
-             Fast is fine for a quick gut check. For anything you will put in a deck or send to a leader, use the deeper mode with citations.
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Callout variant="success" title="The Outcome">
+             Expect a 1-2 page briefing with bullet points, tables, and clickable citations. Perfect for "getting smart" on a topic quickly.
+          </Callout>
+          
+          <Callout variant="warning" title="Pro Tip">
+             Always ask for <strong>sources</strong>. It forces the model to verify its facts and gives you a link to check if it looks suspicious.
+          </Callout>
+        </div>
+      </section>
+    ),
+
+    // SECTION 3: VISUALS
+    (
+      <section key="visuals" id="visuals" className="mb-12 animate-fade-in">
+        <h2 className="text-2xl font-bold text-slate-900 mb-4">Visuals: Images & Video</h2>
+        <p className="text-lg text-slate-700 mb-6">
+          You don't need to be a designer to create visuals. Modern tools can turn your text description into a ready-to-use image or short video clip.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+           <Card className="p-5 border-t-4 border-t-indigo-500">
+             <div className="flex items-center gap-2 mb-3 font-bold text-slate-900">
+                <Image className="w-5 h-5 text-indigo-500" /> Images
+             </div>
+             <p className="text-sm text-slate-600 mb-4">
+               <strong>Tools:</strong> ChatGPT, Gemini.
+             </p>
+             <ul className="text-sm text-slate-700 space-y-2">
+               <li>• <strong>PM:</strong> "Generate a timeline graphic for a 6-month launch."</li>
+               <li>• <strong>Marketing:</strong> "Create a clean, minimalist product shot on a wooden desk."</li>
+             </ul>
+           </Card>
+
+           <Card className="p-5 border-t-4 border-t-pink-500">
+             <div className="flex items-center gap-2 mb-3 font-bold text-slate-900">
+                <Video className="w-5 h-5 text-pink-500" /> Video
+             </div>
+             <p className="text-sm text-slate-600 mb-4">
+               <strong>Tools:</strong> Gemini (Veo), Sora (coming soon).
+             </p>
+             <ul className="text-sm text-slate-700 space-y-2">
+               <li>• <strong>CS:</strong> "Create a 5-second clip showing a happy customer using a tablet."</li>
+               <li>• <strong>Sales:</strong> "Generate a dynamic background for my slide deck."</li>
+             </ul>
+           </Card>
+
+           <Card className="p-5 border-t-4 border-t-slate-500">
+             <div className="flex items-center gap-2 mb-3 font-bold text-slate-900">
+                <Settings className="w-5 h-5 text-slate-500" /> Usage Pattern
+             </div>
+             <ol className="text-sm text-slate-700 space-y-3 list-decimal pl-4">
+               <li><strong>Describe:</strong> "I need an image of..."</li>
+               <li><strong>Refine:</strong> "Make it wider (16:9) and use our brand colors (blue/white)."</li>
+               <li><strong>Download:</strong> Save it for your deck.</li>
+             </ol>
+           </Card>
+        </div>
+      </section>
+    ),
+
+    // SECTION 4: QUICK WINS
+    (
+      <section key="quick-wins" id="quick-wins" className="mb-12 animate-fade-in">
+        <h2 className="text-2xl font-bold text-slate-900 mb-4">Quick Wins: The Hidden Toolbar</h2>
+        <p className="text-lg text-slate-700 mb-8">
+          The text box is just the beginning. Use these four features to speed up your daily work.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 not-prose">
+          
+          <Card className="p-5 hover:border-blue-300 transition-colors">
+            <div className="flex items-center gap-2 mb-2 font-bold text-slate-900">
+              <Mic className="w-5 h-5 text-blue-500" /> Voice Mode
+            </div>
+            <p className="text-sm text-slate-600 mb-3">
+              Talk instead of type. Great for "brainstorming while walking."
+            </p>
+            <div className="bg-slate-50 p-2 rounded text-xs font-mono text-slate-700">
+              "I need to plan a team offsite. Here are my messy ideas. Help me structure an agenda."
+            </div>
+          </Card>
+
+          <Card className="p-5 hover:border-blue-300 transition-colors">
+            <div className="flex items-center gap-2 mb-2 font-bold text-slate-900">
+              <Paperclip className="w-5 h-5 text-orange-500" /> File Upload
+            </div>
+            <p className="text-sm text-slate-600 mb-3">
+              Don't copy-paste. Upload spreadsheets, PDFs, or images directly.
+            </p>
+            <div className="bg-slate-50 p-2 rounded text-xs font-mono text-slate-700">
+              "Analyze this budget spreadsheet. Where are we overspending compared to last month?"
+            </div>
+          </Card>
+
+          <Card className="p-5 hover:border-blue-300 transition-colors">
+            <div className="flex items-center gap-2 mb-2 font-bold text-slate-900">
+              <Edit3 className="w-5 h-5 text-purple-500" /> Canvas / Live Edit
+            </div>
+            <p className="text-sm text-slate-600 mb-3">
+              Edit the output directly side-by-side (like in OpenAI Canvas or Claude Artifacts).
+            </p>
+            <div className="bg-slate-50 p-2 rounded text-xs font-mono text-slate-700">
+              "Highlight the email draft and change just the second paragraph to be friendlier."
+            </div>
+          </Card>
+
+          <Card className="p-5 hover:border-blue-300 transition-colors">
+            <div className="flex items-center gap-2 mb-2 font-bold text-slate-900">
+              <Settings className="w-5 h-5 text-slate-500" /> Custom Instructions
+            </div>
+            <p className="text-sm text-slate-600 mb-3">
+              Set stable preferences so you don't have to repeat yourself.
+            </p>
+            <div className="bg-slate-50 p-2 rounded text-xs font-mono text-slate-700">
+              "Always answer with bullet points. Never use hashtags. Keep responses under 200 words."
+            </div>
+          </Card>
+        </div>
+      </section>
+    ),
+
+    // SECTION 5: PRACTICE
+    (
+      <section key="practice" id="practice" className="mb-12 animate-fade-in">
+        <h2 className="text-2xl font-bold text-slate-900 mb-4">Practice: Match the Tool</h2>
+        <p className="text-lg text-slate-700 mb-8">
+          You have a lot of tools now. Which one would you reach for in these moments?
+        </p>
+
+        <div className="space-y-4 max-w-2xl">
+           {[
+             {
+               id: 's1',
+               task: "Your boss asks: 'What are the top 3 market trends in our industry right now?'",
+               options: [
+                 { id: 'fast', label: 'Fast Mode Chat' },
+                 { id: 'research', label: 'Deep Research Tool', correct: true },
+                 { id: 'video', label: 'Video Generator' }
+               ],
+               explanation: "Correct! Market trends require outside facts and citations. A standard chat might hallucinate or be outdated."
+             },
+             {
+               id: 's2',
+               task: "You need to summarize a 50-page vendor contract PDF to find the cancellation clause.",
+               options: [
+                 { id: 'upload', label: 'Upload to Pro Mode/NotebookLM', correct: true },
+                 { id: 'fast', label: 'Copy-Paste into Fast Mode' },
+                 { id: 'voice', label: 'Voice Mode' }
+               ],
+               explanation: "Correct! Uploading preserves the document structure. Copy-pasting 50 pages often breaks the context limit."
+             },
+             {
+               id: 's3',
+               task: "You are walking to your car and have a great idea for a campaign slogan.",
+               options: [
+                 { id: 'research', label: 'Deep Research' },
+                 { id: 'canvas', label: 'Canvas Edit' },
+                 { id: 'voice', label: 'Voice Mode', correct: true }
+               ],
+               explanation: "Correct! Voice mode is perfect for capturing messy, spontaneous ideas when you aren't at a keyboard."
+             }
+           ].map((scenario) => (
+             <div key={scenario.id} className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                <p className="font-bold text-slate-900 mb-4">{scenario.task}</p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {scenario.options.map((opt) => (
+                    <button
+                      key={opt.id}
+                      onClick={() => togglePracticeAnswer(scenario.id, opt.id)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                        practiceAnswers[scenario.id] === opt.id 
+                          ? (opt.correct ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200')
+                          : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                {practiceAnswers[scenario.id] && scenario.options.find(o => o.id === practiceAnswers[scenario.id])?.correct && (
+                  <div className="text-sm text-green-700 bg-green-50 p-3 rounded flex items-start gap-2 animate-fade-in">
+                    <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" />
+                    {scenario.explanation}
+                  </div>
+                )}
+             </div>
+           ))}
+        </div>
+      </section>
+    ),
+
+    // SECTION 6: TOOLKIT RECAP
+    (
+      <section key="toolkit" id="toolkit" className="mb-12 animate-fade-in">
+        <h2 className="text-2xl font-bold text-slate-900 mb-4">Your Daily Toolkit</h2>
+        <p className="text-lg text-slate-700 mb-8">
+          You don't need to master every tool today. Just start mapping your common tasks to the right feature.
+        </p>
+
+        <Card className="p-0 overflow-hidden border-slate-200 bg-white mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+             <div className="p-6">
+               <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                 <MousePointerClick className="w-5 h-5 text-blue-500" /> Routine Work
+               </h3>
+               <ul className="space-y-4">
+                 <li className="flex items-center justify-between">
+                   <span className="text-slate-600 text-sm">Drafting & Emails</span>
+                   <Badge variant="blue">Fast Mode</Badge>
+                 </li>
+                 <li className="flex items-center justify-between">
+                   <span className="text-slate-600 text-sm">Brainstorming</span>
+                   <Badge variant="blue">Voice Mode</Badge>
+                 </li>
+                 <li className="flex items-center justify-between">
+                   <span className="text-slate-600 text-sm">Editing Drafts</span>
+                   <Badge variant="blue">Canvas / Live Edit</Badge>
+                 </li>
+               </ul>
+             </div>
+             
+             <div className="p-6">
+               <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                 <BrainCircuit className="w-5 h-5 text-purple-500" /> Deep Work
+               </h3>
+               <ul className="space-y-4">
+                 <li className="flex items-center justify-between">
+                   <span className="text-slate-600 text-sm">Market Analysis</span>
+                   <Badge variant="neutral" className="bg-purple-100 text-purple-700 border-purple-200">Deep Research</Badge>
+                 </li>
+                 <li className="flex items-center justify-between">
+                   <span className="text-slate-600 text-sm">Data & Docs</span>
+                   <Badge variant="neutral" className="bg-orange-100 text-orange-700 border-orange-200">Upload / Pro Mode</Badge>
+                 </li>
+                 <li className="flex items-center justify-between">
+                   <span className="text-slate-600 text-sm">Slides & Social</span>
+                   <Badge variant="neutral" className="bg-pink-100 text-pink-700 border-pink-200">Images / Video</Badge>
+                 </li>
+               </ul>
+             </div>
+          </div>
+        </Card>
+
+        <Callout variant="success" title="Challenge for Today">
+           Pick <strong>one feature</strong> (like Voice Mode or Deep Research) and use it three times before the end of the day.
         </Callout>
-      </section>
-    ),
 
-    // SECTION 3: TOOLBAR
-    (
-      <section key="tooling" id="tooling" className="mb-12 animate-fade-in">
-        <h2>The toolbar is part of prompting</h2>
-        <p className="text-lg text-slate-700 mb-8">
-          The text box is not your only tool. The buttons around it—Search, Attach, Voice—give the model the context it needs to succeed.
-        </p>
+        {/* Footer Links */}
+        <div className="mt-12 pt-8 border-t border-slate-200">
+          <h3 className="font-bold text-slate-900 mb-4">Ready for the deep dives?</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+             <Button variant="outline" className="justify-start h-auto py-3 px-4" onClick={() => push('/modules/tool-research')}>
+               <div className="text-left">
+                 <div className="font-bold text-slate-900">Research & Web</div>
+                 <div className="text-xs text-slate-500 font-normal">Master Perplexity</div>
+               </div>
+               <ArrowRight className="w-4 h-4 ml-auto text-slate-400" />
+             </Button>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 not-prose">
-          
-          <Card className="p-4 hover:border-blue-300 transition-colors">
-            <div className="flex items-center gap-2 mb-2 font-bold text-slate-900">
-              <Search className="w-4 h-4 text-blue-500" /> Web Search Toggle
-            </div>
-            <p className="text-xs text-slate-600 mb-3">
-              Force the model to look up fresh info vs using its training data.
-            </p>
-            <div className="bg-slate-50 p-2 rounded text-xs font-mono text-slate-700">
-              "Turn ON to find today's stock price."
-            </div>
-          </Card>
+             <Button variant="outline" className="justify-start h-auto py-3 px-4" onClick={() => push('/modules/tool-documents')}>
+               <div className="text-left">
+                 <div className="font-bold text-slate-900">Your Documents</div>
+                 <div className="text-xs text-slate-500 font-normal">Master NotebookLM</div>
+               </div>
+               <ArrowRight className="w-4 h-4 ml-auto text-slate-400" />
+             </Button>
 
-          <Card className="p-4 hover:border-blue-300 transition-colors">
-            <div className="flex items-center gap-2 mb-2 font-bold text-slate-900">
-              <Paperclip className="w-4 h-4 text-blue-500" /> Attachments
-            </div>
-            <p className="text-xs text-slate-600 mb-3">
-              Upload PDFs, Spreadsheets, or Decks. Ground the AI in <em>your</em> data.
-            </p>
-            <div className="bg-slate-50 p-2 rounded text-xs font-mono text-slate-700">
-              "I attached the Q3 deck. Summarize the 5 key risks."
-            </div>
-          </Card>
-
-          <Card className="p-4 hover:border-blue-300 transition-colors">
-            <div className="flex items-center gap-2 mb-2 font-bold text-slate-900">
-              <Image className="w-4 h-4 text-blue-500" /> Vision / Screenshot
-            </div>
-            <p className="text-xs text-slate-600 mb-3">
-              Paste a screenshot of a dashboard or error and ask for an explanation.
-            </p>
-            <div className="bg-slate-50 p-2 rounded text-xs font-mono text-slate-700">
-              "Look at this chart. What is the trend in Q4?"
-            </div>
-          </Card>
-
-          <Card className="p-4 hover:border-blue-300 transition-colors">
-            <div className="flex items-center gap-2 mb-2 font-bold text-slate-900">
-              <Mic className="w-4 h-4 text-blue-500" /> Voice / Screen
-            </div>
-            <p className="text-xs text-slate-600 mb-3">
-              Talk it out. Great for messy, complex problems or roleplay.
-            </p>
-            <div className="bg-slate-50 p-2 rounded text-xs font-mono text-slate-700">
-              "I'm going to rant about a problem. Help me structure it."
-            </div>
-          </Card>
-
-        </div>
-      </section>
-    ),
-
-    // SECTION 4: TOOLS TRACK
-    (
-      <section key="tool-track" id="tool-track" className="mb-12 animate-fade-in">
-        <h2>Ready to see specialist tools in action?</h2>
-        <p className="text-lg text-slate-700 mb-8">
-          Chatbots are the front door. Specialist tools are the wings of the house.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 not-prose">
-          
-          <Card className="p-6 flex flex-col h-full bg-slate-50 border-t-4 border-t-blue-500">
-            <div className="flex items-center gap-2 mb-4">
-              <Globe className="w-6 h-6 text-blue-600" />
-              <h3 className="font-bold text-slate-900">Research & Web</h3>
-            </div>
-            <ul className="space-y-2 text-sm text-slate-600 mb-6 flex-1">
-              <li>• Using Perplexity for intel</li>
-              <li>• Getting cited answers</li>
-              <li>• Avoiding hallucinations</li>
-            </ul>
-            <Button onClick={() => push('/modules/tool-research')} variant="primary" className="w-full">
-              Start Module <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Card>
-
-          <Card className="p-6 flex flex-col h-full bg-slate-50 border-t-4 border-t-purple-500">
-            <div className="flex items-center gap-2 mb-4">
-              <Layers className="w-6 h-6 text-purple-600" />
-              <h3 className="font-bold text-slate-900">Your Docs</h3>
-            </div>
-            <ul className="space-y-2 text-sm text-slate-600 mb-6 flex-1">
-              <li>• NotebookLM deep dive</li>
-              <li>• Summarizing 50+ PDFs</li>
-              <li>• Creating briefing docs</li>
-            </ul>
-            <Button onClick={() => push('/modules/tool-documents')} variant="primary" className="w-full">
-              Start Module <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Card>
-
-          <Card className="p-6 flex flex-col h-full bg-slate-50 border-t-4 border-t-emerald-500">
-            <div className="flex items-center gap-2 mb-4">
-              <PenTool className="w-6 h-6 text-emerald-600" />
-              <h3 className="font-bold text-slate-900">Builders</h3>
-            </div>
-            <ul className="space-y-2 text-sm text-slate-600 mb-6 flex-1">
-              <li>• Google AI Studio</li>
-              <li>• Saving prompts as tools</li>
-              <li>• Advanced prototyping</li>
-            </ul>
-            <Button onClick={() => push('/modules/tool-builder')} variant="primary" className="w-full">
-              Start Module <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Card>
-
+             <Button variant="outline" className="justify-start h-auto py-3 px-4" onClick={() => push('/modules/tool-builder')}>
+               <div className="text-left">
+                 <div className="font-bold text-slate-900">Workspace</div>
+                 <div className="text-xs text-slate-500 font-normal">Master Gemini</div>
+               </div>
+               <ArrowRight className="w-4 h-4 ml-auto text-slate-400" />
+             </Button>
+          </div>
         </div>
       </section>
     )
@@ -272,7 +450,7 @@ export default function Page() {
   return (
     <ModuleLayout
       title="Modern Chatbots & Modes"
-      description="Your AI is more than one chat window. Learn when to use fast modes, when to slow down for deep reasoning, and how to use web search and attachments wisely."
+      description="Your AI is more than one chat window. Learn when to use fast modes, when to slow down for deep reasoning, and how to use voice, visuals, and research tools."
       duration="20 mins"
       audience="Intermediate Users"
       sections={sections}

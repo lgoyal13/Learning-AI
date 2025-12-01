@@ -2,21 +2,23 @@ import React, { useState } from 'react';
 import { ModuleLayout } from '../../../components/ModuleLayout';
 import { Card, Callout, PromptCard, Button, Badge } from '../../../components/ui';
 import { 
-  Globe, Search, FileText, Mail, Table, Presentation, Image, Video, 
-  CheckCircle2, ArrowRight, ArrowLeft, AlertTriangle, ExternalLink, Zap, LayoutGrid, BookOpen
+  FileText, Mail, Table, Presentation, Image, CheckCircle2, 
+  ArrowRight, ArrowLeft, Zap, PenTool, LayoutGrid, 
+  Sparkles, MousePointerClick, MessageSquare, Briefcase
 } from 'lucide-react';
 import { useRouter } from '../../../lib/routerContext';
 
-export default function Page() {
+export default function Page({ onBack }: { onBack?: () => void }) {
   const { push } = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
+  const [activeScenario, setActiveScenario] = useState<string | null>(null);
 
   const sections = [
-    { id: 'gemini-web', title: 'Gemini for Web & Search' },
-    { id: 'gemini-workspace', title: 'Gemini in Workspace' },
-    { id: 'gemini-images', title: 'Images with Gemini' },
-    { id: 'veo-video', title: 'Video Concepts with Veo' },
-    { id: 'when-gemini', title: 'When Gemini Is Your Best Choice' },
+    { id: 'intro', title: 'Meet Your In-App Partner' },
+    { id: 'writing', title: 'The Writer (Docs & Gmail)' },
+    { id: 'analysis', title: 'The Analyst (Sheets)' },
+    { id: 'visuals', title: 'The Designer (Slides)' },
+    { id: 'practice', title: 'Real Workflows' },
   ];
 
   const totalSteps = sections.length;
@@ -38,253 +40,294 @@ export default function Page() {
 
   const renderStepContent = () => {
     switch (currentStep) {
-      case 0: // Gemini for Web & Search
+      case 0: // INTRO
         return (
-          <section id="gemini-web" className="mb-12 animate-fade-in">
-            <h2>Gemini for Web & Search</h2>
-            <p className="text-lg text-slate-700 mb-6">
-              Traditional search gives you ten blue links. Gemini gives you a synthesized answer with clickable references. 
-              It's often faster to ask for a "briefing" than to open five tabs yourself.
+          <section id="intro" className="mb-12 animate-fade-in">
+            <h2 className="text-3xl font-bold text-slate-900 mb-6">Meet Your In-App Partner</h2>
+            
+            <p className="text-lg text-slate-700 leading-relaxed mb-8 max-w-3xl">
+              You are used to going to a chatbot to ask questions. But <strong>Gemini for Workspace</strong> lives <em>inside</em> the apps you use every day—Gmail, Docs, Sheets, and Slides.
+              <br /><br />
+              It can read the draft you are working on, see the email thread you are replying to, and generate content without you ever leaving the tab.
             </p>
 
-            <div className="mb-8">
-              <Card className="p-6 bg-slate-50 border-slate-200">
-                <div className="flex items-center gap-2 mb-4 text-blue-600 font-bold uppercase text-xs tracking-wider">
-                  <Globe className="w-4 h-4" /> Use Case: The Instant Briefing
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <Card className="p-6 bg-blue-50 border-blue-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-white rounded-lg text-blue-600 shadow-sm">
+                    <PenTool className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-lg">No Context Switching</h3>
                 </div>
-                <h3 className="font-bold text-slate-900 mb-4">Scenario: You need to understand a new regulation quickly.</h3>
-                
-                <PromptCard 
-                  label="Briefing Prompt"
-                  prompt={`Give me a concise briefing on [Topic, e.g., EV roadside charging policy in California] for a [Role, e.g., Product Manager].
+                <p className="text-slate-700">
+                  Don't copy-paste text back and forth. Highlight a paragraph in Docs and ask Gemini to "make this more concise" right there.
+                </p>
+              </Card>
 
-Include:
-- 3–5 key points in plain language
-- Any major recent changes in the last 12 months
-- 3 links I can click to read more`}
-                />
+              <Card className="p-6 bg-purple-50 border-purple-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-white rounded-lg text-purple-600 shadow-sm">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-lg">The "Help Me Write" Button</h3>
+                </div>
+                <p className="text-slate-700">
+                  Look for the <strong>Star/Pencil icon</strong> in your toolbar. That is your gateway to drafting, summarizing, and organizing.
+                </p>
               </Card>
             </div>
 
-            <div className="bg-green-50 p-6 rounded-xl border border-green-100">
-              <h3 className="font-bold text-green-900 mb-2 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5" /> Good Habits
-              </h3>
-              <ul className="space-y-2 text-sm text-green-800">
-                <li className="flex gap-2">• Always skim the sources cited at the bottom or inline.</li>
-                <li className="flex gap-2">• Click at least one link to verify the context matches the summary.</li>
-                <li className="flex gap-2">• If the topic is very recent (last 24h), explicitly ask it to "Check Google Search."</li>
-              </ul>
+            <div className="bg-white p-6 rounded-xl border border-slate-200">
+               <h3 className="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">After this module you will be able to:</h3>
+               <ul className="space-y-3 text-sm text-slate-700">
+                 <li className="flex items-start gap-3">
+                   <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
+                   Draft and refine emails and documents instantly.
+                 </li>
+                 <li className="flex items-start gap-3">
+                   <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
+                   Generate tables and project trackers in Sheets.
+                 </li>
+                 <li className="flex items-start gap-3">
+                   <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
+                   Create custom visuals for your Slides presentations.
+                 </li>
+               </ul>
             </div>
           </section>
         );
 
-      case 1: // Gemini in Workspace
+      case 1: // WRITING (Docs & Gmail)
         return (
-          <section id="gemini-workspace" className="mb-12 animate-fade-in">
-            <h2>Gemini in Workspace</h2>
-            <p className="mb-8 text-lg text-slate-700">
-              You don't always need to leave your tab. Gemini is integrated directly into the apps you use every day. 
-              Look for the <strong>"Help me write"</strong> (pencil) or star icon.
+          <section id="writing" className="mb-12 animate-fade-in">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">The Writer (Docs & Gmail)</h2>
+            <p className="text-lg text-slate-700 mb-8 max-w-3xl">
+              Writer's block is optional. Use Gemini to create first drafts or polish your rough notes into professional communication.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
-              {/* GMAIL */}
-              <Card className="p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-2 mb-3 text-red-600 font-bold">
-                  <Mail className="w-5 h-5" /> Gmail
-                </div>
-                <p className="text-sm text-slate-600 mb-4 h-10">
-                  Best for summarizing long threads and drafting polite replies.
-                </p>
-                <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-700 border border-slate-100">
-                  "Draft a reply thanking them for the update and asking to reschedule to next Tuesday."
-                </div>
-              </Card>
-
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
               {/* DOCS */}
-              <Card className="p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-2 mb-3 text-blue-600 font-bold">
-                  <FileText className="w-5 h-5" /> Docs
+              <Card className="p-6 border-t-4 border-t-blue-500 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-4 text-blue-700 font-bold">
+                  <FileText className="w-5 h-5" /> Gemini in Docs
                 </div>
-                <p className="text-sm text-slate-600 mb-4 h-10">
-                  Best for outlining, rewriting for tone, and summarizing.
-                </p>
-                <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-700 border border-slate-100">
-                  "Turn these messy meeting notes into a one-page project brief with goals, status, and next steps."
-                </div>
+                <ul className="space-y-4 text-sm text-slate-700">
+                   <li>
+                     <strong className="block text-slate-900 mb-1">Drafting from scratch</strong>
+                     "Write a project brief for [Project Name] including goals, timeline, and stakeholders."
+                   </li>
+                   <li>
+                     <strong className="block text-slate-900 mb-1">Refining</strong>
+                     Highlight text -> "Make this more concise" or "Change tone to confident."
+                   </li>
+                   <li>
+                     <strong className="block text-slate-900 mb-1">Summarizing</strong>
+                     "Summarize this document in 5 bullet points."
+                   </li>
+                </ul>
               </Card>
 
-              {/* SHEETS */}
-              <Card className="p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-2 mb-3 text-emerald-600 font-bold">
-                  <Table className="w-5 h-5" /> Sheets
+              {/* GMAIL */}
+              <Card className="p-6 border-t-4 border-t-red-500 hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-2 mb-4 text-red-600 font-bold">
+                  <Mail className="w-5 h-5" /> Gemini in Gmail
                 </div>
-                <p className="text-sm text-slate-600 mb-4 h-10">
-                  Best for creating trackers, organizing data, and simple analysis.
-                </p>
-                <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-700 border border-slate-100">
-                  "Create a project tracker for a website launch with columns for Task, Owner, Status, and Deadline."
-                </div>
+                <ul className="space-y-4 text-sm text-slate-700">
+                   <li>
+                     <strong className="block text-slate-900 mb-1">Thread Summary</strong>
+                     Open a long thread -> Click the Star icon -> "Summarize this email thread."
+                   </li>
+                   <li>
+                     <strong className="block text-slate-900 mb-1">Smart Reply</strong>
+                     "Draft a reply thanking them for the update and asking to reschedule to Tuesday."
+                   </li>
+                   <li>
+                     <strong className="block text-slate-900 mb-1">Tone Polish</strong>
+                     "Formalize this draft."
+                   </li>
+                </ul>
               </Card>
+            </div>
 
-              {/* SLIDES */}
-              <Card className="p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-2 mb-3 text-amber-500 font-bold">
-                  <Presentation className="w-5 h-5" /> Slides
-                </div>
-                <p className="text-sm text-slate-600 mb-4 h-10">
-                  Best for generating visuals and slide outlines.
-                </p>
-                <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-700 border border-slate-100">
-                  "Create an outline for a 5-slide deck pitching our Q3 marketing strategy."
-                </div>
-              </Card>
+            <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
+               <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                 <PenTool className="w-4 h-4" /> Try this Prompt in Docs
+               </h3>
+               <PromptCard 
+                 label="Help Me Write"
+                 prompt={`Act as a [Role, e.g., Product Manager].
+Draft a [Document Type, e.g., One-Pager] for [Topic].
+Include sections for:
+- Problem Statement
+- Proposed Solution
+- Key Metrics
+- Next Steps`}
+               />
+               <p className="text-xs text-slate-500 mt-3 italic">
+                 Tip: You can press <strong>Ctrl + Shift + Y</strong> (or Cmd + Shift + Y) in Docs to open the Gemini panel quickly.
+               </p>
             </div>
           </section>
         );
 
-      case 2: // Images with Gemini
+      case 2: // ANALYSIS (Sheets)
         return (
-          <section id="gemini-images" className="mb-12 animate-fade-in">
-            <h2>Images with Gemini</h2>
-            <p className="mb-6 text-lg text-slate-700">
-              Sometimes you need a visual placeholder, a mood board, or a quick mockup. 
-              Gemini models (like the NanoBanana series) can generate images from text descriptions instantly.
+          <section id="analysis" className="mb-12 animate-fade-in">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">The Analyst (Sheets)</h2>
+            <p className="text-lg text-slate-700 mb-8 max-w-3xl">
+              Sheets can be intimidating. Gemini helps you get set up faster and figure out complex formulas without searching the web.
             </p>
 
-            <div className="mb-8">
-              <Card className="p-6 border-l-4 border-l-purple-500 bg-white">
-                <div className="flex items-center gap-2 mb-4">
-                  <Image className="w-5 h-5 text-purple-600" />
-                  <h3 className="font-bold text-slate-900">Visual Exploration</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <p className="text-sm font-bold text-slate-700 mb-2">Best For:</p>
-                    <ul className="text-sm text-slate-600 space-y-1 list-disc pl-4">
-                      <li>Internal mockups & storyboards</li>
-                      <li>Presentation title slides</li>
-                      <li>Visualizing abstract concepts</li>
-                    </ul>
+            <div className="grid grid-cols-1 gap-6 mb-8">
+               <Card className="p-6 flex flex-col md:flex-row gap-6 items-start border-l-4 border-l-emerald-500">
+                  <div className="bg-emerald-100 p-3 rounded-lg text-emerald-600 shrink-0">
+                    <Table className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-slate-700 mb-2">Example Prompt:</p>
-                    <div className="bg-slate-50 p-3 rounded text-xs font-mono text-slate-700 border border-slate-100">
-                      "Create a simple flat-style illustration of a roadside assistance van parked next to an EV on a highway at sunset."
+                    <h3 className="font-bold text-slate-900 text-lg mb-2">1. "Help me organize"</h3>
+                    <p className="text-sm text-slate-600 mb-3">
+                      Gemini can generate full tables with dummy data or structure to get you started.
+                    </p>
+                    <div className="bg-slate-50 p-3 rounded border border-slate-200 text-sm font-mono text-slate-700">
+                      "Create a project tracker for a website launch with columns for Task, Owner, Status, Deadline, and Notes."
                     </div>
                   </div>
-                </div>
-              </Card>
+               </Card>
+
+               <Card className="p-6 flex flex-col md:flex-row gap-6 items-start border-l-4 border-l-emerald-500">
+                  <div className="bg-emerald-100 p-3 rounded-lg text-emerald-600 shrink-0">
+                    <Zap className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-lg mb-2">2. Formula Help</h3>
+                    <p className="text-sm text-slate-600 mb-3">
+                      Describe what you want to calculate, and it will write the function for you.
+                    </p>
+                    <div className="bg-slate-50 p-3 rounded border border-slate-200 text-sm font-mono text-slate-700">
+                      "Write a formula to sum Column B if Column A says 'Completed' and Column C is greater than 100."
+                    </div>
+                  </div>
+               </Card>
             </div>
 
-            <Callout variant="warning" title="Watch Out">
-              Generated images are synthetic. Do not use them as "real" photos of customers or products in external regulated materials without approval.
+            <Callout variant="info" title="Context Aware">
+              Gemini in Sheets works best when you have headers. It reads row 1 to understand what your data is about.
             </Callout>
           </section>
         );
 
-      case 3: // Video Concepts with Veo
+      case 3: // VISUALS (Slides)
         return (
-          <section id="veo-video" className="mb-12 animate-fade-in">
-            <h2>Video Concepts with Veo</h2>
-            <p className="mb-6 text-lg text-slate-700">
-              Veo is Google's video generation model. While you might not be making feature films yet, it is a powerful tool for storyboarding and brainstorming visual concepts.
+          <section id="visuals" className="mb-12 animate-fade-in">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">The Designer (Slides)</h2>
+            <p className="text-lg text-slate-700 mb-8 max-w-3xl">
+              Stop searching stock photo sites. Generate custom visuals directly in your slide deck to match your exact concept.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="md:col-span-2">
-                <Card className="p-6 h-full bg-slate-50 border-slate-200">
-                  <div className="flex items-center gap-2 mb-4 text-pink-600 font-bold uppercase text-xs tracking-wider">
-                    <Video className="w-4 h-4" /> Scenario
-                  </div>
-                  <h3 className="font-bold text-slate-900 mb-2">Internal Training Teaser</h3>
-                  <p className="text-sm text-slate-600 mb-4">
-                    You need to explain the vibe of a new training video to an agency or creative team.
-                  </p>
-                  
-                  <p className="text-xs font-bold text-slate-700 mb-2">Prompt:</p>
-                  <div className="bg-white p-4 rounded-lg border border-slate-200 font-mono text-sm text-slate-700 leading-relaxed">
-                    I am planning a 60-second internal video to explain our new roadside EV benefits.
-                    <br/><br/>
-                    Draft a visual treatment using Veo concepts:
-                    <br/>- 3–4 scenes
-                    <br/>- Suggested on-screen text
-                    <br/>- Notes on pacing (slow, medium, fast)
-                  </div>
-                </Card>
-              </div>
-
-              <div className="md:col-span-1">
-                <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 h-full">
-                  <h3 className="font-bold text-blue-900 mb-2">Why use AI for video?</h3>
-                  <p className="text-sm text-blue-800 mb-4">
-                    It's faster to <strong>show</strong> a generated clip or storyboard than to write three paragraphs describing "a cinematic pan over a futuristic city."
-                  </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <Card className="p-6">
+                <div className="flex items-center gap-2 mb-4 text-amber-600 font-bold">
+                   <Image className="w-5 h-5" /> Generate Images
                 </div>
-              </div>
+                <p className="text-sm text-slate-600 mb-4">
+                  Open the "Create image with Gemini" panel. Describe the scene, style, and mood.
+                </p>
+                <div className="bg-slate-50 p-3 rounded border border-slate-200 text-xs font-mono text-slate-700 mb-2">
+                  "A futuristic sustainable city with vertical gardens, soft lighting, isometric style."
+                </div>
+                <p className="text-xs text-slate-500">Great for: Title slides, mood boards, abstract concepts.</p>
+              </Card>
+
+              <Card className="p-6">
+                 <div className="flex items-center gap-2 mb-4 text-amber-600 font-bold">
+                   <Presentation className="w-5 h-5" /> Help Me Visualize
+                </div>
+                <p className="text-sm text-slate-600 mb-4">
+                   Need a slide background that isn't white? Ask for it.
+                </p>
+                <div className="bg-slate-50 p-3 rounded border border-slate-200 text-xs font-mono text-slate-700 mb-2">
+                  "A professional gradient background using corporate blue and subtle geometric shapes."
+                </div>
+                <p className="text-xs text-slate-500">Great for: consistent branding without a designer.</p>
+              </Card>
             </div>
 
-            <p className="text-sm text-slate-500 italic">
-              Note: Veo is best for brainstorming visuals, not for final legal review.
-            </p>
+            <Callout variant="warning" title="Design Tip">
+              Be descriptive with styles. Add words like "minimalist," "photorealistic," "sketch," or "corporatememphis" to get the look you want.
+            </Callout>
           </section>
         );
 
-      case 4: // When Gemini Is Your Best Choice
+      case 4: // PRACTICE
         return (
-          <section id="when-gemini" className="mb-12 animate-fade-in">
-            <h2>When Gemini is your best choice</h2>
-            <p className="mb-8 text-lg text-slate-700">
-              You have a lot of tools. Here is when you should reach for Gemini specifically.
+          <section id="practice" className="mb-12 animate-fade-in">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">Real Workflows</h2>
+            <p className="text-lg text-slate-700 mb-8">
+              You have a new project. How do you combine these tools?
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-              <div>
-                <h3 className="font-bold text-slate-900 mb-4">Reach for Gemini when...</h3>
-                <ul className="space-y-3 text-sm text-slate-700">
-                  <li className="flex gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
-                    <span>You are deep in Docs, Sheets, or Slides and don't want to switch tabs.</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
-                    <span>You want a quick briefing on a topic with clickable links (Search grounding).</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
-                    <span>You need to mix text, simple images, and slide concepts in one workflow.</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
-                    <span>You are iterating on visual ideas or campaign concepts.</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="space-y-4">
-                <Callout variant="info" title="Need deeper citations?">
-                  For live web research with heavy sourcing, see the <strong>Research & Web</strong> module.
-                </Callout>
-                <Callout variant="info" title="Analyzing 50 PDFs?">
-                  For deep document analysis, see the <strong>Your Docs (NotebookLM)</strong> module.
-                </Callout>
-              </div>
+            <div className="grid grid-cols-1 gap-4 mb-8">
+              {[
+                {
+                  id: 'kickoff',
+                  title: 'The Project Kickoff',
+                  icon: <Zap className="w-5 h-5 text-amber-500" />,
+                  steps: [
+                    { tool: 'Docs', action: 'Draft a project brief using "Help me write".' },
+                    { tool: 'Sheets', action: 'Generate a timeline tracker from the brief.' },
+                    { tool: 'Gmail', action: 'Draft a kickoff email to the team summarizing the brief.' }
+                  ]
+                },
+                {
+                  id: 'review',
+                  title: 'The Quarterly Review',
+                  icon: <Briefcase className="w-5 h-5 text-blue-500" />,
+                  steps: [
+                    { tool: 'Sheets', action: 'Ask Gemini to explain complex formulas in the data export.' },
+                    { tool: 'Docs', action: 'Summarize the key wins and losses into a memo.' },
+                    { tool: 'Slides', action: 'Generate title images for the presentation deck.' }
+                  ]
+                }
+              ].map((scenario) => (
+                <button
+                  key={scenario.id}
+                  onClick={() => setActiveScenario(activeScenario === scenario.id ? null : scenario.id)}
+                  className={`text-left p-6 rounded-xl border transition-all ${activeScenario === scenario.id ? 'bg-blue-50 border-blue-300 ring-1 ring-blue-300' : 'bg-white border-slate-200 hover:border-blue-300'}`}
+                >
+                   <div className="flex items-center justify-between mb-2">
+                     <div className="flex items-center gap-3">
+                        <div className="p-2 bg-white rounded-lg shadow-sm">{scenario.icon}</div>
+                        <h3 className="font-bold text-slate-900">{scenario.title}</h3>
+                     </div>
+                     <ArrowRight className={`w-5 h-5 text-slate-400 transition-transform ${activeScenario === scenario.id ? 'rotate-90 text-blue-500' : ''}`} />
+                   </div>
+                   
+                   {activeScenario === scenario.id && (
+                     <div className="mt-4 pt-4 border-t border-blue-100/50 animate-fade-in space-y-3">
+                       {scenario.steps.map((step, i) => (
+                         <div key={i} className="flex gap-3 text-sm text-slate-700">
+                           <span className="font-bold text-blue-600 w-16 shrink-0">{step.tool}</span>
+                           <span>{step.action}</span>
+                         </div>
+                       ))}
+                     </div>
+                   )}
+                </button>
+              ))}
             </div>
 
-            <div className="bg-slate-50 border-t border-slate-200 pt-8">
-              <h3 className="font-bold text-slate-900 mb-4">Explore other specialized tools</h3>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button variant="secondary" onClick={() => push('/modules/tool-research')}>
-                  <Globe className="w-4 h-4 mr-2" /> Research Module
-                </Button>
-                <Button variant="secondary" onClick={() => push('/modules/tool-documents')}>
-                  <FileText className="w-4 h-4 mr-2" /> Your Docs Module
-                </Button>
-                <Button variant="outline" onClick={() => push('/advanced')}>
-                  <Zap className="w-4 h-4 mr-2" /> Advanced Builders
-                </Button>
+            <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center">
+              <h3 className="font-bold text-slate-900 mb-2">Ready to try it?</h3>
+              <p className="text-sm text-slate-600 mb-6">
+                Open a Google Doc right now and look for the sparkle icon.
+              </p>
+              <div className="flex justify-center gap-4">
+                 <a href="https://docs.new" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50">
+                    <FileText className="w-4 h-4 text-blue-600" /> New Doc
+                 </a>
+                 <a href="https://sheets.new" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50">
+                    <Table className="w-4 h-4 text-emerald-600" /> New Sheet
+                 </a>
               </div>
             </div>
           </section>
@@ -297,24 +340,20 @@ Include:
 
   return (
     <ModuleLayout
-      title="Gemini: Web, Workspace, Images, and Veo"
-      description="Use Gemini as more than a chat box. Learn when to open Gemini instead of search, how to use it inside Docs, Sheets, Gmail, and how to tap into its image and video tools."
+      title="Gemini & Workspace"
+      description="Learn how to use Gemini directly inside Gmail, Docs, Sheets, and Slides to draft, organize, and visualize without switching tabs."
       duration="20 mins"
-      audience="Employees in Google Workspace"
+      audience="All Employees"
       sections={sections}
       currentStep={currentStep}
       totalSteps={totalSteps}
       onNext={handleNext}
       onPrev={handlePrev}
       onJumpTo={handleJumpTo}
+      onBack={onBack}
+      backLabel="Back to Workflow Playbook"
     >
-      <div className="mb-8 not-prose">
-        <Callout variant="info" title="Optional Module">
-          This module is best for power users who are already comfortable with basic prompting and want to explore the wider ecosystem.
-        </Callout>
-      </div>
-
-      {/* Current Section Content */}
+      {/* Content Area */}
       <div className="min-h-[400px]">
         {renderStepContent()}
       </div>

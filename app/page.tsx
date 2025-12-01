@@ -37,10 +37,11 @@ export default function Page() {
           
           <div className="text-slate-300 text-lg md:text-xl mb-10 leading-relaxed max-w-2xl space-y-4">
             <p className="font-medium text-white">
-              AI stops feeling mysterious once you know what to ask. This academy turns prompting into a practical skill you can rely on at work, so you feel faster, clearer, and a little bit unfairly effective.
+              Most people just chat with AI. You’re going to learn how to direct it. 
+              This academy turns prompting into a practical skill that makes you faster, clearer, and unfairly effective.
             </p>
             <p className="text-base text-slate-400">
-              You can use any modern chatbot like Gemini, ChatGPT, or Claude. We will just show you how to talk to them.
+              Works with Gemini, ChatGPT, or Claude. We just show you the words that make them listen.
             </p>
           </div>
 

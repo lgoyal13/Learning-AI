@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { PageLayout, Card, Button, ProgressBar, Callout, Badge } from '../../components/ui';
 import { useRouter } from '../../lib/routerContext';
@@ -17,7 +16,11 @@ import {
   Check,
   Home,
   Book,
-  FileText
+  FileText,
+  User,
+  Target,
+  ListChecks,
+  MousePointerClick
 } from 'lucide-react';
 
 export default function Page() {
@@ -65,9 +68,9 @@ export default function Page() {
   const renderStep1 = () => (
     <div className="animate-fade-in space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Step 1: Write the prompt you’d normally use</h2>
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">Step 1: Write the prompt you normally would</h2>
         <p className="text-lg text-slate-600 mb-6">
-          Let’s use a real-world scenario, not a toy example. Imagine this just happened at work.
+          Type the prompt you would usually send to an AI tool for this task.
         </p>
 
         <Card className="bg-slate-50 border-slate-200 p-6 mb-8">
@@ -81,7 +84,7 @@ export default function Page() {
 
         {/* User Input Section - Full Width */}
         <div className="flex flex-col space-y-3">
-            <label className="font-bold text-slate-700">How would you ask your AI for help?</label>
+            <label className="font-bold text-slate-700">Your usual prompt</label>
             <textarea
               className={textAreaStyles}
               placeholder="e.g., Write a summary of this meeting..."
@@ -89,7 +92,6 @@ export default function Page() {
               onChange={(e) => setUserPrompt(e.target.value)}
               rows={5}
             />
-            <p className="text-xs text-slate-500">Type the exact prompt you’d paste into Gemini, ChatGPT, or Claude.</p>
             
             {!showExpert && (
               <Button 
@@ -106,46 +108,71 @@ export default function Page() {
         {/* Expert Side - Full Width Below */}
         {showExpert && (
           <div className="animate-fade-in mt-12 pt-8 border-t border-slate-200">
-              <h3 className="font-bold text-blue-700 mb-4 flex items-center gap-2 text-lg">
-                <Zap className="w-5 h-5" /> A prompt a power user would try
-              </h3>
               
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 space-y-6 text-slate-800">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="md:col-span-1 font-bold text-blue-900">Persona</div>
-                  <div className="md:col-span-3">Act as a Project Manager.</div>
-                </div>
-                
-                <div className="border-t border-blue-200/50 pt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="md:col-span-1 font-bold text-blue-900">Context</div>
-                  <div className="md:col-span-3">We decided to delay launch by 2 weeks. Stakeholders are nervous about budget.</div>
+              <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                <div className="bg-blue-50/80 border-b border-blue-100 p-4">
+                   <h3 className="font-bold text-blue-700 flex items-center gap-2 text-lg">
+                    <Zap className="w-5 h-5" /> Improved version
+                  </h3>
                 </div>
 
-                <div className="border-t border-blue-200/50 pt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-                   <div className="md:col-span-1 font-bold text-blue-900">Task</div>
-                   <div className="md:col-span-3">Write a recap email for the "Website Redesign" kickoff meeting.</div>
-                </div>
+                <div className="divide-y divide-slate-100">
+                  {/* Persona - Blue */}
+                  <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-4 bg-blue-50/10 hover:bg-blue-50/20 transition-colors">
+                    <div className="md:col-span-1 font-bold text-blue-700 flex items-center gap-2">
+                      <User className="w-5 h-5" /> Persona
+                    </div>
+                    <div className="md:col-span-3 text-slate-800 leading-relaxed">
+                      Act as a Senior Project Manager communicating with executive stakeholders.
+                    </div>
+                  </div>
+                  
+                  {/* Context - Purple */}
+                  <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-4 bg-purple-50/10 hover:bg-purple-50/20 transition-colors">
+                    <div className="md:col-span-1 font-bold text-purple-700 flex items-center gap-2">
+                      <Layers className="w-5 h-5" /> Context
+                    </div>
+                    <div className="md:col-span-3 text-slate-800 leading-relaxed">
+                      The "Website Redesign" launch is delayed by 2 weeks due to unexpected API integration issues. Stakeholders are anxious about budget overruns, but we have a mitigation plan.
+                    </div>
+                  </div>
 
-                <div className="border-t border-blue-200/50 pt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-                   <div className="md:col-span-1 font-bold text-blue-900">Requirements</div>
-                   <div className="md:col-span-3">Use bullet points. Tone should be confident but realistic. Keep it under 200 words.</div>
+                  {/* Task - Emerald */}
+                  <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-4 bg-emerald-50/10 hover:bg-emerald-50/20 transition-colors">
+                     <div className="md:col-span-1 font-bold text-emerald-700 flex items-center gap-2">
+                       <Target className="w-5 h-5" /> Task
+                     </div>
+                     <div className="md:col-span-3 text-slate-800 leading-relaxed">
+                       Draft a reassuring recap email for the kickoff meeting that acknowledges the delay but focuses on the path forward.
+                     </div>
+                  </div>
+
+                  {/* Requirements - Amber */}
+                  <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-4 bg-amber-50/10 hover:bg-amber-50/20 transition-colors">
+                     <div className="md:col-span-1 font-bold text-amber-700 flex items-center gap-2">
+                       <ListChecks className="w-5 h-5" /> Requirements
+                     </div>
+                     <div className="md:col-span-3 text-slate-800 leading-relaxed">
+                       Use a clear "Current Status / Next Steps" structure with bullet points. Tone should be confident, transparent, and solution-oriented. Keep it under 200 words.
+                     </div>
+                  </div>
                 </div>
               </div>
 
               <div className="mt-6 p-4 bg-white border border-slate-200 rounded-lg">
-                <h4 className="font-bold text-slate-900 mb-3 text-sm">Why this works better:</h4>
+                <h4 className="font-bold text-slate-900 mb-3 text-sm">What changed:</h4>
                 <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-600">
                   <li className="flex gap-2">
                     <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
-                    <span><strong>Persona:</strong> Tells the AI <em>who</em> to be.</span>
+                    <span>We set a clear <strong>role</strong> and <strong>audience</strong>.</span>
                   </li>
                   <li className="flex gap-2">
                     <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
-                    <span><strong>Context:</strong> Explains the "vibe" (nervous stakeholders).</span>
+                    <span>We added the <strong>why</strong> (context) that actually matters.</span>
                   </li>
                   <li className="flex gap-2">
                     <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
-                    <span><strong>Requirements:</strong> Sets constraints.</span>
+                    <span>We spelled out the <strong>structure</strong> and <strong>tone</strong>.</span>
                   </li>
                 </ul>
               </div>
@@ -162,9 +189,9 @@ export default function Page() {
     return (
       <div className="animate-fade-in space-y-8">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-2">Step 2: Turn your task into a structured prompt</h2>
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">Step 2: Turn it into a structured PCTR prompt</h2>
           <p className="text-lg text-slate-600 mb-6">
-            Fill in each box using information from the scenario below. Notice how a messy task turns into a structured prompt.
+            Fill in Persona, Context, Task, and Requirements so the model knows exactly what you want.
           </p>
           
           <Card className="bg-slate-50 border-slate-200 p-6 mb-8">
@@ -180,7 +207,8 @@ export default function Page() {
             {/* Input Form */}
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Persona <span className="font-normal text-slate-500">- Who is the AI?</span></label>
+                <label className="block text-sm font-bold text-slate-700 mb-1">Persona</label>
+                <p className="text-xs text-slate-500 mb-2">Tell the model who it is acting as.</p>
                 <input 
                   type="text" 
                   className={inputStyles}
@@ -191,7 +219,8 @@ export default function Page() {
               </div>
               
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Context <span className="font-normal text-slate-500">- Background info & audience</span></label>
+                <label className="block text-sm font-bold text-slate-700 mb-1">Context</label>
+                <p className="text-xs text-slate-500 mb-2">Share the minimum background it needs to do the job.</p>
                 <textarea 
                   className={textAreaStyles}
                   rows={3}
@@ -202,7 +231,8 @@ export default function Page() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Task <span className="font-normal text-slate-500">- What do you need done?</span></label>
+                <label className="block text-sm font-bold text-slate-700 mb-1">Task</label>
+                <p className="text-xs text-slate-500 mb-2">State exactly what you want done.</p>
                 <input 
                   type="text" 
                   className={inputStyles}
@@ -213,7 +243,8 @@ export default function Page() {
               </div>
               
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1">Requirements <span className="font-normal text-slate-500">- Format, tone, length</span></label>
+                <label className="block text-sm font-bold text-slate-700 mb-1">Requirements</label>
+                <p className="text-xs text-slate-500 mb-2">Add any constraints for tone, length, and format.</p>
                 <input 
                   type="text" 
                   className={inputStyles}
@@ -243,6 +274,9 @@ export default function Page() {
                   </button>
                 </div>
               </div>
+              <Callout variant="info" title="Pro tip" className="mt-4">
+                 If the answer feels off, tweak Context or Requirements first before you rewrite the whole prompt.
+              </Callout>
             </div>
           </div>
         </div>
@@ -262,7 +296,7 @@ export default function Page() {
         title: 'Scenario A: You need a summary of a simple news article.',
         correct: 'zero',
         correctLabel: 'Zero-Shot',
-        feedbackCorrect: 'Correct! It is a simple task.',
+        feedbackCorrect: 'Best match: Correct! It is a simple task.',
         feedbackWrong: 'Overkill. Summary is a standard task; Zero-shot is fine.',
         examplePrompt: 'Summarize this article in 3 bullet points.'
       },
@@ -271,7 +305,7 @@ export default function Page() {
         title: 'Scenario B: Writing a LinkedIn post that must sound exactly like your CEO.',
         correct: 'few',
         correctLabel: 'Few-Shot',
-        feedbackCorrect: 'Correct! Providing examples (shots) ensures style matching.',
+        feedbackCorrect: 'Best match: Correct! Providing examples (shots) ensures style matching.',
         feedbackWrong: 'Without examples (Few-shot), the AI will just guess the tone.',
         examplePrompt: `Write a LinkedIn post about Q3 results.
         
@@ -285,7 +319,7 @@ Task: Write a new post in this same style about our new product.`
         title: 'Scenario C: Categorizing 50 support tickets based on a complex 10-page policy PDF.',
         correct: 'cot',
         correctLabel: 'Chain-of-Thought',
-        feedbackCorrect: 'Correct! Complex logic needs "Step-by-step" reasoning.',
+        feedbackCorrect: 'Best match: Correct! Complex logic needs "Step-by-step" reasoning.',
         feedbackWrong: 'This is complex. Ask it to "Think step-by-step" to avoid errors.',
         examplePrompt: `Read the attached policy. Then, categorize these tickets.
 
@@ -297,12 +331,26 @@ For each ticket, think step-by-step:
       }
     ];
 
+    const ChoiceButton = ({ choice, label, subtext, current, onClick }: { choice: string, label: string, subtext: string, current: string | null, onClick: () => void }) => (
+       <button 
+         onClick={onClick}
+         className={`flex-1 p-3 rounded-lg border text-left transition-all hover:shadow-sm ${
+           current === choice 
+             ? 'bg-blue-50 border-blue-500 ring-2 ring-blue-500' 
+             : 'bg-white border-slate-200 hover:border-blue-300 hover:bg-slate-50 cursor-pointer'
+         }`}
+       >
+         <span className={`block font-bold text-sm mb-1 ${current === choice ? 'text-blue-900' : 'text-slate-900'}`}>{label}</span>
+         <span className="block text-xs text-slate-500">{subtext}</span>
+       </button>
+    );
+
     return (
       <div className="animate-fade-in space-y-8">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-2">Step 3: Match your technique to the task</h2>
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">Step 3: Pick the right technique for the task</h2>
           <p className="text-lg text-slate-600 mb-8">
-            Now that you can structure a prompt, let’s add one more layer: when to ask for more examples, and when to let your AI think step-by-step.
+            Match your task to zero shot, few shot, or step by step prompting.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -324,9 +372,9 @@ For each ticket, think step-by-step:
 
             <Card className="p-5 border-t-4 border-t-emerald-500">
               <div className="flex items-center gap-2 mb-2 font-bold text-slate-900">
-                <Brain className="w-4 h-4 text-emerald-500" /> Chain-of-Thought
+                <Brain className="w-4 h-4 text-emerald-500" /> Step-by-Step
               </div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Think step-by-step</p>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Chain of Thought</p>
               <p className="text-sm text-slate-600">Use for math, logic, or complex decisions.</p>
             </Card>
           </div>
@@ -345,10 +393,34 @@ For each ticket, think step-by-step:
                 return (
                   <div key={s.id} className="border-b border-slate-200 pb-8 last:border-0 last:pb-0">
                     <p className="text-sm font-medium text-slate-800 mb-3">{s.title}</p>
-                    <div className="flex gap-2 mb-3">
-                      <Button size="sm" variant={userChoice === 'zero' ? 'primary' : 'outline'} onClick={() => handleQuizClick(s.id, 'zero')}>Zero-Shot</Button>
-                      <Button size="sm" variant={userChoice === 'few' ? 'primary' : 'outline'} onClick={() => handleQuizClick(s.id, 'few')}>Few-Shot</Button>
-                      <Button size="sm" variant={userChoice === 'cot' ? 'primary' : 'outline'} onClick={() => handleQuizClick(s.id, 'cot')}>Chain-of-Thought</Button>
+                    
+                    <div className="mb-3 p-3 bg-white border border-blue-100 rounded-lg flex items-center gap-2 shadow-sm">
+                       <MousePointerClick className="w-4 h-4 text-blue-500" />
+                       <p className="text-xs font-bold text-blue-700 uppercase tracking-wide">Select a tile to check your answer:</p>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3 mb-3">
+                      <ChoiceButton 
+                        choice="zero" 
+                        label="Zero shot" 
+                        subtext="One direct ask." 
+                        current={userChoice || null}
+                        onClick={() => handleQuizClick(s.id, 'zero')}
+                      />
+                      <ChoiceButton 
+                        choice="few" 
+                        label="Few shot" 
+                        subtext="Show one or two examples first." 
+                        current={userChoice || null}
+                        onClick={() => handleQuizClick(s.id, 'few')}
+                      />
+                      <ChoiceButton 
+                        choice="cot" 
+                        label="Step by step" 
+                        subtext="Ask the model to reason through the steps." 
+                        current={userChoice || null}
+                        onClick={() => handleQuizClick(s.id, 'cot')}
+                      />
                     </div>
                     
                     {hasAnswered && (
@@ -385,9 +457,9 @@ For each ticket, think step-by-step:
   const renderStep4 = () => (
     <div className="animate-fade-in space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">You are ready</h2>
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">Step 4: Jump into a model and practice</h2>
         <p className="text-lg text-slate-600 mb-8">
-          You have learned the <strong>PCTR</strong> framework, how to delegate using <strong>Persona</strong>, and when to use <strong>Few-Shot</strong> examples.
+          Take your new prompt style straight into Gemini, ChatGPT, or Claude.
         </p>
 
         {/* Exit Paths */}
@@ -434,7 +506,7 @@ For each ticket, think step-by-step:
         </div>
 
         {/* Tools Links (Secondary) */}
-        <div className="mt-12 pt-8 border-t border-slate-200">
+        <div className="mt-8 pt-8 border-t border-slate-200">
            <p className="text-sm font-bold text-slate-500 uppercase tracking-wide mb-4">Practice in your own tools</p>
            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <a href="https://gemini.google.com" target="_blank" rel="noreferrer" className="flex items-center gap-2 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors text-sm font-medium text-slate-700">
@@ -450,6 +522,16 @@ For each ticket, think step-by-step:
                  <ExternalLink className="w-3 h-3 ml-auto text-slate-400" />
               </a>
            </div>
+        </div>
+
+        {/* Recap */}
+        <div className="mt-12 pt-8 border-t border-slate-200">
+          <h3 className="font-bold text-slate-900 mb-4">Quick recap</h3>
+          <ul className="space-y-2 text-sm text-slate-600">
+            <li className="flex gap-2"><Check className="w-4 h-4 text-green-600" /> Use Persona, Context, Task, and Requirements to shape your prompts.</li>
+            <li className="flex gap-2"><Check className="w-4 h-4 text-green-600" /> Try zero shot, few shot, and step by step, then keep the one that works.</li>
+            <li className="flex gap-2"><Check className="w-4 h-4 text-green-600" /> Practice directly in Gemini, ChatGPT, or Claude to make these habits stick.</li>
+          </ul>
         </div>
       </div>
     </div>

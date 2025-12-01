@@ -1,6 +1,6 @@
 import React from 'react';
 import { PageLayout, Card, Callout, Heading, Badge } from '../../../components/ui';
-import { ShieldCheck, ShieldAlert, ShieldX, HelpCircle } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, ShieldX, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
 
 export default function Page() {
   return (
@@ -8,6 +8,11 @@ export default function Page() {
       title="Policy Quick View" 
       description="Can I use AI for this? A quick reference for daily decisions."
     >
+      <div className="mb-8">
+        <p className="text-lg text-slate-700">
+          Use this page as a quick traffic light check before you paste information into an AI tool.
+        </p>
+      </div>
       
       {/* SECTION 1: TRAFFIC LIGHTS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -16,12 +21,12 @@ export default function Page() {
              <ShieldCheck className="w-6 h-6 text-green-600" />
              <h2 className="text-xl font-bold text-green-800">GREEN (Go)</h2>
           </div>
-          <p className="text-sm text-slate-600 mb-4">Approved for general use with standard vigilance.</p>
+          <p className="text-sm font-bold text-slate-800 mb-4">Safe, routine uses you can do today.</p>
           <ul className="space-y-2 text-sm text-slate-800">
-             <li className="flex gap-2">✅ Summarizing generic documents</li>
-             <li className="flex gap-2">✅ Drafting internal emails</li>
-             <li className="flex gap-2">✅ Brainstorming marketing ideas</li>
-             <li className="flex gap-2">✅ Coding assistance (Copilot)</li>
+             <li className="flex gap-2">✅ Summarize public documents.</li>
+             <li className="flex gap-2">✅ Draft internal emails without names.</li>
+             <li className="flex gap-2">✅ Brainstorm marketing concepts.</li>
+             <li className="flex gap-2">✅ Explain code snippets.</li>
           </ul>
         </Card>
 
@@ -30,11 +35,11 @@ export default function Page() {
              <ShieldAlert className="w-6 h-6 text-yellow-600" />
              <h2 className="text-xl font-bold text-yellow-800">YELLOW (Caution)</h2>
           </div>
-          <p className="text-sm text-slate-600 mb-4">Requires anonymization or manager approval.</p>
+          <p className="text-sm font-bold text-slate-800 mb-4">Uses where you must slow down and follow extra steps.</p>
           <ul className="space-y-2 text-sm text-slate-800">
-             <li className="flex gap-2">⚠️ Analyzing meeting transcripts (Anonymized ONLY)</li>
-             <li className="flex gap-2">⚠️ Drafting client letters (Review carefully)</li>
-             <li className="flex gap-2">⚠️ Uploading internal PDFs (Internal tools ONLY)</li>
+             <li className="flex gap-2">⚠️ Analyze anonymized meeting notes.</li>
+             <li className="flex gap-2">⚠️ Draft client letters for review.</li>
+             <li className="flex gap-2">⚠️ Upload internal PDFs to secure tools.</li>
           </ul>
         </Card>
 
@@ -43,51 +48,73 @@ export default function Page() {
              <ShieldX className="w-6 h-6 text-red-600" />
              <h2 className="text-xl font-bold text-red-800">RED (Stop)</h2>
           </div>
-          <p className="text-sm text-slate-600 mb-4">Strictly prohibited. Violation of policy.</p>
+          <p className="text-sm font-bold text-slate-800 mb-4">Uses that are not allowed with AI tools.</p>
           <ul className="space-y-2 text-sm text-slate-800">
-             <li className="flex gap-2">❌ Uploading PII to public web</li>
-             <li className="flex gap-2">❌ Automated hiring/firing decisions</li>
-             <li className="flex gap-2">❌ Generating code for core security systems</li>
-             <li className="flex gap-2">❌ Inputting login credentials</li>
+             <li className="flex gap-2">❌ Do not upload PII or customer names.</li>
+             <li className="flex gap-2">❌ Do not ask for hiring decisions.</li>
+             <li className="flex gap-2">❌ Do not paste secrets or credentials.</li>
           </ul>
         </Card>
       </div>
 
-      {/* SECTION 2: DATA CLASSIFICATION TABLE */}
+      {/* SECTION 2: EVERYDAY EXAMPLES */}
       <section className="mb-12">
-        <Heading level={2} className="mb-6">Data Classification Guide</Heading>
-        <div className="overflow-x-auto rounded-lg border border-slate-200">
-          <table className="min-w-full divide-y divide-slate-200">
-            <thead className="bg-slate-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Data Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Examples</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">AI Usage Rule</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-slate-200 text-sm">
-              <tr>
-                <td className="px-6 py-4 font-bold text-slate-900">Public</td>
-                <td className="px-6 py-4 text-slate-600">Marketing brochures, website copy, press releases.</td>
-                <td className="px-6 py-4"><Badge variant="success">Permitted</Badge></td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 font-bold text-slate-900">Internal</td>
-                <td className="px-6 py-4 text-slate-600">Org charts, training manuals, meeting agendas.</td>
-                <td className="px-6 py-4"><Badge variant="success">Permitted (Internal Tools)</Badge></td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 font-bold text-slate-900">Confidential</td>
-                <td className="px-6 py-4 text-slate-600">Strategic plans, unreleased products, partner contracts.</td>
-                <td className="px-6 py-4"><Badge variant="warning">Restricted</Badge></td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 font-bold text-red-700">Restricted (PII)</td>
-                <td className="px-6 py-4 text-slate-600">SSNs, HR records, Credit Card #s, Legal Case files.</td>
-                <td className="px-6 py-4"><Badge variant="danger">Prohibited in Public AI</Badge></td>
-              </tr>
-            </tbody>
-          </table>
+        <Heading level={2} className="mb-6">Everyday Examples</Heading>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-4">
+            <h3 className="font-bold text-slate-900 border-b border-slate-200 pb-2">HR examples</h3>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-start gap-2 text-green-800">
+                <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                Drafting a generic job description.
+              </li>
+              <li className="flex items-start gap-2 text-yellow-800">
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                Summarizing anonymized interview notes.
+              </li>
+              <li className="flex items-start gap-2 text-red-800">
+                <XCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                Asking "Should I hire this person?".
+              </li>
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="font-bold text-slate-900 border-b border-slate-200 pb-2">Member service examples</h3>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-start gap-2 text-green-800">
+                <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                Drafting a template response for a FAQ.
+              </li>
+              <li className="flex items-start gap-2 text-yellow-800">
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                Summarizing a call transcript with names removed.
+              </li>
+              <li className="flex items-start gap-2 text-red-800">
+                <XCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                Pasting a member's full claim history and address.
+              </li>
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="font-bold text-slate-900 border-b border-slate-200 pb-2">Internal reporting examples</h3>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-start gap-2 text-green-800">
+                <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                Summarizing a published industry report.
+              </li>
+              <li className="flex items-start gap-2 text-yellow-800">
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                Analyzing Q3 sales trends from internal data (secure tool only).
+              </li>
+              <li className="flex items-start gap-2 text-red-800">
+                <XCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                Uploading the unreleased strategic acquisition list to a public bot.
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
 
