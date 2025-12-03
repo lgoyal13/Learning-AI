@@ -5,6 +5,7 @@ import RootLayout from './app/layout';
 // Core Pages
 import HomePage from './app/page';
 import QuickStartPage from './app/quick-start/page';
+import GeneratorPage from './app/generator/page';
 
 // Modules
 import ModulesPage from './app/modules/page';
@@ -34,6 +35,7 @@ const RouteHandler = () => {
   // Top-level pages
   if (cleanPath === '/') return <HomePage />;
   if (cleanPath === '/quick-start') return <QuickStartPage />;
+  if (cleanPath === '/generator') return <GeneratorPage />;
 
   // Core learning modules
   if (cleanPath === '/modules') return <ModulesPage />;
