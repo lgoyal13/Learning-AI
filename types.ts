@@ -66,3 +66,22 @@ export interface PromptGeneratorOutput {
   modeRecommendation: 'Fast' | 'Pro' | 'Research' | 'Your-docs';
   reasoning: string;
 }
+
+// --- Prompt Coach Types ---
+
+export interface PCTRDimension {
+  rating: 'Strong' | 'Okay' | 'Missing';
+  comment: string;
+}
+
+export interface PromptEvaluationOutput {
+  summary: string;
+  pctr: {
+    persona: PCTRDimension;
+    context: PCTRDimension;
+    task: PCTRDimension;
+    requirements: PCTRDimension;
+  };
+  improvedPrompt: string;
+  tip: string;
+}

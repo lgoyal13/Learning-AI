@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PageLayout, Card, Button, ProgressBar, Callout, Badge } from '../../components/ui';
+import { PageLayout, Card, Button, ProgressBar, Callout, Badge, PromptCard } from '../../components/ui';
 import { useRouter } from '../../lib/routerContext';
 import { 
   ArrowRight, 
@@ -20,8 +20,14 @@ import {
   User,
   Target,
   ListChecks,
-  MousePointerClick
+  MousePointerClick,
+  Sparkles,
+  Loader2,
+  AlertTriangle,
+  XCircle
 } from 'lucide-react';
+import { evaluatePrompt } from '../../services/geminiService';
+import { PromptEvaluationOutput } from '../../types';
 
 export default function Page() {
   const { push } = useRouter();
@@ -30,7 +36,9 @@ export default function Page() {
 
   // --- Step 1 State ---
   const [userPrompt, setUserPrompt] = useState('');
-  const [showExpert, setShowExpert] = useState(false);
+  const [feedback, setFeedback] = useState<PromptEvaluationOutput | null>(null);
+  const [isFeedbackLoading, setIsFeedbackLoading] = useState(false);
+  const [feedbackError, setFeedbackError] = useState<string | null>(null);
 
   // --- Step 2 State (P.C.T.R) ---
   const [pctr, setPctr] = useState({
@@ -60,127 +68,179 @@ export default function Page() {
     setTimeout(() => setCopiedPctr(false), 2000);
   };
 
+  const handleGetFeedback = async () => {
+    if (!userPrompt.trim()) return;
+    setIsFeedbackLoading(true);
+    setFeedbackError(null);
+    setFeedback(null);
+    
+    // Scenario text from the UI context
+    const scenarioText = "You’ve just left a messy project meeting. You need to send a recap email to stakeholders so everyone knows what was decided and what happens next.";
+
+    try {
+      const result = await evaluatePrompt(userPrompt, scenarioText);
+      setFeedback(result);
+    } catch (err) {
+      setFeedbackError("We couldn't analyze your prompt right now. Please try again.");
+    } finally {
+      setIsFeedbackLoading(false);
+    }
+  };
+
   // Shared Styles
   const textAreaStyles = "w-full p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-slate-900 bg-white placeholder:text-slate-400";
   const inputStyles = "w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-900 bg-white placeholder:text-slate-400";
 
   // --- Render Step 1: Comparison ---
-  const renderStep1 = () => (
-    <div className="animate-fade-in space-y-8">
-      <div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Step 1: Write the prompt you normally would</h2>
-        <p className="text-lg text-slate-600 mb-6">
-          Type the prompt you would usually send to an AI tool for this task.
-        </p>
+  const renderStep1 = () => {
+    const getRatingVariant = (rating: string) => {
+      switch (rating) {
+        case 'Strong': return 'success';
+        case 'Okay': return 'warning';
+        case 'Missing': return 'danger';
+        default: return 'neutral';
+      }
+    };
 
-        <Card className="bg-slate-50 border-slate-200 p-6 mb-8">
-          <h3 className="font-bold text-slate-900 mb-2 flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-blue-600" /> Scenario
-          </h3>
-          <p className="text-slate-700">
-            You’ve just left a messy project meeting. You need to send a recap email to stakeholders so everyone knows what was decided and what happens next.
+    const getRatingStyles = (rating: string) => {
+      switch (rating) {
+        case 'Strong': return 'bg-green-50 border-green-200 text-green-900';
+        case 'Okay': return 'bg-amber-50 border-amber-200 text-amber-900';
+        case 'Missing': return 'bg-red-50 border-red-200 text-red-900';
+        default: return 'bg-slate-50 border-slate-200 text-slate-900';
+      }
+    };
+
+    return (
+      <div className="animate-fade-in space-y-8">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">Step 1: Write the prompt you normally would</h2>
+          <p className="text-lg text-slate-600 mb-6">
+            Type the prompt you would usually send to an AI tool for this task.
           </p>
-        </Card>
 
-        {/* User Input Section - Full Width */}
-        <div className="flex flex-col space-y-3">
-            <label className="font-bold text-slate-700">Your usual prompt</label>
-            <textarea
-              className={textAreaStyles}
-              placeholder="e.g., Write a summary of this meeting..."
-              value={userPrompt}
-              onChange={(e) => setUserPrompt(e.target.value)}
-              rows={5}
-            />
-            
-            {!showExpert && (
-              <Button 
-                variant="outline" 
-                onClick={() => setShowExpert(true)} 
-                className="mt-4 self-start"
-                disabled={userPrompt.length === 0}
-              >
-                Show expert version <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            )}
-        </div>
+          <Card className="bg-slate-50 border-slate-200 p-6 mb-8">
+            <h3 className="font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-blue-600" /> Scenario
+            </h3>
+            <p className="text-slate-700">
+              You’ve just left a messy project meeting. You need to send a recap email to stakeholders so everyone knows what was decided and what happens next.
+            </p>
+          </Card>
 
-        {/* Expert Side - Full Width Below */}
-        {showExpert && (
-          <div className="animate-fade-in mt-12 pt-8 border-t border-slate-200">
+          {/* User Input Section - Full Width */}
+          <div className="flex flex-col space-y-3">
+              <label className="font-bold text-slate-700">Your usual prompt</label>
+              <textarea
+                className={textAreaStyles}
+                placeholder="e.g., Write a summary of this meeting..."
+                value={userPrompt}
+                onChange={(e) => setUserPrompt(e.target.value)}
+                rows={5}
+              />
               
-              <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                <div className="bg-blue-50/80 border-b border-blue-100 p-4">
-                   <h3 className="font-bold text-blue-700 flex items-center gap-2 text-lg">
-                    <Zap className="w-5 h-5" /> Improved version
-                  </h3>
-                </div>
-
-                <div className="divide-y divide-slate-100">
-                  {/* Persona - Blue */}
-                  <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-4 bg-blue-50/10 hover:bg-blue-50/20 transition-colors">
-                    <div className="md:col-span-1 font-bold text-blue-700 flex items-center gap-2">
-                      <User className="w-5 h-5" /> Persona
-                    </div>
-                    <div className="md:col-span-3 text-slate-800 leading-relaxed">
-                      Act as a Senior Project Manager communicating with executive stakeholders.
-                    </div>
-                  </div>
-                  
-                  {/* Context - Purple */}
-                  <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-4 bg-purple-50/10 hover:bg-purple-50/20 transition-colors">
-                    <div className="md:col-span-1 font-bold text-purple-700 flex items-center gap-2">
-                      <Layers className="w-5 h-5" /> Context
-                    </div>
-                    <div className="md:col-span-3 text-slate-800 leading-relaxed">
-                      The "Website Redesign" launch is delayed by 2 weeks due to unexpected API integration issues. Stakeholders are anxious about budget overruns, but we have a mitigation plan.
-                    </div>
-                  </div>
-
-                  {/* Task - Emerald */}
-                  <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-4 bg-emerald-50/10 hover:bg-emerald-50/20 transition-colors">
-                     <div className="md:col-span-1 font-bold text-emerald-700 flex items-center gap-2">
-                       <Target className="w-5 h-5" /> Task
-                     </div>
-                     <div className="md:col-span-3 text-slate-800 leading-relaxed">
-                       Draft a reassuring recap email for the kickoff meeting that acknowledges the delay but focuses on the path forward.
-                     </div>
-                  </div>
-
-                  {/* Requirements - Amber */}
-                  <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-4 bg-amber-50/10 hover:bg-amber-50/20 transition-colors">
-                     <div className="md:col-span-1 font-bold text-amber-700 flex items-center gap-2">
-                       <ListChecks className="w-5 h-5" /> Requirements
-                     </div>
-                     <div className="md:col-span-3 text-slate-800 leading-relaxed">
-                       Use a clear "Current Status / Next Steps" structure with bullet points. Tone should be confident, transparent, and solution-oriented. Keep it under 200 words.
-                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 p-4 bg-white border border-slate-200 rounded-lg">
-                <h4 className="font-bold text-slate-900 mb-3 text-sm">What changed:</h4>
-                <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-600">
-                  <li className="flex gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
-                    <span>We set a clear <strong>role</strong> and <strong>audience</strong>.</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
-                    <span>We added the <strong>why</strong> (context) that actually matters.</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
-                    <span>We spelled out the <strong>structure</strong> and <strong>tone</strong>.</span>
-                  </li>
-                </ul>
-              </div>
+              <Button 
+                onClick={handleGetFeedback} 
+                isLoading={isFeedbackLoading}
+                disabled={userPrompt.length === 0}
+                className="mt-4 self-start"
+              >
+                Get feedback on your prompt <Sparkles className="w-4 h-4 ml-2" />
+              </Button>
           </div>
-        )}
+
+          {/* Feedback Section */}
+          {(isFeedbackLoading || feedback || feedbackError) && (
+            <div className="animate-fade-in mt-12 pt-8 border-t border-slate-200">
+              
+              {/* Loading State */}
+              {isFeedbackLoading && (
+                <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+                  <Loader2 className="w-8 h-8 animate-spin text-blue-500 mb-4" />
+                  <p className="font-medium animate-pulse">Analyzing your prompt against the PCTR rubric...</p>
+                </div>
+              )}
+
+              {/* Error State */}
+              {feedbackError && (
+                 <Callout variant="danger" title="Error">
+                   {feedbackError}
+                 </Callout>
+              )}
+
+              {/* Success State */}
+              {feedback && !isFeedbackLoading && (
+                <div className="space-y-8 animate-slide-up">
+                  
+                  {/* Summary */}
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-blue-600" /> AI Coach Feedback
+                    </h3>
+                    <p className="text-lg text-slate-700 leading-relaxed bg-blue-50 border border-blue-100 p-4 rounded-xl">
+                      {feedback.summary}
+                    </p>
+                  </div>
+
+                  {/* PCTR Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Persona */}
+                    <div className={`p-5 rounded-xl border ${getRatingStyles(feedback.pctr.persona.rating)}`}>
+                       <div className="flex justify-between items-start mb-2">
+                         <span className="font-bold flex items-center gap-2"><User className="w-4 h-4"/> Persona</span>
+                         <Badge variant={getRatingVariant(feedback.pctr.persona.rating)}>{feedback.pctr.persona.rating}</Badge>
+                       </div>
+                       <p className="text-sm opacity-90">{feedback.pctr.persona.comment}</p>
+                    </div>
+
+                    {/* Context */}
+                    <div className={`p-5 rounded-xl border ${getRatingStyles(feedback.pctr.context.rating)}`}>
+                       <div className="flex justify-between items-start mb-2">
+                         <span className="font-bold flex items-center gap-2"><Layers className="w-4 h-4"/> Context</span>
+                         <Badge variant={getRatingVariant(feedback.pctr.context.rating)}>{feedback.pctr.context.rating}</Badge>
+                       </div>
+                       <p className="text-sm opacity-90">{feedback.pctr.context.comment}</p>
+                    </div>
+
+                    {/* Task */}
+                    <div className={`p-5 rounded-xl border ${getRatingStyles(feedback.pctr.task.rating)}`}>
+                       <div className="flex justify-between items-start mb-2">
+                         <span className="font-bold flex items-center gap-2"><Target className="w-4 h-4"/> Task</span>
+                         <Badge variant={getRatingVariant(feedback.pctr.task.rating)}>{feedback.pctr.task.rating}</Badge>
+                       </div>
+                       <p className="text-sm opacity-90">{feedback.pctr.task.comment}</p>
+                    </div>
+
+                    {/* Requirements */}
+                    <div className={`p-5 rounded-xl border ${getRatingStyles(feedback.pctr.requirements.rating)}`}>
+                       <div className="flex justify-between items-start mb-2">
+                         <span className="font-bold flex items-center gap-2"><ListChecks className="w-4 h-4"/> Requirements</span>
+                         <Badge variant={getRatingVariant(feedback.pctr.requirements.rating)}>{feedback.pctr.requirements.rating}</Badge>
+                       </div>
+                       <p className="text-sm opacity-90">{feedback.pctr.requirements.comment}</p>
+                    </div>
+                  </div>
+
+                  {/* Improved Prompt */}
+                  <div className="space-y-3">
+                     <h4 className="font-bold text-slate-900 flex items-center gap-2">
+                        <Zap className="w-4 h-4 text-amber-500" /> Suggested version
+                     </h4>
+                     <PromptCard label="REWRITTEN PROMPT" prompt={feedback.improvedPrompt} />
+                  </div>
+
+                  {/* Tip */}
+                  <Callout variant="success" title="Coach's Tip">
+                    {feedback.tip}
+                  </Callout>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // --- Render Step 2: Builder ---
   const renderStep2 = () => {
@@ -571,7 +631,7 @@ For each ticket, think step-by-step:
               <ArrowLeft className="w-4 h-4 mr-2" /> Previous
             </Button>
 
-            <Button onClick={handleNext} disabled={currentStep === 1 && !showExpert}>
+            <Button onClick={handleNext} disabled={currentStep === 1 && !feedback}>
               Next <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>

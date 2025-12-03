@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, Badge, Callout } from '../components/ui';
+import { Button, Card, Badge } from '../components/ui';
 import { useRouter } from '../lib/routerContext';
 import { 
   ArrowRight, 
@@ -7,20 +7,12 @@ import {
   PenTool, 
   FileText, 
   Search, 
-  CheckCircle2, 
   Shield,
-  Layers,
-  Globe,
-  MessageSquare,
+  Layout,
   BrainCircuit,
-  Image as ImageIcon,
-  Clock,
-  Lock,
-  ExternalLink,
   BookOpen,
-  Map,
   Sparkles,
-  Layout
+  Copy
 } from 'lucide-react';
 
 export default function Page() {
@@ -35,28 +27,28 @@ export default function Page() {
           <Badge variant="blue" className="mb-4 bg-blue-500/20 text-blue-100 border-blue-500/50">Built in Google AI Studio • Internal Academy</Badge>
           
           <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
-            Get ahead of <br/>
-            <span className="text-blue-400">90% of AI users.</span>
+            Describe your task. <br/>
+            <span className="text-blue-400">We’ll build the prompt to automate it.</span>
           </h1>
           
           <div className="text-slate-300 text-lg md:text-xl mb-10 leading-relaxed max-w-2xl space-y-4">
             <p className="font-medium text-white">
-              Most people just chat with AI. You are going to learn to pilot it. 
-              Master the core habits of prompting, learn when to switch between Research, Docs, and Builder tools, and run safe workflows that actually save you time.
+              Paste your request into the Prompt Generator to get a professional AI prompt instantly. 
+              Then use the Learning Modules and Pre-saved Library to master the skills yourself.
             </p>
             <p className="text-base text-slate-400">
-              This internal academy helps you apply tools like Gemini, ChatGPT, Perplexity, and NotebookLM to your real work—safely and effectively.
+              This internal academy helps you use tools like Gemini, ChatGPT, and Claude on real emails, docs, analysis, and workflows.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <Button 
                size="lg" 
-               onClick={() => push('/quick-start')}
+               onClick={() => push('/generator')}
                className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 h-14 text-lg shadow-lg shadow-blue-900/50"
             >
-              <Zap className="w-5 h-5 mr-2" /> 
-              Start the Prompting Quickstart
+              <Sparkles className="w-5 h-5 mr-2" /> 
+              Open Prompt Generator
             </Button>
             <Button 
                size="lg" 
@@ -64,7 +56,7 @@ export default function Page() {
                onClick={() => push('/modules')}
                className="bg-white/5 border-white/30 text-white hover:bg-white/10 h-14 px-8 font-medium backdrop-blur-sm transition-all"
             >
-              Explore the Full Academy
+              Explore Learning Modules
             </Button>
           </div>
         </div>
@@ -86,7 +78,7 @@ export default function Page() {
             </div>
             <h3 className="font-bold text-slate-900 text-lg">Demystify the Tech</h3>
             <p className="text-slate-600 leading-relaxed">
-              Stop guessing how LLMs work. Understand tokens, context windows, and why models hallucinate so you can trust your tools.
+              Understand how the Prompt Generator builds your prompts and why LLMs need specific instructions to work well.
             </p>
           </div>
           <div className="space-y-3">
@@ -95,7 +87,7 @@ export default function Page() {
             </div>
             <h3 className="font-bold text-slate-900 text-lg">Practical Workflows</h3>
             <p className="text-slate-600 leading-relaxed">
-              Move beyond "chat". Learn to use research engines, document analysis, and workspace tools to finish projects faster.
+              Learn to apply these automated prompts to real projects using research engines and document tools.
             </p>
           </div>
           <div className="space-y-3">
@@ -104,7 +96,7 @@ export default function Page() {
             </div>
             <h3 className="font-bold text-slate-900 text-lg">Safety First</h3>
             <p className="text-slate-600 leading-relaxed">
-              Learn the "Golden Rule" of PII. Keep client data safe while leveraging the most powerful AI models available.
+              The generator and library follow safe use patterns. Learn why protecting PII is your most important job.
             </p>
           </div>
         </div>
@@ -113,9 +105,9 @@ export default function Page() {
       {/* How It Works (Structure Map) */}
       <section className="bg-slate-50 border border-slate-200 rounded-2xl p-8 md:p-10">
         <div className="mb-8 text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold text-slate-900 mb-3">How this academy is structured</h2>
+          <h2 className="text-2xl font-bold text-slate-900 mb-3">Three ways to get work done</h2>
           <p className="text-slate-600">
-            We’ve designed a path to take you from beginner to power user. You can jump in anywhere, but here is the recommended flow.
+            Automate the hard part, learn the skill, or grab a template.
           </p>
         </div>
 
@@ -123,36 +115,36 @@ export default function Page() {
           {/* Connector Line (Desktop) */}
           <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 -z-10 -translate-y-1/2"></div>
 
-          {/* Step 1 */}
+          {/* Card 1: Prompt Generator */}
           <Card 
             className="p-6 bg-white relative hover:border-blue-300 transition-colors cursor-pointer group" 
-            onClick={() => push('/quick-start')}
+            onClick={() => push('/generator')}
             style={{ overflow: 'visible' }}
           >
             <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm z-10">
-              Step 1
+              Automate
             </div>
             <div className="mb-4 flex justify-center">
               <div className="p-3 bg-blue-50 text-blue-600 rounded-full group-hover:scale-110 transition-transform">
-                <Zap className="w-6 h-6" />
+                <Sparkles className="w-6 h-6" />
               </div>
             </div>
             <div className="text-center">
-              <h3 className="font-bold text-slate-900 mb-2">Quick Start</h3>
+              <h3 className="font-bold text-slate-900 mb-2">Prompt Generator</h3>
               <p className="text-sm text-slate-600">
-                A 5-minute crash course on the PCTR prompting formula. Start here to fix your bad habits immediately.
+                Describe your task and get a ready-to-use AI prompt that follows best practices.
               </p>
             </div>
           </Card>
 
-          {/* Step 2 */}
+          {/* Card 2: Learning Modules */}
           <Card 
             className="p-6 bg-white relative hover:border-purple-300 transition-colors cursor-pointer group" 
             onClick={() => push('/modules')}
             style={{ overflow: 'visible' }}
           >
             <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm z-10">
-              Step 2
+              Learn
             </div>
              <div className="mb-4 flex justify-center">
               <div className="p-3 bg-purple-50 text-purple-600 rounded-full group-hover:scale-110 transition-transform">
@@ -162,29 +154,29 @@ export default function Page() {
             <div className="text-center">
               <h3 className="font-bold text-slate-900 mb-2">Learning Modules</h3>
               <p className="text-sm text-slate-600">
-                Deep dives into Fundamentals, Research, Docs, and Workflows. This is the core curriculum.
+                Fundamentals and deep dives that teach you how to design your own prompts and apply AI across projects.
               </p>
             </div>
           </Card>
 
-          {/* Step 3 */}
+          {/* Card 3: Pre-saved Prompts & Resources */}
           <Card 
             className="p-6 bg-white relative hover:border-emerald-300 transition-colors cursor-pointer group" 
             onClick={() => push('/reference')}
             style={{ overflow: 'visible' }}
           >
             <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm z-10">
-              Step 3
+              Reuse
             </div>
              <div className="mb-4 flex justify-center">
               <div className="p-3 bg-emerald-50 text-emerald-600 rounded-full group-hover:scale-110 transition-transform">
-                <Map className="w-6 h-6" />
+                <Copy className="w-6 h-6" />
               </div>
             </div>
             <div className="text-center">
-              <h3 className="font-bold text-slate-900 mb-2">Reference Guide</h3>
+              <h3 className="font-bold text-slate-900 mb-2">Pre-saved Prompts & Resources</h3>
               <p className="text-sm text-slate-600">
-                Copy-paste templates, safety cheat sheets, and tool guides for your daily work.
+                Curated prompt templates, safety checklists, and tool guides you can reuse and adapt.
               </p>
             </div>
           </Card>
@@ -196,7 +188,7 @@ export default function Page() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold text-slate-900">What do you need to do today?</h2>
-            <p className="text-slate-600 mt-1">Jump straight into a playbook for your specific task.</p>
+            <p className="text-slate-600 mt-1">Pick a playbook for your task, or send it straight to the Prompt Generator for a strong starting prompt.</p>
           </div>
         </div>
         
@@ -278,11 +270,11 @@ export default function Page() {
              </li>
              <li className="flex gap-2 items-start">
                <span className="font-bold text-slate-300">2.</span>
-               <span>Run the <button onClick={() => push('/quick-start')} className="text-blue-600 font-medium hover:underline">Quick Start</button> with that task.</span>
+               <span>Run the <button onClick={() => push('/generator')} className="text-blue-600 font-medium hover:underline">Prompt Generator</button> with that task.</span>
              </li>
              <li className="flex gap-2 items-start">
                <span className="font-bold text-slate-300">3.</span>
-               <span>Copy a <button onClick={() => push('/reference')} className="text-purple-600 font-medium hover:underline">Template</button> for next time.</span>
+               <span>Or copy a <button onClick={() => push('/reference')} className="text-purple-600 font-medium hover:underline">Template</button> from the library.</span>
              </li>
           </ul>
         </div>

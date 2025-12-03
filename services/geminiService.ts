@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
-import { PromptGeneratorInput, PromptGeneratorOutput } from "../types";
+import { PromptGeneratorInput, PromptGeneratorOutput, PromptEvaluationOutput } from "../types";
 
 // Initialize the client with the API key from the environment.
 // Note: In a production client-side app, this key should be proxied through a backend.
@@ -120,6 +120,107 @@ The user will provide their task details in JSON format.
   } catch (error) {
     console.error("Gemini Generation Error:", error);
     throw new Error("Failed to generate prompt template. Please try again.");
+  }
+};
+
+/**
+ * Evaluates a user prompt against the PCTR framework.
+ */
+export const evaluatePrompt = async (userPrompt: string, scenario?: string): Promise<PromptEvaluationOutput> => {
+  const model = "gemini-2.5-flash";
+
+  // Define schema for PCTR dimension
+  const pctrDimensionSchema: Schema = {
+    type: Type.OBJECT,
+    properties: {
+      rating: { type: Type.STRING, enum: ["Strong", "Okay", "Missing"] },
+      comment: { type: Type.STRING }
+    },
+    required: ["rating", "comment"]
+  };
+
+  // Define full evaluation schema
+  const evaluationSchema: Schema = {
+    type: Type.OBJECT,
+    properties: {
+      summary: { 
+        type: Type.STRING, 
+        description: "1-2 sentence overall summary of the feedback." 
+      },
+      pctr: {
+        type: Type.OBJECT,
+        properties: {
+          persona: pctrDimensionSchema,
+          context: pctrDimensionSchema,
+          task: pctrDimensionSchema,
+          requirements: pctrDimensionSchema
+        },
+        required: ["persona", "context", "task", "requirements"]
+      },
+      improvedPrompt: { 
+        type: Type.STRING, 
+        description: "A rewritten version of the prompt that fixes the weaknesses found." 
+      },
+      tip: { 
+        type: Type.STRING, 
+        description: "One single actionable tip to improve next time." 
+      }
+    },
+    required: ["summary", "pctr", "improvedPrompt", "tip"]
+  };
+
+  const systemInstruction = `You are an expert AI Prompt Coach. Your goal is to evaluate a user's prompt based on the PCTR framework.
+
+### PCTR Framework
+1. **Persona**: Who is the AI acting as? (e.g., "Act as a Senior Editor")
+2. **Context**: What is the background info? (e.g., audience, situation)
+3. **Task**: What specific action is required? (e.g., "Summarize", "Draft")
+4. **Requirements**: What are the constraints? (e.g., format, tone, length)
+
+### Rubric
+- **Strong**: Explicitly defined and clear.
+- **Okay**: Implied or vague.
+- **Missing**: Not present at all.
+
+### Goal
+Provide constructive feedback and a rewrite that improves the prompt while keeping the original intent. The "improvedPrompt" must be a full prompt string ready to copy-paste.
+`;
+
+  try {
+    const inputContent = scenario 
+      ? `Scenario: ${scenario}\n\nUser Prompt: ${userPrompt}`
+      : `User Prompt: ${userPrompt}`;
+
+    const result = await ai.models.generateContent({
+      model,
+      contents: `Evaluate this prompt: ${inputContent}`,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: evaluationSchema,
+        systemInstruction: systemInstruction,
+        temperature: 0.2,
+      }
+    });
+
+    const text = result.text;
+    if (!text) throw new Error("No response from Gemini.");
+
+    return JSON.parse(text) as PromptEvaluationOutput;
+
+  } catch (error) {
+    console.error("Gemini Evaluation Error:", error);
+    // Return a safe fallback to avoid UI crashes
+    return {
+      summary: "We couldn't analyze your prompt at this moment. Please try again.",
+      pctr: {
+        persona: { rating: "Missing", comment: "Unable to evaluate." },
+        context: { rating: "Missing", comment: "Unable to evaluate." },
+        task: { rating: "Missing", comment: "Unable to evaluate." },
+        requirements: { rating: "Missing", comment: "Unable to evaluate." },
+      },
+      improvedPrompt: userPrompt,
+      tip: "Try refreshing the page."
+    };
   }
 };
 
