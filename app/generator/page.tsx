@@ -16,7 +16,10 @@ import {
   Zap,
   Layers,
   BrainCircuit,
-  PenTool
+  PenTool,
+  Upload,
+  ShieldCheck,
+  Image as ImageIcon
 } from 'lucide-react';
 import { generatePromptTemplate } from '../../services/geminiService';
 import { PromptGeneratorInput, PromptGeneratorOutput, TaskType, Stakes, ModelEnv, ExampleType } from '../../types';
@@ -28,127 +31,134 @@ type PromptRecipe = {
   label: string;
   icon: React.ReactNode;
   data: Partial<PromptGeneratorInput>;
+  // UI-specific mappings
+  uiReasoning?: 'fast' | 'deep';
+  uiStructure?: 'light' | 'medium' | 'high';
 };
 
 const RECIPES: PromptRecipe[] = [
   {
     id: 'email',
-    label: 'Executive Update',
+    label: 'Exec Update',
     icon: <MessageSquare className="w-5 h-5 text-blue-500" />,
     data: {
-      role: 'Communications Partner',
-      audience: 'Senior Executives',
-      taskType: 'draft',
-      rawTaskDescription: 'Draft a project update email highlighting risks and key decisions needed.',
-      outputFormat: 'Email with "TL;DR" bullets at top',
-      tone: 'Concise, Direct, Professional',
-      stakes: 'high',
-      structureLevel: 'medium',
+      rawTaskDescription: 'Draft a project update email highlighting risks and key decisions needed. (Audience: Executives)',
       modelEnvironment: 'workspace'
-    }
+    },
+    uiReasoning: 'fast',
+    uiStructure: 'medium'
   },
   {
     id: 'summary',
-    label: 'Doc Summarizer',
+    label: 'Summarizer',
     icon: <FileText className="w-5 h-5 text-purple-500" />,
     data: {
-      role: 'Research Assistant',
-      audience: 'Product Team',
-      taskType: 'summarize',
-      rawTaskDescription: 'Summarize the attached user research notes into key themes.',
-      outputFormat: 'Markdown list with quote citations',
-      tone: 'Objective',
-      stakes: 'medium',
-      structureLevel: 'high',
+      rawTaskDescription: 'Summarize the attached user research notes into key themes. (Audience: Product Team)',
       modelEnvironment: 'notebook'
-    }
+    },
+    uiReasoning: 'deep',
+    uiStructure: 'high'
   },
   {
     id: 'analysis',
-    label: 'Root Cause Analysis',
+    label: 'Root Cause',
     icon: <Search className="w-5 h-5 text-emerald-500" />,
     data: {
-      role: 'Senior Data Analyst',
-      audience: 'Engineering Lead',
-      taskType: 'analyze',
       rawTaskDescription: 'Analyze the provided error logs to explain why the system crashed.',
-      outputFormat: 'Step-by-step reasoning + Root Cause + Solution',
-      tone: 'Analytical and helpful',
-      stakes: 'high',
-      structureLevel: 'high',
-      willProvideExamples: true,
-      exampleType: 'past-outputs',
       modelEnvironment: 'chat'
-    }
+    },
+    uiReasoning: 'deep',
+    uiStructure: 'high'
   }
 ];
 
-// --- Constants ---
-
-const TASK_TYPE_OPTIONS: { value: TaskType; label: string }[] = [
-  { value: 'draft', label: 'Drafting (Email, Blog, Memo)' },
-  { value: 'rewrite', label: 'Rewriting / Editing' },
-  { value: 'summarize', label: 'Summarizing' },
-  { value: 'analyze', label: 'Analyzing / Reasoning' },
-  { value: 'compare', label: 'Comparing Options' },
-  { value: 'brainstorm', label: 'Brainstorming' },
-  { value: 'transform-data', label: 'Transforming Data (JSON/CSV)' },
-];
-
-const ENV_OPTIONS: { value: ModelEnv; label: string }[] = [
-  { value: 'chat', label: 'Standard Chat (Gemini/ChatGPT)' },
-  { value: 'workspace', label: 'Workspace (Docs/Gmail)' },
-  { value: 'research', label: 'Research Tool (Perplexity)' },
-  { value: 'notebook', label: 'Docs Tool (NotebookLM)' },
-];
-
-const INITIAL_INPUT: PromptGeneratorInput = {
-  role: '',
-  audience: '',
-  taskType: 'draft',
-  rawTaskDescription: '',
-  stakes: 'low',
-  isRecurring: false,
-  outputFormat: '',
-  structureLevel: 'medium',
-  tone: '',
-  constraints: '',
-  dataSensitivity: 'normal',
-  willProvideExamples: false,
-  exampleType: 'none',
-  modelEnvironment: 'chat',
-};
-
 export default function GeneratorPage() {
-  const [input, setInput] = useState<PromptGeneratorInput>(INITIAL_INPUT);
+  // --- New UI State ---
+  const [taskDescription, setTaskDescription] = useState('');
+  const [existingDraft, setExistingDraft] = useState('');
+  const [files, setFiles] = useState<File[]>([]);
+  
+  const [selectedTool, setSelectedTool] = useState<ModelEnv>('chat');
+  const [structure, setStructure] = useState<'light' | 'medium' | 'high'>('medium');
+  const [reasoning, setReasoning] = useState<'fast' | 'deep'>('fast');
+  
+  const [isSensitive, setIsSensitive] = useState(false);
+  const [selfCritique, setSelfCritique] = useState(false);
+
+  // --- Generation State ---
   const [output, setOutput] = useState<PromptGeneratorOutput | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showReasoning, setShowReasoning] = useState(false);
 
-  const handleInputChange = (field: keyof PromptGeneratorInput, value: any) => {
-    setInput(prev => ({ ...prev, [field]: value }));
+  // --- Handlers ---
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFiles(Array.from(e.target.files));
+    }
   };
 
   const applyRecipe = (recipe: PromptRecipe) => {
-    setInput({ ...INITIAL_INPUT, ...recipe.data, recipeId: recipe.id });
-    setOutput(null); 
+    setTaskDescription(recipe.data.rawTaskDescription || '');
+    setSelectedTool(recipe.data.modelEnvironment || 'chat');
+    setStructure(recipe.uiStructure || 'medium');
+    setReasoning(recipe.uiReasoning || 'fast');
+    setExistingDraft('');
+    setIsSensitive(false);
+    setSelfCritique(false);
+    setOutput(null);
     setError(null);
   };
 
   const handleGenerate = async () => {
-    // Basic Client-Side Validation
-    if (!input.rawTaskDescription.trim()) {
-      setError("Please describe what you need to do in the 'Task Basics' section.");
+    if (!taskDescription.trim()) {
+      setError("Please describe your task first.");
       return;
     }
 
     setIsGenerating(true);
     setError(null);
 
+    // Construct the payload for the backend service
+    // We combine our simple UI fields into the structured input the service expects
+    let combinedDescription = taskDescription;
+    
+    if (existingDraft.trim()) {
+      combinedDescription += `\n\n[User Draft Provided]:\n${existingDraft}`;
+    }
+
+    if (files.length > 0) {
+      combinedDescription += `\n\n[User Context]: User has attached ${files.length} file(s) (e.g. ${files[0].name}) containing source material.`;
+    }
+
+    let constraints = "";
+    if (selfCritique) {
+      constraints += "Include a self-critique section where the AI evaluates its own answer. ";
+    }
+    if (reasoning === 'deep') {
+      constraints += "Think step-by-step before answering. ";
+    }
+
+    const payload: PromptGeneratorInput = {
+      role: '', // Let the LLM infer this from the task description
+      audience: '', // Let the LLM infer this
+      taskType: 'draft', // Default, LLM will adjust
+      rawTaskDescription: combinedDescription,
+      stakes: reasoning === 'deep' ? 'high' : 'low',
+      isRecurring: false,
+      outputFormat: '',
+      structureLevel: structure,
+      tone: '',
+      constraints: constraints,
+      dataSensitivity: isSensitive ? 'sensitive' : 'normal',
+      willProvideExamples: files.length > 0 || !!existingDraft,
+      exampleType: files.length > 0 ? 'docs' : (existingDraft ? 'raw-inputs' : 'none'),
+      modelEnvironment: selectedTool,
+    };
+
     try {
-      // Call Real Gemini Service
-      const result = await generatePromptTemplate(input);
+      const result = await generatePromptTemplate(payload);
       setOutput(result);
     } catch (err) {
       console.error(err);
@@ -158,253 +168,229 @@ export default function GeneratorPage() {
     }
   };
 
-  // Styles
-  const inputStyles = "w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-900 bg-white placeholder:text-slate-400 transition-shadow";
-  const labelStyles = "block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5";
-  const sectionTitleStyles = "font-bold text-slate-900 flex items-center gap-2 text-sm";
-  const sectionHeaderStyles = "flex items-center gap-2 pb-2 border-b border-slate-100 mb-4";
-  const circleNumberStyles = (colorClass: string) => `w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${colorClass}`;
+  // --- Styles ---
+  const labelStyles = "block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2";
+  const cardBase = "bg-white rounded-xl border border-slate-200 shadow-sm p-6";
 
   return (
     <PageLayout
       title="Prompt Template Generator"
-      description="Answer a few questions about your task and we’ll build a reusable prompt template you can paste into Gemini, ChatGPT, or Claude."
+      description="Describe your task in plain language, and we'll build a professional prompt template for you."
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pb-20">
         
-        {/* LEFT COLUMN: FORM */}
+        {/* LEFT COLUMN: INPUTS */}
         <div className="lg:col-span-5 space-y-6">
           
           {/* Recipes */}
-          <section>
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="w-4 h-4 text-slate-500" />
-              <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wide">Quick Start Recipes</h3>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {RECIPES.map(recipe => (
-                <button
-                  key={recipe.id}
-                  type="button"
-                  onClick={() => applyRecipe(recipe)}
-                  className={`p-3 border rounded-xl hover:shadow-sm transition-all text-left flex flex-col gap-2 group ${input.recipeId === recipe.id ? 'bg-blue-50 border-blue-300 ring-1 ring-blue-300' : 'bg-white border-slate-200 hover:border-blue-300'}`}
-                >
-                  <div className={`p-1.5 rounded-lg w-fit transition-colors ${input.recipeId === recipe.id ? 'bg-white' : 'bg-slate-50 group-hover:bg-blue-50'}`}>
-                    {recipe.icon}
-                  </div>
-                  <span className={`text-xs font-bold ${input.recipeId === recipe.id ? 'text-blue-700' : 'text-slate-700 group-hover:text-blue-700'}`}>{recipe.label}</span>
-                </button>
-              ))}
-            </div>
-          </section>
+          <div className="flex flex-wrap gap-3 pb-2">
+            {RECIPES.map(recipe => (
+              <button
+                key={recipe.id}
+                type="button"
+                onClick={() => applyRecipe(recipe)}
+                className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg hover:border-blue-300 hover:bg-slate-50 transition-all shrink-0 group shadow-sm"
+              >
+                <div className="text-slate-500 group-hover:text-blue-500">{recipe.icon}</div>
+                <span className="text-sm font-medium text-slate-700">{recipe.label}</span>
+              </button>
+            ))}
+          </div>
 
-          {/* Main Form */}
-          <Card className="p-6 border-t-4 border-t-blue-500 shadow-sm">
-            <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); handleGenerate(); }}>
+          {/* Card 1: Task */}
+          <div className={cardBase}>
+            <div className="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+               <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">1</div>
+               <h3 className="font-bold text-slate-900">Task & Examples</h3>
+            </div>
+
+            <div className="space-y-5">
+              <div>
+                <label className={labelStyles}>Describe your task <span className="text-red-500">*</span></label>
+                <textarea
+                  className="w-full p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-900 bg-white placeholder:text-slate-400 min-h-[140px] shadow-sm resize-y leading-relaxed"
+                  placeholder="e.g. Draft a follow-up email to a quiet client who hasn't replied in 2 weeks. Tone should be polite but firm..."
+                  value={taskDescription}
+                  onChange={(e) => setTaskDescription(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className={labelStyles}>Starting materials (Optional)</label>
+                <div className="space-y-3">
+                  {/* File Upload Mock */}
+                  <div className="relative">
+                     <input 
+                       type="file" 
+                       id="file-upload" 
+                       className="hidden" 
+                       onChange={handleFileChange}
+                       multiple
+                     />
+                     <label htmlFor="file-upload" className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-slate-300 rounded-lg hover:bg-slate-50 hover:border-blue-300 cursor-pointer transition-colors text-slate-600 text-sm bg-white">
+                        <Upload className="w-4 h-4 text-slate-400" />
+                        {files.length > 0 ? `${files.length} file(s) selected` : "Upload docs or images"}
+                     </label>
+                  </div>
+
+                  {/* Existing Draft */}
+                  <div>
+                    <input 
+                      type="text"
+                      className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-900 bg-white placeholder:text-slate-400 shadow-sm"
+                      placeholder="Paste an existing prompt draft here..."
+                      value={existingDraft}
+                      onChange={(e) => setExistingDraft(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Options */}
+          <div className={cardBase}>
+            <div className="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+               <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs">2</div>
+               <h3 className="font-bold text-slate-900">Options</h3>
+            </div>
+
+            <div className="space-y-6">
               
-              {/* Section 1: Task Basics */}
-              <div className="space-y-4">
-                <div className={sectionHeaderStyles}>
-                  <div className={circleNumberStyles("bg-blue-100 text-blue-600")}>1</div>
-                  <h4 className={sectionTitleStyles}>Task Basics</h4>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className={labelStyles}>Task Type</label>
-                    <div className="relative">
-                      <select 
-                        className={inputStyles} 
-                        value={input.taskType} 
-                        onChange={(e) => handleInputChange('taskType', e.target.value)}
+              {/* Tool Selection */}
+              <div>
+                 <label className={labelStyles}>Which tool will you use?</label>
+                 <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { id: 'chat', label: 'Chat', icon: <MessageSquare className="w-4 h-4"/> },
+                      { id: 'notebook', label: 'NotebookLM', icon: <Layers className="w-4 h-4"/> },
+                      { id: 'research', label: 'Research', icon: <Search className="w-4 h-4"/> },
+                      { id: 'workspace', label: 'Workspace', icon: <Zap className="w-4 h-4"/> },
+                    ].map(tool => (
+                      <button
+                        key={tool.id}
+                        type="button"
+                        onClick={() => setSelectedTool(tool.id as ModelEnv)}
+                        className={`flex items-center gap-2 p-2.5 rounded-lg border text-sm font-medium transition-all ${
+                          selectedTool === tool.id 
+                            ? 'bg-blue-50 border-blue-500 text-blue-700 ring-1 ring-blue-500' 
+                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                        }`}
                       >
-                        {TASK_TYPE_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                      </select>
+                        {tool.icon} {tool.label}
+                      </button>
+                    ))}
+                 </div>
+              </div>
+
+              {/* Quality Settings */}
+              <div className="grid grid-cols-2 gap-4">
+                 <div>
+                    <label className={labelStyles}>Structure</label>
+                    <div className="space-y-2">
+                       {['light', 'medium', 'high'].map(lvl => (
+                         <label key={lvl} className="flex items-center gap-2 cursor-pointer group">
+                            <input 
+                              type="radio" 
+                              name="structure"
+                              className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300 bg-white"
+                              checked={structure === lvl}
+                              onChange={() => setStructure(lvl as any)}
+                            />
+                            <span className="text-sm text-slate-700 capitalize group-hover:text-slate-900">{lvl}</span>
+                         </label>
+                       ))}
                     </div>
-                  </div>
-                  <div>
-                    <label className={labelStyles}>Stakes</label>
-                    <select 
-                      className={inputStyles} 
-                      value={input.stakes}
-                      onChange={(e) => handleInputChange('stakes', e.target.value)}
-                    >
-                      <option value="low">Low (Quick email)</option>
-                      <option value="medium">Medium (Internal doc)</option>
-                      <option value="high">High (Client facing)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                   <label className={labelStyles}>What do you need to do? <span className="text-red-500">*</span></label>
-                   <textarea 
-                     className={inputStyles}
-                     rows={2}
-                     placeholder="e.g. Summarize these meeting notes for the VP of Sales."
-                     value={input.rawTaskDescription}
-                     onChange={(e) => handleInputChange('rawTaskDescription', e.target.value)}
-                     required
-                   />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className={labelStyles}>Role / Persona</label>
-                    <input 
-                      className={inputStyles}
-                      placeholder="e.g. Senior Editor"
-                      value={input.role}
-                      onChange={(e) => handleInputChange('role', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelStyles}>Audience</label>
-                    <input 
-                      className={inputStyles}
-                      placeholder="e.g. Engineering Team"
-                      value={input.audience}
-                      onChange={(e) => handleInputChange('audience', e.target.value)}
-                    />
-                  </div>
-                </div>
+                 </div>
+                 <div>
+                    <label className={labelStyles}>Reasoning</label>
+                    <div className="space-y-2">
+                       <label className="flex items-center gap-2 cursor-pointer group">
+                          <input 
+                            type="radio" 
+                            name="reasoning"
+                            className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-gray-300 bg-white"
+                            checked={reasoning === 'fast'}
+                            onChange={() => setReasoning('fast')}
+                          />
+                          <span className="text-sm text-slate-700 group-hover:text-slate-900">Fast / Simple</span>
+                       </label>
+                       <label className="flex items-center gap-2 cursor-pointer group">
+                          <input 
+                            type="radio" 
+                            name="reasoning"
+                            className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-gray-300 bg-white"
+                            checked={reasoning === 'deep'}
+                            onChange={() => setReasoning('deep')}
+                          />
+                          <span className="text-sm text-slate-700 group-hover:text-slate-900">Deep Reasoning</span>
+                       </label>
+                    </div>
+                 </div>
               </div>
 
-              {/* Section 2: Output & Structure */}
-              <div className="space-y-4">
-                <div className={sectionHeaderStyles}>
-                  <div className={circleNumberStyles("bg-purple-100 text-purple-600")}>2</div>
-                  <h4 className={sectionTitleStyles}>Output & Structure</h4>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className={labelStyles}>Tone</label>
-                    <input 
-                      className={inputStyles}
-                      placeholder="e.g. Friendly, Direct"
-                      value={input.tone}
-                      onChange={(e) => handleInputChange('tone', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelStyles}>Structure Level</label>
-                    <select 
-                      className={inputStyles}
-                      value={input.structureLevel}
-                      onChange={(e) => handleInputChange('structureLevel', e.target.value)}
-                    >
-                      <option value="light">Light (Free form)</option>
-                      <option value="medium">Medium (Standard)</option>
-                      <option value="high">High (Strict format)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className={labelStyles}>Specific Format</label>
-                  <input 
-                    className={inputStyles}
-                    placeholder="e.g. Bullet points, Table, JSON, Email draft"
-                    value={input.outputFormat}
-                    onChange={(e) => handleInputChange('outputFormat', e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* Section 3: Constraints & Safety */}
-              <div className="space-y-4">
-                <div className={sectionHeaderStyles}>
-                  <div className={circleNumberStyles("bg-emerald-100 text-emerald-600")}>3</div>
-                  <h4 className={sectionTitleStyles}>Constraints & Safety</h4>
-                </div>
-
-                <div>
-                   <label className={labelStyles}>Hard Constraints</label>
-                   <textarea 
-                     className={inputStyles}
-                     rows={2}
-                     placeholder="e.g. Under 200 words. Do not use jargon."
-                     value={input.constraints}
-                     onChange={(e) => handleInputChange('constraints', e.target.value)}
-                   />
-                </div>
-
-                <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                   <div className={`p-1.5 rounded-full ${input.dataSensitivity === 'sensitive' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
-                     {input.dataSensitivity === 'sensitive' ? <AlertTriangle className="w-4 h-4"/> : <CheckCircle2 className="w-4 h-4"/>}
+              {/* Toggles */}
+              <div className="space-y-3 pt-2 border-t border-slate-100">
+                <label className="flex items-center justify-between cursor-pointer group">
+                   <div className="flex items-center gap-2">
+                      <div className={`p-1 rounded ${isSensitive ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-400'}`}>
+                        <AlertTriangle className="w-4 h-4" />
+                      </div>
+                      <span className="text-sm text-slate-700 group-hover:text-slate-900">Includes PII / Secrets</span>
                    </div>
-                   <div className="flex-1">
-                     <p className="text-xs font-bold text-slate-700">Does this involve PII/Secrets?</p>
-                     <p className="text-[10px] text-slate-500">If yes, the template will include safety placeholders.</p>
-                   </div>
-                   <label className="relative inline-flex items-center cursor-pointer">
+                   <div className="relative inline-flex items-center cursor-pointer">
                       <input 
                         type="checkbox" 
                         className="sr-only peer"
-                        checked={input.dataSensitivity === 'sensitive'}
-                        onChange={(e) => handleInputChange('dataSensitivity', e.target.checked ? 'sensitive' : 'normal')}
+                        checked={isSensitive}
+                        onChange={(e) => setIsSensitive(e.target.checked)}
                       />
-                      <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-500"></div>
-                   </label>
-                </div>
-              </div>
-
-              {/* Section 4: Examples & Usage */}
-              <div className="space-y-4">
-                <div className={sectionHeaderStyles}>
-                  <div className={circleNumberStyles("bg-amber-100 text-amber-600")}>4</div>
-                  <h4 className={sectionTitleStyles}>Examples & Usage</h4>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                   <div>
-                    <label className={labelStyles}>Environment</label>
-                    <select 
-                      className={inputStyles} 
-                      value={input.modelEnvironment}
-                      onChange={(e) => handleInputChange('modelEnvironment', e.target.value)}
-                    >
-                      {ENV_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                    </select>
+                      <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-500"></div>
                    </div>
-                   
-                   <div className="flex items-center mt-6">
-                      <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-700 font-medium select-none">
-                        <input 
-                          type="checkbox"
-                          className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                          checked={input.willProvideExamples}
-                          onChange={(e) => handleInputChange('willProvideExamples', e.target.checked)}
-                        />
-                        I will provide examples
-                      </label>
+                </label>
+
+                <label className="flex items-center justify-between cursor-pointer group">
+                   <div className="flex items-center gap-2">
+                      <div className={`p-1 rounded ${selfCritique ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
+                        <CheckCircle2 className="w-4 h-4" />
+                      </div>
+                      <span className="text-sm text-slate-700 group-hover:text-slate-900">Include Self-Critique</span>
                    </div>
-                </div>
+                   <div className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer"
+                        checked={selfCritique}
+                        onChange={(e) => setSelfCritique(e.target.checked)}
+                      />
+                      <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                   </div>
+                </label>
               </div>
 
-              {error && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
-                  {error}
-                </div>
-              )}
+            </div>
+          </div>
 
-              <div className="pt-2">
-                <Button 
-                  type="submit" 
-                  isLoading={isGenerating} 
-                  className="w-full h-12 text-base shadow-md"
-                  icon={<Wand2 className="w-4 h-4" />}
-                >
-                  Generate Template
-                </Button>
-              </div>
+          {/* Error Message */}
+          {error && (
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 flex items-start gap-2 animate-fade-in">
+              <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+              {error}
+            </div>
+          )}
 
-            </form>
-          </Card>
+          {/* Action Button */}
+          <Button 
+            onClick={handleGenerate}
+            isLoading={isGenerating} 
+            className="w-full h-12 text-base font-bold shadow-lg shadow-blue-900/10 hover:shadow-blue-900/20"
+            icon={<Wand2 className="w-5 h-5" />}
+          >
+            Generate my prompt template
+          </Button>
         </div>
 
-        {/* RIGHT COLUMN: RESULT */}
+        {/* RIGHT COLUMN: PREVIEW */}
         <div className="lg:col-span-7 sticky top-8">
           
           {!output ? (
@@ -415,7 +401,7 @@ export default function GeneratorPage() {
               </div>
               <h3 className="text-xl font-bold text-slate-400 mb-2">Ready to Build</h3>
               <p className="text-slate-400 max-w-sm mx-auto text-sm">
-                Fill out the form on the left to generate a structured prompt template optimized for modern LLMs.
+                Describe your task on the left and we will architect a professional prompt template for you.
               </p>
             </div>
           ) : (
@@ -425,7 +411,7 @@ export default function GeneratorPage() {
               <div className="flex items-center justify-between">
                 <div>
                    <h2 className="text-2xl font-bold text-slate-900">Your Template</h2>
-                   <p className="text-xs text-slate-500 mt-1">Generated by Gemini</p>
+                   <p className="text-xs text-slate-500 mt-1">Generated by Gemini • {output.modelRecommendation}</p>
                 </div>
                 <div className="flex gap-2">
                    <Badge variant={output.complexityLevel === 'Advanced' ? 'warning' : 'blue'}>
@@ -446,7 +432,7 @@ export default function GeneratorPage() {
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
                       <Settings className="w-3 h-3" /> System Instructions
                     </span>
-                    <span className="text-[10px] text-slate-400">Optional but recommended</span>
+                    <span className="text-[10px] text-slate-400">Optional</span>
                   </div>
                   <PromptCard 
                     label="SYSTEM PROMPT" 
@@ -524,7 +510,11 @@ export default function GeneratorPage() {
 
               {/* Actions */}
               <div className="flex gap-4 pt-4">
-                <Button variant="outline" onClick={() => setInput(INITIAL_INPUT)} className="w-full">
+                <Button variant="outline" onClick={() => {
+                   setTaskDescription('');
+                   setExistingDraft('');
+                   setOutput(null);
+                }} className="w-full">
                   <RefreshCw className="w-4 h-4 mr-2" /> Start Over
                 </Button>
                 <Button onClick={() => window.open('https://gemini.google.com', '_blank')} className="w-full">
