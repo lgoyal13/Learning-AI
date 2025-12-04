@@ -24,20 +24,19 @@ export default function Page() {
       {/* Hero Section */}
       <section className="bg-slate-900 rounded-2xl p-8 md:p-16 text-white shadow-xl relative overflow-hidden">
         <div className="relative z-10 max-w-3xl">
-          <Badge variant="blue" className="mb-4 bg-blue-500/20 text-blue-100 border-blue-500/50">Built in Google AI Studio • Internal Academy</Badge>
+          <Badge variant="blue" className="mb-4 bg-blue-500/20 text-blue-100 border-blue-500/50">Built in Google AI Studio • AI Translator for Work</Badge>
           
           <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
-            Describe your task. <br/>
-            <span className="text-blue-400">We’ll build the prompt to automate it.</span>
+            Your AI translator <br/>
+            <span className="text-blue-400">for real work.</span>
           </h1>
           
           <div className="text-slate-300 text-lg md:text-xl mb-10 leading-relaxed max-w-2xl space-y-4">
             <p className="font-medium text-white">
-              Paste your request into the Prompt Generator to get a professional AI prompt instantly. 
-              Then use the Learning Modules and Pre-saved Library to master the skills yourself.
+              Describe what you need to get done. We translate it into expert level prompts for tools like Gemini and ChatGPT, then teach you how to write your own and reuse ready made templates.
             </p>
             <p className="text-base text-slate-400">
-              This internal academy helps you use tools like Gemini, ChatGPT, and Claude on real emails, docs, analysis, and workflows.
+              This internal academy helps you use AI on real emails, docs, analysis, and workflows using the Prompt Generator, Learning Modules, and a pre saved Prompt Library.
             </p>
           </div>
 
@@ -48,7 +47,7 @@ export default function Page() {
                className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 h-14 text-lg shadow-lg shadow-blue-900/50"
             >
               <Sparkles className="w-5 h-5 mr-2" /> 
-              Open Prompt Generator
+              Open AI Translator
             </Button>
             <Button 
                size="lg" 
@@ -78,7 +77,7 @@ export default function Page() {
             </div>
             <h3 className="font-bold text-slate-900 text-lg">Demystify the Tech</h3>
             <p className="text-slate-600 leading-relaxed">
-              Understand how the Prompt Generator builds your prompts and why LLMs need specific instructions to work well.
+              Understand how AI thinks so you know what information and structure it needs from a good prompt.
             </p>
           </div>
           <div className="space-y-3">
@@ -87,7 +86,7 @@ export default function Page() {
             </div>
             <h3 className="font-bold text-slate-900 text-lg">Practical Workflows</h3>
             <p className="text-slate-600 leading-relaxed">
-              Learn to apply these automated prompts to real projects using research engines and document tools.
+              See how power users translate projects into prompt chains across chat, research, and your docs tools.
             </p>
           </div>
           <div className="space-y-3">
@@ -96,7 +95,7 @@ export default function Page() {
             </div>
             <h3 className="font-bold text-slate-900 text-lg">Safety First</h3>
             <p className="text-slate-600 leading-relaxed">
-              The generator and library follow safe use patterns. Learn why protecting PII is your most important job.
+              Learn safe patterns and placeholders so you do not accidentally translate sensitive data into AI.
             </p>
           </div>
         </div>
@@ -105,9 +104,9 @@ export default function Page() {
       {/* How It Works (Structure Map) */}
       <section className="bg-slate-50 border border-slate-200 rounded-2xl p-8 md:p-10">
         <div className="mb-8 text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold text-slate-900 mb-3">Three ways to get work done</h2>
+          <h2 className="text-2xl font-bold text-slate-900 mb-3">Your AI Translator toolkit</h2>
           <p className="text-slate-600">
-            Automate the hard part, learn the skill, or grab a template.
+            The three core parts of the system: Generator, Modules, and Library.
           </p>
         </div>
 
@@ -132,7 +131,7 @@ export default function Page() {
             <div className="text-center">
               <h3 className="font-bold text-slate-900 mb-2">Prompt Generator</h3>
               <p className="text-sm text-slate-600">
-                Describe your task and get a ready-to-use AI prompt that follows best practices.
+                Type your task once and get a polished, tool ready prompt that follows best practices.
               </p>
             </div>
           </Card>
@@ -154,7 +153,7 @@ export default function Page() {
             <div className="text-center">
               <h3 className="font-bold text-slate-900 mb-2">Learning Modules</h3>
               <p className="text-sm text-slate-600">
-                Fundamentals and deep dives that teach you how to design your own prompts and apply AI across projects.
+                Short, practical lessons that explain why these prompts work and teach you to design your own.
               </p>
             </div>
           </Card>
@@ -174,9 +173,9 @@ export default function Page() {
               </div>
             </div>
             <div className="text-center">
-              <h3 className="font-bold text-slate-900 mb-2">Pre-saved Prompts & Resources</h3>
+              <h3 className="font-bold text-slate-900 mb-2">Prompt Library & Resources</h3>
               <p className="text-sm text-slate-600">
-                Curated prompt templates, safety checklists, and tool guides you can reuse and adapt.
+                A pre saved library of ready made prompt templates, safety checklists, and tool guides you can copy and tweak.
               </p>
             </div>
           </Card>
@@ -188,7 +187,9 @@ export default function Page() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold text-slate-900">What do you need to do today?</h2>
-            <p className="text-slate-600 mt-1">Pick a playbook for your task, or send it straight to the Prompt Generator for a strong starting prompt.</p>
+            <p className="text-slate-600 mt-1">
+              Pick a playbook for your task, and use the AI Translator or Prompt Library to turn it into prompts for your tools.
+            </p>
           </div>
         </div>
         
