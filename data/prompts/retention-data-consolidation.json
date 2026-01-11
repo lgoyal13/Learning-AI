@@ -1,0 +1,62 @@
+{
+  "id": "retention-data-consolidation",
+  "workflowId": "monthly-retention-analysis",
+  "name": "Retention Data Consolidation",
+  "stepNumber": 1,
+  "recommendedTool": "gemini",
+  "alternativeTools": ["chatgpt", "claude"],
+
+  "systemPrompt": "You are a data analyst assistant helping consolidate retention and membership data from multiple sources. Be precise with numbers and flag any data quality issues you notice.",
+
+  "promptTemplate": "I need to consolidate retention data from multiple sources for [MONTH/YEAR] analysis.\n\n**Source 1: Membership Database**\n[PASTE MEMBERSHIP DATA HERE - include member ID, join date, status, tier]\n\n**Source 2: Billing/Revenue Data**\n[PASTE BILLING DATA HERE - include member ID, payment status, revenue]\n\n**Source 3: Engagement/Activity Data** (if available)\n[PASTE ENGAGEMENT DATA HERE - include last activity date, usage metrics]\n\nPlease:\n1. Merge these datasets on member ID\n2. Flag any discrepancies (e.g., member in billing but not in membership database)\n3. Calculate for each member: tenure (months), current status, last payment date\n4. Create a summary table showing:\n   - Total active members (start of month)\n   - New members added\n   - Members churned\n   - Total active members (end of month)\n   - Net change\n\nFormat the output as a clean table I can paste into a spreadsheet.",
+
+  "pctr": {
+    "persona": "Data analyst assistant focused on precision and data quality",
+    "context": "Multiple data sources that need to be merged for monthly retention analysis. Sources may have different formats and potential discrepancies.",
+    "task": "Merge datasets, identify discrepancies, calculate member metrics, and produce a summary table",
+    "requirements": [
+      "Merge on member ID as primary key",
+      "Flag discrepancies explicitly",
+      "Calculate tenure and status for each member",
+      "Produce summary metrics in table format",
+      "Output should be spreadsheet-ready"
+    ]
+  },
+
+  "whenToUse": "At the start of your monthly retention analysis when you have raw data exports from multiple systems that need to be combined into a single analysis-ready dataset.",
+
+  "commonMistakes": [
+    "Not specifying the date range clearly - AI may make assumptions",
+    "Pasting data without headers - always include column names",
+    "Expecting perfect merge - always review flagged discrepancies",
+    "Using this for very large datasets (10K+ rows) - may hit token limits"
+  ],
+
+  "exampleInputs": {
+    "MONTH/YEAR": "December 2025",
+    "MEMBERSHIP DATA": "member_id, join_date, status, tier\n001, 2023-01-15, active, gold\n002, 2024-06-20, active, silver\n003, 2022-03-10, cancelled, gold",
+    "BILLING DATA": "member_id, last_payment, amount, status\n001, 2025-12-01, 149.99, paid\n002, 2025-12-01, 99.99, paid\n003, 2025-11-01, 149.99, cancelled"
+  },
+
+  "exampleOutput": "**Data Quality Flags:**\n- No discrepancies found between sources\n- 3 members matched across all sources\n\n**Member Summary Table:**\n| Metric | Value |\n|--------|-------|\n| Active members (start) | 3 |\n| New members | 0 |\n| Churned members | 1 |\n| Active members (end) | 2 |\n| Net change | -1 |",
+
+  "variations": [
+    {
+      "name": "Quick Summary Only",
+      "useCase": "When you just need high-level numbers, not detailed member data",
+      "prompt": "I have [X] members in my membership database and [Y] records in billing for [MONTH]. Membership shows [A] active, [B] cancelled. Billing shows [C] paid, [D] failed. Calculate the retention rate and flag any major discrepancies in these counts."
+    },
+    {
+      "name": "Cohort-Based Analysis",
+      "useCase": "When you want to see retention by join date cohort",
+      "prompt": "Using this member data [PASTE DATA], group members by their join quarter (Q1 2024, Q2 2024, etc.) and calculate retention rate for each cohort. Show me which cohorts have the highest and lowest retention."
+    }
+  ],
+
+  "qualityScore": 8,
+
+  "sources": [
+    "Perplexity Research - Data consolidation best practices",
+    "Aditya Goyal AAA Experience - Multi-source retention data management"
+  ]
+}

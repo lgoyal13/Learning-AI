@@ -1,0 +1,78 @@
+{
+  "id": "retention-report-draft",
+  "workflowId": "monthly-retention-analysis",
+  "name": "Retention Report Draft",
+  "stepNumber": 5,
+  "recommendedTool": "chatgpt",
+  "alternativeTools": ["claude", "gemini"],
+
+  "systemPrompt": "You are an executive communications specialist helping create clear, actionable retention reports for senior leadership. Write in a direct, professional tone. Lead with insights, not data. Make recommendations specific and actionable.",
+
+  "promptTemplate": "Draft a monthly retention report for [AUDIENCE - e.g., CEO, Executive Team, Board].\n\n**Period:** [MONTH/YEAR]\n\n**Key Metrics:**\n- Retention Rate: [X]% (Target: [Y]%, Last Month: [Z]%)\n- Members Lost: [NUMBER]\n- Revenue Impact: $[AMOUNT]\n- YTD Retention: [YTD]%\n\n**Root Cause Analysis Summary:**\n[PASTE KEY FINDINGS FROM STEP 3]\n\n**Actions Taken/In Progress:**\n[LIST ANY ACTIONS ALREADY UNDERWAY]\n\n**Report Requirements:**\n- Length: [1 page / 2 pages / detailed]\n- Tone: [Direct and urgent / Balanced / Optimistic]\n- Include: [Charts to create / Specific sections needed]\n\n**Please create:**\n1. Executive Summary (3-4 sentences max - the 'so what')\n2. Key Metrics Dashboard (formatted as a table)\n3. Trend Analysis (how this month compares to trend)\n4. Root Causes (prioritized, with confidence levels)\n5. Recommendations (3-5 specific, actionable items with owners/timelines)\n6. Risks & Watch Items (what could get worse)\n7. Appendix items needed (list what supporting data to include)\n\nWrite for an executive who has 3 minutes to read this. Lead with the most important insight.",
+
+  "pctr": {
+    "persona": "Executive communications specialist creating board-ready reports",
+    "context": "Monthly retention analysis complete; need to communicate findings and recommendations to senior leadership in a clear, actionable format",
+    "task": "Draft a structured retention report with executive summary, metrics, root causes, and recommendations",
+    "requirements": [
+      "Executive summary must fit in 3-4 sentences",
+      "Lead with insights, not just data",
+      "Recommendations must be specific (who, what, when)",
+      "Appropriate tone for the audience",
+      "Scannable format with clear sections"
+    ]
+  },
+
+  "whenToUse": "After you've completed your analysis and root cause investigation, and need to communicate findings to leadership. Best when you have clear data, confirmed hypotheses, and potential recommendations.",
+
+  "commonMistakes": [
+    "Burying the lead - put the most important insight first",
+    "Too much data, not enough insight - executives want the 'so what'",
+    "Vague recommendations - 'improve retention' isn't actionable",
+    "Wrong tone for audience - Board wants different framing than ops team",
+    "Not specifying owners/timelines for recommendations"
+  ],
+
+  "exampleInputs": {
+    "AUDIENCE": "Executive Team (CEO, CFO, CMO)",
+    "MONTH/YEAR": "December 2025",
+    "X": "94.2",
+    "Y": "95.0",
+    "Z": "95.1",
+    "NUMBER": "1,247",
+    "AMOUNT": "185,000",
+    "YTD": "94.8",
+    "ROOT CAUSE SUMMARY": "Primary driver: Nov price increase affecting Dec renewals (75% confidence). Secondary: Competitor discount campaign timing. Seasonal factors within normal range.",
+    "ACTIONS UNDERWAY": "Customer success team calling top 50 at-risk accounts. Marketing preparing value reinforcement campaign for Jan renewals.",
+    "LENGTH": "1 page",
+    "TONE": "Direct and balanced"
+  },
+
+  "exampleOutput": "# Monthly Retention Report: December 2025\n\n## Executive Summary\nRetention missed target by 0.8 points (94.2% vs 95.0%), driven primarily by our November price increase affecting December renewals. This represents 450 more lost members than planned and $185K in at-risk revenue. Immediate action on January renewals can prevent similar impact next month.\n\n## Key Metrics\n| Metric | Actual | Target | Status |\n|--------|--------|--------|--------|\n| Retention Rate | 94.2% | 95.0% | ⚠️ Miss |\n| Members Lost | 1,247 | 797 | +450 vs plan |\n| Revenue Impact | $185K | - | At risk |\n\n## Recommendations\n1. **Proactive renewal outreach** - CS team to contact Jan renewals by 1/10 (Owner: VP Customer Success)\n2. **Value messaging campaign** - Launch email series highlighting 2025 benefits by 1/5 (Owner: CMO)...",
+
+  "variations": [
+    {
+      "name": "Board-Ready Version",
+      "useCase": "When presenting to the Board of Directors - more formal, higher-level",
+      "prompt": "Rewrite this retention summary for a Board of Directors presentation. Focus on: (1) strategic implications, (2) financial impact, (3) competitive position, (4) management's action plan. Keep to 1 slide worth of content. Use formal tone."
+    },
+    {
+      "name": "Team Ops Version",
+      "useCase": "When sharing with the operations team - more tactical, action-focused",
+      "prompt": "Convert this executive summary into an action-oriented brief for the retention team. Focus on: (1) what specifically went wrong, (2) which accounts to prioritize, (3) talking points for customer calls, (4) daily/weekly targets. Use direct, practical language."
+    },
+    {
+      "name": "Email Summary",
+      "useCase": "When you need to send a quick update before the full report",
+      "prompt": "Write a 3-paragraph email summarizing this month's retention results. Paragraph 1: What happened. Paragraph 2: Why it happened. Paragraph 3: What we're doing about it. Keep under 150 words. Subject line should convey the key message."
+    }
+  ],
+
+  "qualityScore": 8,
+
+  "sources": [
+    "HBR - Executive Communication Best Practices",
+    "McKinsey - Pyramid Principle for Business Writing",
+    "Aditya Goyal AAA Experience - Board and executive reporting"
+  ]
+}

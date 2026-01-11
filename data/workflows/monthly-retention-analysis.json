@@ -1,0 +1,219 @@
+{
+  "id": "monthly-retention-analysis",
+  "roleId": "business-analyst",
+  "name": "Monthly Retention & Attrition Analysis",
+  "category": "analysis",
+  "description": "Analyze monthly member/customer retention and attrition trends, identify root causes for churn, and create actionable insights for leadership. Includes variance analysis against targets and recommendations for retention initiatives.",
+
+  "frequency": "monthly",
+  "complexity": "intermediate",
+
+  "currentTimeMinutes": 480,
+  "aiTimeMinutes": 180,
+  "timeSavedMinutes": 300,
+  "timeSavedPercentage": 62,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Pull retention data from multiple sources (CRM, billing system, membership database)",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Data lives in 3+ different systems",
+        "Manual export and formatting required",
+        "Date range alignment issues between sources"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Clean and consolidate data into analysis spreadsheet",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Duplicate records need manual deduplication",
+        "Column formats don't match between sources",
+        "Missing data requires follow-up with other teams"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Calculate retention metrics (retention rate, churn rate, cohort analysis)",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Complex formulas prone to errors",
+        "Need to validate calculations manually",
+        "Cohort definitions change quarter to quarter"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Compare against targets and prior periods, identify variances",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Historical data in different formats",
+        "Target definitions sometimes unclear",
+        "Variance explanations require investigation"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Investigate root causes for significant variances",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Requires cross-referencing multiple data points",
+        "Need to interview stakeholders for context",
+        "Causation vs correlation is hard to prove"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Create PowerPoint with findings and recommendations",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Formatting takes as long as analysis",
+        "Stakeholders want different levels of detail",
+        "Chart creation is time-consuming"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Write executive summary and talking points",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Condensing 8 hours of work into 1 page is hard",
+        "Different executives want different angles",
+        "Getting the tone right for the audience"
+      ]
+    },
+    {
+      "stepNumber": 8,
+      "description": "Review, revise based on feedback, finalize",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Multiple revision rounds",
+        "Last-minute data updates",
+        "Stakeholder alignment on recommendations"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Pull and consolidate data from sources",
+      "tool": "gemini",
+      "timeMinutes": 30,
+      "promptId": "retention-data-consolidation",
+      "toolRationale": "Gemini handles structured data well and can identify inconsistencies across sources",
+      "expectedOutput": "Clean, consolidated dataset with flagged discrepancies",
+      "tips": [
+        "Export each source as CSV first",
+        "Include date ranges in file names to avoid confusion",
+        "Keep raw data separate from processed data"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Calculate metrics and identify variances",
+      "tool": "gemini",
+      "timeMinutes": 20,
+      "promptId": "retention-variance-analysis",
+      "toolRationale": "Gemini can perform calculations and explain what the numbers mean in plain English",
+      "expectedOutput": "Metrics table with variance analysis and initial hypotheses",
+      "tips": [
+        "Provide target values in your prompt",
+        "Ask for both the math and the 'so what'",
+        "Request confidence levels for variance explanations"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Generate root cause hypotheses and investigation plan",
+      "tool": "claude",
+      "timeMinutes": 25,
+      "promptId": "retention-root-cause-analysis",
+      "toolRationale": "Claude excels at structured reasoning and generating multiple hypotheses",
+      "expectedOutput": "Ranked list of potential causes with investigation steps for each",
+      "tips": [
+        "Provide context about recent business changes",
+        "Share what you already suspect",
+        "Ask for both internal and external factors"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Validate hypotheses with stakeholder context (manual)",
+      "tool": "claude",
+      "timeMinutes": 30,
+      "toolRationale": "Human judgment needed, but AI can help structure your questions",
+      "expectedOutput": "Confirmed/rejected hypotheses with supporting evidence"
+    },
+    {
+      "stepNumber": 5,
+      "description": "Draft report with findings and recommendations",
+      "tool": "chatgpt",
+      "timeMinutes": 30,
+      "promptId": "retention-report-draft",
+      "toolRationale": "ChatGPT writes clear, professional narratives quickly",
+      "expectedOutput": "Draft report with sections: summary, trends, root causes, recommendations",
+      "tips": [
+        "Specify your audience (CEO vs. team leads)",
+        "Provide your company's preferred format",
+        "Ask for executive summary first, then details"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Review, refine, and finalize (manual + AI)",
+      "tool": "chatgpt",
+      "timeMinutes": 45,
+      "toolRationale": "Use AI for quick edits and rewrites; human review for accuracy",
+      "expectedOutput": "Final polished report ready for presentation",
+      "tips": [
+        "Read the AI draft critically - don't accept blindly",
+        "Check all numbers against source data",
+        "Add your expert commentary where needed"
+      ]
+    }
+  ],
+
+  "whyItMatters": "Retention directly impacts revenue. At AAA, a 1% improvement in retention rate = ~$2.7M in saved revenue annually. Fast, accurate analysis means faster action on at-risk segments.",
+
+  "commonMistakes": [
+    "Using AI-generated numbers without validation - always check the math",
+    "Forgetting to include context about business changes (price increases, new products)",
+    "Over-relying on AI for causation - it can suggest, but you need to verify",
+    "Skipping the stakeholder validation step - AI doesn't know what happened last month",
+    "Creating recommendations without considering implementation feasibility"
+  ],
+
+  "tips": [
+    "Keep a running doc of 'things that happened this month' to feed into AI context",
+    "Build a template prompt that you update each month with new data",
+    "Use AI to generate 3 versions of recommendations - conservative, moderate, aggressive",
+    "Ask AI to poke holes in your analysis before presenting to leadership"
+  ],
+
+  "promptIds": [
+    "retention-data-consolidation",
+    "retention-variance-analysis",
+    "retention-root-cause-analysis",
+    "retention-report-draft"
+  ],
+
+  "tags": [
+    "retention",
+    "attrition",
+    "churn",
+    "member analysis",
+    "customer analysis",
+    "variance analysis",
+    "executive reporting"
+  ],
+
+  "sources": [
+    "Gartner FP&A Research - Time allocation in analytical roles",
+    "McKinsey Operations Practice - Retention analysis frameworks",
+    "Aditya Goyal AAA Experience - $27M retention initiative management",
+    "Perplexity Research - Business Analyst workflow optimization"
+  ]
+}

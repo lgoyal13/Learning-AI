@@ -26,6 +26,11 @@ import PolicyQuickViewPage from './app/reference/policy-quick-view/page';
 import ReferencePromptingGuidePage from './app/reference/prompting-guide/page';
 import AdvancedPage from './app/advanced/page';
 
+// Phase 3: Core Tools
+import PromptRefinerPage from './app/prompt-refiner/page';
+import WorkflowsPage from './app/workflows/page';
+import { WorkflowGuide } from './components/WorkflowGuide';
+
 const RouteHandler = () => {
   const { path } = useRouter();
 
@@ -57,6 +62,14 @@ const RouteHandler = () => {
 
   // Advanced tools
   if (cleanPath === '/advanced') return <AdvancedPage />;
+
+  // Phase 3: Core Tools
+  if (cleanPath === '/prompt-refiner') return <PromptRefinerPage />;
+  if (cleanPath === '/workflows') return <WorkflowsPage />;
+  if (cleanPath.startsWith('/workflows/')) {
+    const workflowId = cleanPath.replace('/workflows/', '');
+    return <WorkflowGuide workflowId={workflowId} />;
+  }
 
   // Fallback – if nothing matched, send them home
   return <HomePage />;

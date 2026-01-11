@@ -1,0 +1,216 @@
+{
+  "id": "rolling-forecast-build",
+  "roleId": "finance-analyst",
+  "name": "Rolling 12-Month Forecast",
+  "category": "planning",
+  "description": "Build and update a rolling 12-month financial forecast incorporating latest actuals, updated assumptions, and business intelligence. Provides forward-looking visibility for resource allocation and strategic decisions.",
+
+  "frequency": "monthly",
+  "complexity": "advanced",
+
+  "currentTimeMinutes": 720,
+  "aiTimeMinutes": 360,
+  "timeSavedMinutes": 360,
+  "timeSavedPercentage": 50,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Roll forward prior forecast model and update actuals",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Complex Excel models prone to errors",
+        "Version control challenges",
+        "Linking actuals to forecast structure"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Gather updated assumptions from business partners",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Chasing people for inputs",
+        "Assumptions come in different formats",
+        "Late or missing inputs delay the process"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Update revenue drivers and assumptions",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Complex revenue models with many variables",
+        "Reconciling top-down vs bottom-up forecasts",
+        "Seasonality and trend adjustments"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Update expense forecasts by department",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Department heads provide incomplete info",
+        "New initiatives not yet in model",
+        "Headcount timing uncertainties"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Build cash flow and balance sheet forecasts",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Working capital assumptions are tricky",
+        "CapEx timing often changes",
+        "Debt and financing implications"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Run scenarios (base, upside, downside)",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Many variables to flex",
+        "Ensuring scenarios are internally consistent",
+        "Time-consuming to build each scenario"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Create forecast summary and variance to prior forecast",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Explaining what changed and why",
+        "Bridge from prior forecast to current",
+        "Communicating confidence levels"
+      ]
+    },
+    {
+      "stepNumber": 8,
+      "description": "Review and finalize with leadership",
+      "timeMinutes": 150,
+      "painPoints": [
+        "Multiple review cycles",
+        "Last-minute assumption changes",
+        "Balancing ambition with realism"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Analyze historical patterns and suggest driver updates",
+      "tool": "gemini",
+      "timeMinutes": 30,
+      "promptId": "forecast-pattern-analysis",
+      "toolRationale": "Gemini identifies trends and anomalies in historical data",
+      "expectedOutput": "Trend analysis with suggested driver adjustments",
+      "tips": [
+        "Provide 12-24 months of historical data",
+        "Flag any known one-time items"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Generate assumption template for business partners",
+      "tool": "chatgpt",
+      "timeMinutes": 20,
+      "promptId": "forecast-assumption-template",
+      "toolRationale": "ChatGPT creates clear, structured templates",
+      "expectedOutput": "Standardized assumption request for each department",
+      "tips": [
+        "Include prior period values as starting point",
+        "Specify deadline and format required"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Collect assumptions and update model (manual + AI)",
+      "tool": "gemini",
+      "timeMinutes": 60,
+      "toolRationale": "Human coordination needed; AI assists with data integration",
+      "expectedOutput": "Updated forecast model with new assumptions"
+    },
+    {
+      "stepNumber": 4,
+      "description": "Generate scenario variations",
+      "tool": "claude",
+      "timeMinutes": 45,
+      "promptId": "forecast-scenario-generation",
+      "toolRationale": "Claude can reason about which variables to flex and how much",
+      "expectedOutput": "Base, upside, downside scenarios with variable settings",
+      "tips": [
+        "Specify which variables are most uncertain",
+        "Ask for internally consistent scenarios"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Draft forecast narrative and bridge",
+      "tool": "chatgpt",
+      "timeMinutes": 30,
+      "promptId": "forecast-narrative",
+      "toolRationale": "ChatGPT writes clear financial narratives",
+      "expectedOutput": "Forecast summary with bridge to prior forecast",
+      "tips": [
+        "Highlight key assumption changes",
+        "Include confidence commentary"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Run scenarios in model and compile results (manual)",
+      "tool": "gemini",
+      "timeMinutes": 60,
+      "toolRationale": "Manual model work; AI helped define scenarios",
+      "expectedOutput": "Completed scenario outputs"
+    },
+    {
+      "stepNumber": 7,
+      "description": "Review cycles and finalization",
+      "tool": "chatgpt",
+      "timeMinutes": 115,
+      "toolRationale": "Human review critical; AI helps with iterations",
+      "expectedOutput": "Approved rolling forecast"
+    }
+  ],
+
+  "whyItMatters": "Rolling forecasts provide continuous forward visibility, replacing static annual budgets with dynamic planning. They enable faster reallocation of resources and reduce the 'budget game' where actuals are always compared to outdated plans.",
+
+  "commonMistakes": [
+    "Updating numbers without updating assumptions - creates inconsistency",
+    "Treating forecast as 'budget 2.0' - it should reflect current best estimate, not targets",
+    "Not documenting assumption changes - makes variance analysis impossible",
+    "Building scenarios that aren't internally consistent",
+    "Over-engineering the model - simpler models are easier to update"
+  ],
+
+  "tips": [
+    "Use AI to identify which assumptions drive the most variance",
+    "Ask AI to pressure-test your assumptions: 'What would need to be true for this forecast?'",
+    "Create a standard assumption collection template - consistency speeds the process",
+    "Build scenario generation prompts you can reuse each month"
+  ],
+
+  "promptIds": [
+    "forecast-pattern-analysis",
+    "forecast-assumption-template",
+    "forecast-scenario-generation",
+    "forecast-narrative"
+  ],
+
+  "tags": [
+    "forecasting",
+    "rolling forecast",
+    "financial planning",
+    "scenario planning",
+    "FP&A",
+    "budgeting"
+  ],
+
+  "sources": [
+    "AFP - Rolling Forecast Best Practices",
+    "Gartner FP&A Research - Planning cycle optimization",
+    "Perplexity Research - Financial forecasting workflows"
+  ]
+}

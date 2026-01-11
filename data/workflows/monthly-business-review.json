@@ -1,0 +1,223 @@
+{
+  "id": "monthly-business-review",
+  "roleId": "business-analyst",
+  "name": "Monthly Business Review (MBR)",
+  "category": "reporting",
+  "description": "Compile and present a comprehensive monthly business review covering key metrics, performance vs. targets, trends, and strategic insights. The MBR is a critical leadership communication that drives monthly decision-making.",
+
+  "frequency": "monthly",
+  "complexity": "intermediate",
+
+  "currentTimeMinutes": 600,
+  "aiTimeMinutes": 240,
+  "timeSavedMinutes": 360,
+  "timeSavedPercentage": 60,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Request data from department heads (sales, ops, finance, product)",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Chasing people for data submissions",
+        "Different formats from each department",
+        "Late submissions delay the whole process"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Consolidate data from multiple sources into master spreadsheet",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Manual copy-paste from different systems",
+        "Reconciling conflicting numbers",
+        "Data quality issues requiring follow-up"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Calculate metrics, variances, and trends",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Complex formulas prone to errors",
+        "Ensuring consistent methodology month-over-month",
+        "Explaining calculation logic to stakeholders"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Create charts and visualizations",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Formatting takes as long as analysis",
+        "Choosing the right visualization for each metric",
+        "Maintaining visual consistency"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Write narrative explaining performance and trends",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Balancing detail with brevity",
+        "Explaining 'why' not just 'what'",
+        "Tone calibration for the audience"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Create executive summary and key takeaways",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Distilling hours of work into 1 page",
+        "Prioritizing which insights matter most",
+        "Anticipating leadership questions"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Review with stakeholders, incorporate feedback",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Multiple rounds of revisions",
+        "Conflicting feedback from different stakeholders",
+        "Last-minute data updates"
+      ]
+    },
+    {
+      "stepNumber": 8,
+      "description": "Finalize and distribute",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Version control across iterations",
+        "Different formats for different audiences",
+        "Preparing for Q&A"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Consolidate and validate data from sources",
+      "tool": "gemini",
+      "timeMinutes": 30,
+      "promptId": "mbr-data-consolidation",
+      "toolRationale": "Gemini handles structured data consolidation and can flag inconsistencies",
+      "expectedOutput": "Consolidated dataset with flagged discrepancies",
+      "tips": [
+        "Export each source to CSV with consistent date formats",
+        "Include column headers - don't assume AI knows your schema"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Calculate metrics and variance analysis",
+      "tool": "gemini",
+      "timeMinutes": 20,
+      "promptId": "mbr-variance-analysis",
+      "toolRationale": "Gemini can perform calculations and provide plain-English explanations",
+      "expectedOutput": "Metrics table with variances, trends, and preliminary explanations",
+      "tips": [
+        "Provide prior period and target values",
+        "Ask for 'significance assessment' - is this variance meaningful?"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Generate insights and narrative",
+      "tool": "claude",
+      "timeMinutes": 30,
+      "promptId": "mbr-insight-generation",
+      "toolRationale": "Claude excels at synthesizing data into strategic narratives",
+      "expectedOutput": "Section-by-section narrative with insights and 'so what' analysis",
+      "tips": [
+        "Provide business context (what happened this month)",
+        "Ask for both positive and concerning trends"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Create executive summary",
+      "tool": "chatgpt",
+      "timeMinutes": 20,
+      "promptId": "mbr-executive-summary",
+      "toolRationale": "ChatGPT writes concise, punchy executive summaries",
+      "expectedOutput": "1-page executive summary with key metrics and action items",
+      "tips": [
+        "Specify word count (200-300 words ideal)",
+        "Request 'headline' format - the one thing leadership should know"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Draft full report",
+      "tool": "chatgpt",
+      "timeMinutes": 40,
+      "promptId": "mbr-full-report",
+      "toolRationale": "ChatGPT writes professional reports quickly; you'll refine",
+      "expectedOutput": "Complete MBR draft with all sections",
+      "tips": [
+        "Provide your standard template structure",
+        "Ask for placeholder notes for charts"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Review, refine, and add visualizations (manual + AI)",
+      "tool": "chatgpt",
+      "timeMinutes": 60,
+      "toolRationale": "Human judgment on accuracy; AI assists with rewrites",
+      "expectedOutput": "Polished report ready for stakeholder review"
+    },
+    {
+      "stepNumber": 7,
+      "description": "Stakeholder review and finalization",
+      "tool": "chatgpt",
+      "timeMinutes": 40,
+      "toolRationale": "Use AI for quick iterations based on feedback",
+      "expectedOutput": "Final approved MBR"
+    }
+  ],
+
+  "whyItMatters": "The MBR is often the primary mechanism for leadership alignment on business performance. A late, inaccurate, or unclear MBR undermines decision-making and erodes trust in the analytics function.",
+
+  "commonMistakes": [
+    "Data dumps without insight - don't just show numbers, explain them",
+    "Burying the lead - put the most important finding first",
+    "Inconsistent methodology - changing how you calculate metrics destroys comparability",
+    "No 'so what' - every metric should answer 'why should I care?'",
+    "Over-relying on AI narratives - add your expert judgment and context"
+  ],
+
+  "tips": [
+    "Build a template prompt you update each month with new data",
+    "Create a 'context log' throughout the month to capture events that explain variances",
+    "Ask AI to generate Q&A prep: 'What questions might the CEO ask about this?'",
+    "Use AI to create multiple versions: detailed for ops, summary for board",
+    "Keep AI outputs as drafts - your review catches errors and adds nuance"
+  ],
+
+  "promptIds": [
+    "mbr-data-consolidation",
+    "mbr-variance-analysis",
+    "mbr-insight-generation",
+    "mbr-executive-summary",
+    "mbr-full-report"
+  ],
+
+  "tags": [
+    "monthly review",
+    "business review",
+    "MBR",
+    "executive reporting",
+    "performance reporting",
+    "leadership communication"
+  ],
+
+  "sources": [
+    "Perplexity Research - Business review best practices",
+    "McKinsey Quarterly - Executive communication frameworks",
+    "Aditya Goyal AAA Experience - Monthly retention/attrition reporting"
+  ]
+}

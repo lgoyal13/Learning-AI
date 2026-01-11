@@ -1,294 +1,92 @@
 import React from 'react';
-import { Button, Card, Badge } from '../components/ui';
+import { Button, Card } from '../components/ui';
 import { useRouter } from '../lib/routerContext';
-import { 
-  ArrowRight, 
-  Zap, 
-  PenTool, 
-  FileText, 
-  Search, 
-  Shield,
-  Layout,
-  BrainCircuit,
-  BookOpen,
-  Sparkles,
-  Copy
-} from 'lucide-react';
+import { Wand2, Sparkles, ArrowRight } from 'lucide-react';
 
 export default function Page() {
   const { push } = useRouter();
 
   return (
-    <div className="max-w-6xl mx-auto space-y-16 animate-fade-in pb-12">
-      
-      {/* Hero Section */}
-      <section className="bg-slate-900 rounded-2xl p-8 md:p-16 text-white shadow-xl relative overflow-hidden">
-        <div className="relative z-10 max-w-3xl">
-          <Badge variant="blue" className="mb-4 bg-blue-500/20 text-blue-100 border-blue-500/50">Built in Google AI Studio • AI Translator for Work</Badge>
-          
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
-            Your AI translator <br/>
-            <span className="text-blue-400">for real work.</span>
+    <div className="min-h-[calc(100vh-120px)] flex flex-col">
+      {/* Main Content - Centered */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
+
+        {/* Hero: Welcome Greeting */}
+        <div className="text-center mb-12 max-w-2xl">
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4 tracking-tight">
+            How can AI help you today?
           </h1>
-          
-          <div className="text-slate-300 text-lg md:text-xl mb-10 leading-relaxed max-w-2xl space-y-4">
-            <p className="font-medium text-white">
-              Describe what you need to get done. We translate it into expert level prompts for tools like Gemini and ChatGPT, then teach you how to write your own and reuse ready made templates.
-            </p>
-            <p className="text-base text-slate-400">
-              This internal academy helps you use AI on real emails, docs, analysis, and workflows using the Prompt Generator, Learning Modules, and a pre saved Prompt Library.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button 
-               size="lg" 
-               onClick={() => push('/generator')}
-               className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 h-14 text-lg shadow-lg shadow-blue-900/50"
-            >
-              <Sparkles className="w-5 h-5 mr-2" /> 
-              Open AI Translator
-            </Button>
-            <Button 
-               size="lg" 
-               variant="outline" 
-               onClick={() => push('/modules')}
-               className="bg-white/5 border-white/30 text-white hover:bg-white/10 h-14 px-8 font-medium backdrop-blur-sm transition-all"
-            >
-              Explore Learning Modules
-            </Button>
-          </div>
-        </div>
-        
-        {/* Decorative Background Elements */}
-        <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute bottom-0 right-20 -mb-20 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-      </section>
-
-      {/* Why This Exists (Outcomes) */}
-      <section>
-        <div className="mb-8">
-           <h2 className="text-2xl font-bold text-slate-900">What you will learn</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="space-y-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
-              <BrainCircuit className="w-6 h-6" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-lg">Demystify the Tech</h3>
-            <p className="text-slate-600 leading-relaxed">
-              Understand how AI thinks so you know what information and structure it needs from a good prompt.
-            </p>
-          </div>
-          <div className="space-y-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600">
-              <Layout className="w-6 h-6" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-lg">Practical Workflows</h3>
-            <p className="text-slate-600 leading-relaxed">
-              See how power users translate projects into prompt chains across chat, research, and your docs tools.
-            </p>
-          </div>
-          <div className="space-y-3">
-            <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600">
-              <Shield className="w-6 h-6" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-lg">Safety First</h3>
-            <p className="text-slate-600 leading-relaxed">
-              Learn safe patterns and placeholders so you do not accidentally translate sensitive data into AI.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works (Structure Map) */}
-      <section className="bg-slate-50 border border-slate-200 rounded-2xl p-8 md:p-10">
-        <div className="mb-8 text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold text-slate-900 mb-3">Your AI Translator toolkit</h2>
-          <p className="text-slate-600">
-            The three core parts of the system: Generator, Modules, and Library.
+          <p className="text-lg text-slate-600">
+            Whatever tool you use — ChatGPT, Gemini, Claude — we'll help you get better results.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-          {/* Connector Line (Desktop) */}
-          <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 -z-10 -translate-y-1/2"></div>
+        {/* Two Path Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl mb-12">
 
-          {/* Card 1: Prompt Generator */}
-          <Card 
-            className="p-6 bg-white relative hover:border-blue-300 transition-colors cursor-pointer group" 
+          {/* Card 1: Fix a Prompt (Refiner) - Recommended */}
+          <Card
+            className="p-8 border-2 border-blue-200 bg-blue-50/30 hover:border-blue-400 hover:shadow-lg transition-all cursor-pointer group"
+            onClick={() => push('/prompt-refiner')}
+          >
+            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-5 group-hover:scale-110 transition-transform">
+              <Wand2 className="w-6 h-6" />
+            </div>
+            <h2 className="text-xl font-bold text-slate-900 mb-2">Fix a prompt</h2>
+            <p className="text-slate-600 mb-6 leading-relaxed">
+              AI not giving you what you want? Paste your prompt and we'll show you exactly how to improve it.
+            </p>
+            <Button
+              className="w-full group-hover:bg-blue-700"
+              onClick={(e) => {
+                e.stopPropagation();
+                push('/prompt-refiner');
+              }}
+            >
+              Fix my prompt
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </Card>
+
+          {/* Card 2: Build a Prompt (Generator) */}
+          <Card
+            className="p-8 border-2 border-slate-200 hover:border-slate-300 hover:shadow-lg transition-all cursor-pointer group"
             onClick={() => push('/generator')}
-            style={{ overflow: 'visible' }}
           >
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm z-10">
-              Automate
+            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600 mb-5 group-hover:scale-110 transition-transform">
+              <Sparkles className="w-6 h-6" />
             </div>
-            <div className="mb-4 flex justify-center">
-              <div className="p-3 bg-blue-50 text-blue-600 rounded-full group-hover:scale-110 transition-transform">
-                <Sparkles className="w-6 h-6" />
-              </div>
-            </div>
-            <div className="text-center">
-              <h3 className="font-bold text-slate-900 mb-2">Prompt Generator</h3>
-              <p className="text-sm text-slate-600">
-                Type your task once and get a polished, tool ready prompt that follows best practices.
-              </p>
-            </div>
-          </Card>
-
-          {/* Card 2: Learning Modules */}
-          <Card 
-            className="p-6 bg-white relative hover:border-purple-300 transition-colors cursor-pointer group" 
-            onClick={() => push('/modules')}
-            style={{ overflow: 'visible' }}
-          >
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm z-10">
-              Learn
-            </div>
-             <div className="mb-4 flex justify-center">
-              <div className="p-3 bg-purple-50 text-purple-600 rounded-full group-hover:scale-110 transition-transform">
-                <BookOpen className="w-6 h-6" />
-              </div>
-            </div>
-            <div className="text-center">
-              <h3 className="font-bold text-slate-900 mb-2">Learning Modules</h3>
-              <p className="text-sm text-slate-600">
-                Short, practical lessons that explain why these prompts work and teach you to design your own.
-              </p>
-            </div>
-          </Card>
-
-          {/* Card 3: Pre-saved Prompts & Resources */}
-          <Card 
-            className="p-6 bg-white relative hover:border-emerald-300 transition-colors cursor-pointer group" 
-            onClick={() => push('/reference')}
-            style={{ overflow: 'visible' }}
-          >
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm z-10">
-              Reuse
-            </div>
-             <div className="mb-4 flex justify-center">
-              <div className="p-3 bg-emerald-50 text-emerald-600 rounded-full group-hover:scale-110 transition-transform">
-                <Copy className="w-6 h-6" />
-              </div>
-            </div>
-            <div className="text-center">
-              <h3 className="font-bold text-slate-900 mb-2">Prompt Library & Resources</h3>
-              <p className="text-sm text-slate-600">
-                A pre saved library of ready made prompt templates, safety checklists, and tool guides you can copy and tweak.
-              </p>
-            </div>
-          </Card>
-        </div>
-      </section>
-
-      {/* Task Playbooks (Goal Oriented) */}
-      <section>
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900">What do you need to do today?</h2>
-            <p className="text-slate-600 mt-1">
-              Pick a playbook for your task, and use the AI Translator or Prompt Library to turn it into prompts for your tools.
+            <h2 className="text-xl font-bold text-slate-900 mb-2">Build a prompt</h2>
+            <p className="text-slate-600 mb-6 leading-relaxed">
+              Starting fresh? Describe your task and we'll create an expert prompt for any AI tool.
             </p>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card 
-            className="p-6 hover:shadow-lg transition-all border-t-4 border-t-blue-500 cursor-pointer group"
-            onClick={() => push('/modules/prompting')}
-          >
-             <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform">
-                <PenTool className="w-6 h-6" />
-             </div>
-             <h3 className="text-xl font-bold text-slate-900 mb-3">I write emails & docs.</h3>
-             <p className="text-slate-600 text-sm mb-6 leading-relaxed">
-               Client updates, project announcements, feedback notes—learn how to go from blank page to solid draft in minutes.
-             </p>
-             <div className="flex items-center text-blue-600 font-medium text-sm mt-auto">
-               Drafting Playbook <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"/>
-             </div>
+            <Button
+              variant="secondary"
+              className="w-full group-hover:bg-slate-200"
+              onClick={(e) => {
+                e.stopPropagation();
+                push('/generator');
+              }}
+            >
+              Build my prompt
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
           </Card>
 
-          <Card 
-            className="p-6 hover:shadow-lg transition-all border-t-4 border-t-purple-500 cursor-pointer group"
-            onClick={() => push('/modules/tool-documents')}
+        </div>
+
+        {/* Learn More Link */}
+        <p className="text-slate-500 text-sm">
+          Want to understand how prompting works?{' '}
+          <button
+            onClick={() => push('/modules')}
+            className="text-blue-600 hover:text-blue-700 font-medium hover:underline"
           >
-             <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600 mb-6 group-hover:scale-110 transition-transform">
-                <FileText className="w-6 h-6" />
-             </div>
-             <h3 className="text-xl font-bold text-slate-900 mb-3">I read long documents.</h3>
-             <p className="text-slate-600 text-sm mb-6 leading-relaxed">
-               Contracts, vendor proposals, strategy decks—pull out dates, decisions, and risks without reading every word.
-             </p>
-             <div className="flex items-center text-purple-600 font-medium text-sm mt-auto">
-               Summarization Playbook <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"/>
-             </div>
-          </Card>
-
-          <Card 
-            className="p-6 hover:shadow-lg transition-all border-t-4 border-t-emerald-500 cursor-pointer group"
-            onClick={() => push('/modules/tool-research')}
-          >
-             <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform">
-                <Search className="w-6 h-6" />
-             </div>
-             <h3 className="text-xl font-bold text-slate-900 mb-3">I need to look things up.</h3>
-             <p className="text-slate-600 text-sm mb-6 leading-relaxed">
-               Policies, market trends, regulations—learn how to get grounded answers faster than scrolling search results.
-             </p>
-             <div className="flex items-center text-emerald-600 font-medium text-sm mt-auto">
-               Research Playbook <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"/>
-             </div>
-          </Card>
-        </div>
-      </section>
-
-      {/* Audience & Usage */}
-      <section className="bg-slate-50 border border-slate-200 rounded-xl p-8 flex flex-col md:flex-row gap-8 items-center">
-        <div className="flex-1">
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Who is this for?</h2>
-          <p className="text-slate-600 mb-4 leading-relaxed">
-            This academy is built for <strong>Project Managers, Marketers, Ops Leads, Customer Success, and Developers</strong>. 
-            Basically, anyone who spends their day reading, writing, or analyzing data.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="neutral">Project Management</Badge>
-            <Badge variant="neutral">Marketing</Badge>
-            <Badge variant="neutral">Operations</Badge>
-            <Badge variant="neutral">Engineering</Badge>
-            <Badge variant="neutral">Sales</Badge>
-          </div>
-        </div>
-        <div className="w-full md:w-auto p-6 bg-white rounded-xl border border-slate-200 shadow-sm max-w-sm">
-          <h3 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-500" /> Use this app today
-          </h3>
-          <ul className="space-y-3 text-sm text-slate-700">
-             <li className="flex gap-2 items-start">
-               <span className="font-bold text-slate-300">1.</span>
-               <span>Pick one task you have to do (e.g. write an update email).</span>
-             </li>
-             <li className="flex gap-2 items-start">
-               <span className="font-bold text-slate-300">2.</span>
-               <span>Run the <button onClick={() => push('/generator')} className="text-blue-600 font-medium hover:underline">Prompt Generator</button> with that task.</span>
-             </li>
-             <li className="flex gap-2 items-start">
-               <span className="font-bold text-slate-300">3.</span>
-               <span>Or copy a <button onClick={() => push('/reference')} className="text-purple-600 font-medium hover:underline">Template</button> from the library.</span>
-             </li>
-          </ul>
-        </div>
-      </section>
-
-      {/* Footer / Trust */}
-      <div className="text-center pt-8 border-t border-slate-200">
-        <p className="text-slate-400 text-sm flex items-center justify-center gap-2">
-          <Shield className="w-4 h-4" />
-          <span>Internal Training Application • Built in <strong>Google AI Studio</strong></span>
+            Explore Learning Modules →
+          </button>
         </p>
-      </div>
 
+      </div>
     </div>
   );
 }

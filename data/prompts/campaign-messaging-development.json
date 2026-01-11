@@ -1,0 +1,70 @@
+{
+  "id": "campaign-messaging-development",
+  "workflowId": "campaign-planning-launch",
+  "name": "Campaign Messaging Development",
+  "stepNumber": 3,
+  "recommendedTool": "claude",
+  "alternativeTools": ["chatgpt"],
+
+  "systemPrompt": "You are a brand strategist and messaging expert. Your role is to develop compelling campaign messaging that resonates with the target audience, differentiates from competitors, and drives the desired action. Always ground messaging in customer insights and business objectives.",
+
+  "promptTemplate": "Develop messaging options for our upcoming [CAMPAIGN NAME] campaign.\n\n**Campaign Objective:**\n[DESCRIBE THE PRIMARY GOAL - e.g., generate leads, drive trial signups, increase brand awareness]\n\n**Target Audience:**\n- Who: [DESCRIBE YOUR ICP - role, company size, industry]\n- Pain points: [WHAT PROBLEMS DO THEY FACE]\n- Current state: [WHAT ARE THEY DOING TODAY]\n- Desired outcome: [WHAT DO THEY WANT TO ACHIEVE]\n\n**Our Solution:**\n- Product/service: [WHAT WE'RE PROMOTING]\n- Key differentiators: [WHY WE'RE DIFFERENT/BETTER]\n- Proof points: [EVIDENCE - stats, testimonials, awards]\n\n**Competitive Context:**\n- Main competitors: [LIST 2-3]\n- Their positioning: [HOW THEY POSITION THEMSELVES]\n- Whitespace: [WHAT THEY'RE NOT SAYING]\n\n**Constraints:**\n- Brand voice: [DESCRIBE TONE - professional, playful, authoritative, etc.]\n- Must include: [ANY REQUIRED ELEMENTS]\n- Avoid: [ANY MESSAGING TO STAY AWAY FROM]\n\n**Please create 3 messaging directions:**\n\nFor each direction, provide:\n1. **Theme name** (2-3 words)\n2. **Headline** (8-12 words, attention-grabbing)\n3. **Subheadline** (15-25 words, expands on headline)\n4. **Value proposition** (1-2 sentences, core promise)\n5. **3 supporting messages** (proof points/benefits)\n6. **CTA** (clear action we want them to take)\n7. **Why this works** (brief rationale)\n\nMake each direction distinctly different in approach - don't give variations of the same theme.",
+
+  "pctr": {
+    "persona": "Brand strategist and messaging expert focused on differentiation and audience resonance",
+    "context": "Campaign planning phase; need multiple messaging directions to evaluate and test before committing to creative",
+    "task": "Generate 3 distinctly different messaging frameworks with headlines, value props, and supporting messages",
+    "requirements": [
+      "Each direction must be distinctly different in approach",
+      "Ground all messaging in stated audience pain points",
+      "Differentiate from listed competitors",
+      "Include clear CTAs",
+      "Explain why each direction would work"
+    ]
+  },
+
+  "whenToUse": "Early in campaign planning when you've completed audience research and need to develop messaging options to test or present to stakeholders.",
+
+  "commonMistakes": [
+    "All directions sound the same - push for truly different angles",
+    "Features over benefits - focus on what customers GET, not what product DOES",
+    "Generic messaging - make it specific to YOUR audience and solution",
+    "No differentiation - messaging should make clear why you vs competitors",
+    "Weak CTAs - be specific about the action you want"
+  ],
+
+  "exampleInputs": {
+    "CAMPAIGN NAME": "Q1 Lead Generation",
+    "OBJECTIVE": "Generate 500 marketing qualified leads for sales team",
+    "TARGET AUDIENCE": "VP Marketing at B2B SaaS companies, 50-500 employees, struggling with content velocity",
+    "PAIN POINTS": "Can't create enough content; team is burned out; quality suffers when they rush",
+    "SOLUTION": "AI-powered content platform that helps marketing teams create 10x more content",
+    "DIFFERENTIATORS": "Maintains brand voice; integrates with existing workflow; learns from your best content",
+    "COMPETITORS": "Jasper (focuses on speed), Copy.ai (focuses on templates)",
+    "WHITESPACE": "Neither emphasizes brand consistency or learning from existing content",
+    "BRAND VOICE": "Confident, helpful, slightly playful"
+  },
+
+  "exampleOutput": "## Direction 1: Quality at Scale\n\n**Theme:** Consistent Quality\n\n**Headline:** Finally, content that sounds like you wrote it.\n\n**Subheadline:** Our AI learns your brand voice and creates content your team will be proud to publish—10x faster than before.\n\n**Value Proposition:** The only AI content platform that actually understands your brand. Create more content without sacrificing the quality that got you here.\n\n**Supporting Messages:**\n1. Learns from your best-performing content to match your unique voice\n2. Marketing teams create 10x more content with 50% less revision time\n3. Integrates with your existing workflow—no new tools to learn\n\n**CTA:** See your brand voice in action →\n\n**Why this works:** Addresses the core anxiety (quality suffers when rushing) while promising the benefit (more content). Differentiates from competitors who focus only on speed.\n\n---\n\n## Direction 2: Team Rescue...",
+
+  "variations": [
+    {
+      "name": "Single Direction Deep Dive",
+      "useCase": "When you've chosen a direction and need to develop it further",
+      "prompt": "We've chosen the '[DIRECTION NAME]' messaging direction. Now develop:\n1. 5 headline variations to A/B test\n2. Long-form value proposition (100 words)\n3. Objection handlers for top 3 objections\n4. Email subject line options (5)\n5. Social media post variations (3)"
+    },
+    {
+      "name": "Competitive Positioning Statement",
+      "useCase": "When you need a formal positioning statement",
+      "prompt": "Create a positioning statement using this format:\nFor [target audience] who [need/pain point], [product name] is a [category] that [key benefit]. Unlike [competitors], we [key differentiator].\n\nThen create 3 variations with different emphasis."
+    }
+  ],
+
+  "qualityScore": 9,
+
+  "sources": [
+    "April Dunford - Obviously Awesome (Positioning)",
+    "StoryBrand Framework",
+    "HubSpot - Campaign Messaging Best Practices"
+  ]
+}

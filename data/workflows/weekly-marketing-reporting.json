@@ -1,0 +1,178 @@
+{
+  "id": "weekly-marketing-reporting",
+  "roleId": "marketing-manager",
+  "name": "Weekly Marketing Performance Report",
+  "category": "reporting",
+  "description": "Compile and analyze weekly marketing performance across all channels. Track KPIs, identify trends, surface issues, and provide actionable insights for optimization. Keeps leadership and stakeholders aligned on marketing effectiveness.",
+
+  "frequency": "weekly",
+  "complexity": "beginner",
+
+  "currentTimeMinutes": 180,
+  "aiTimeMinutes": 60,
+  "timeSavedMinutes": 120,
+  "timeSavedPercentage": 67,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Extract data from multiple marketing platforms",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Multiple logins and exports",
+        "Different date ranges and formats",
+        "Data reconciliation issues"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Consolidate into reporting template",
+      "timeMinutes": 30,
+      "painPoints": [
+        "Manual data entry",
+        "Formula errors in spreadsheets",
+        "Ensuring consistency week over week"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Calculate metrics and compare to goals",
+      "timeMinutes": 25,
+      "painPoints": [
+        "Goal definitions sometimes unclear",
+        "Seasonal adjustments needed",
+        "Benchmark interpretation"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Identify notable trends and issues",
+      "timeMinutes": 25,
+      "painPoints": [
+        "Signal vs noise in weekly data",
+        "Explaining variance drivers",
+        "Prioritizing what matters"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Write commentary and recommendations",
+      "timeMinutes": 30,
+      "painPoints": [
+        "Balancing detail with brevity",
+        "Actionable vs descriptive commentary",
+        "Consistent format expectations"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Format and distribute report",
+      "timeMinutes": 25,
+      "painPoints": [
+        "Different stakeholders want different views",
+        "Email formatting issues",
+        "Timing and distribution logistics"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Consolidate platform data",
+      "tool": "gemini",
+      "timeMinutes": 15,
+      "promptId": "marketing-data-consolidation",
+      "toolRationale": "Gemini handles structured marketing data well",
+      "expectedOutput": "Consolidated metrics table by channel",
+      "tips": [
+        "Export each platform to CSV",
+        "Standardize date ranges before uploading"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Calculate metrics and variance to goals",
+      "tool": "gemini",
+      "timeMinutes": 10,
+      "promptId": "marketing-metrics-calculation",
+      "toolRationale": "Gemini performs calculations and flags issues",
+      "expectedOutput": "Metrics table with WoW and goal variance",
+      "tips": [
+        "Provide weekly and monthly goals",
+        "Include prior week data for comparison"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Generate insights and trend analysis",
+      "tool": "claude",
+      "timeMinutes": 15,
+      "promptId": "marketing-insight-generation",
+      "toolRationale": "Claude identifies patterns and generates insights",
+      "expectedOutput": "Top 3-5 insights with implications",
+      "tips": [
+        "Provide context on any campaigns or changes",
+        "Ask for both positive and concerning trends"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Draft report with recommendations",
+      "tool": "chatgpt",
+      "timeMinutes": 15,
+      "promptId": "marketing-report-draft",
+      "toolRationale": "ChatGPT writes clear, structured reports",
+      "expectedOutput": "Weekly report ready for review",
+      "tips": [
+        "Use consistent format each week",
+        "Lead with highlights before details"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Review and distribute",
+      "tool": "chatgpt",
+      "timeMinutes": 5,
+      "toolRationale": "Quick human review; AI formatted the report",
+      "expectedOutput": "Report sent to stakeholders"
+    }
+  ],
+
+  "whyItMatters": "Weekly reporting creates accountability and enables fast optimization. Marketing moves quickly - waiting for monthly reports means missed opportunities. Consistent weekly reporting builds stakeholder confidence in marketing's ability to measure and optimize.",
+
+  "commonMistakes": [
+    "Reporting metrics without context - explain what they mean",
+    "Data overload - focus on 5-8 key metrics, not 50",
+    "No recommendations - reports should drive action",
+    "Inconsistent format - makes week-over-week comparison hard",
+    "Burying the lead - start with the most important insight"
+  ],
+
+  "tips": [
+    "Build a template prompt that you update weekly with new data",
+    "Create a 'campaign context' note to give AI context on what's running",
+    "Ask AI to generate 'optimization recommendations' not just 'what happened'",
+    "Set up automated data exports where possible to reduce manual work"
+  ],
+
+  "promptIds": [
+    "marketing-data-consolidation",
+    "marketing-metrics-calculation",
+    "marketing-insight-generation",
+    "marketing-report-draft"
+  ],
+
+  "tags": [
+    "marketing reporting",
+    "performance analysis",
+    "weekly report",
+    "marketing analytics",
+    "KPIs"
+  ],
+
+  "sources": [
+    "HubSpot - Marketing Reporting Best Practices",
+    "Perplexity Research - Marketing analytics workflows"
+  ]
+}

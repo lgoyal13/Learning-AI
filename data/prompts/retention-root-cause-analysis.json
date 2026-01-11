@@ -1,0 +1,69 @@
+{
+  "id": "retention-root-cause-analysis",
+  "workflowId": "monthly-retention-analysis",
+  "name": "Retention Root Cause Analysis",
+  "stepNumber": 3,
+  "recommendedTool": "claude",
+  "alternativeTools": ["chatgpt", "gemini"],
+
+  "systemPrompt": "You are a strategic analyst helping investigate root causes for customer churn. Think systematically, consider multiple hypotheses, and distinguish between correlation and causation. Be honest about what requires further investigation.",
+
+  "promptTemplate": "Help me investigate root causes for our retention variance.\n\n**The Problem:**\nOur retention rate dropped from [PREVIOUS]% to [CURRENT]% this month, missing our [TARGET]% target. We lost [X] more members than expected, representing $[Y] in at-risk revenue.\n\n**What We Know:**\n- Variance analysis suggests these potential factors: [LIST FROM STEP 2]\n- Members who churned had these characteristics: [DESCRIBE IF KNOWN]\n- Exit survey feedback (if available): [SUMMARIZE KEY THEMES]\n\n**Business Context (last 60 days):**\n- Pricing/billing changes: [DESCRIBE]\n- Product/service changes: [DESCRIBE]\n- Competitor activity: [DESCRIBE]\n- Marketing campaigns: [DESCRIBE]\n- Operational issues: [DESCRIBE]\n- Economic/market factors: [DESCRIBE]\n\n**What I'm Trying to Determine:**\n1. What are the most likely root causes (rank by probability)?\n2. Which causes are within our control vs external?\n3. What data would prove or disprove each hypothesis?\n4. What quick wins could address the controllable causes?\n5. What should we monitor going forward?\n\nPlease structure your analysis using a hypothesis-driven approach. For each potential cause, explain the logic and what evidence would confirm it.",
+
+  "pctr": {
+    "persona": "Strategic analyst using structured hypothesis-driven investigation",
+    "context": "Retention has dropped below target; need to identify actionable root causes from business context and available data",
+    "task": "Generate ranked hypotheses, distinguish controllable vs uncontrollable factors, suggest validation steps and quick wins",
+    "requirements": [
+      "Use hypothesis-driven structure (if X, then we'd expect Y)",
+      "Rank causes by likelihood with reasoning",
+      "Clearly separate controllable from uncontrollable factors",
+      "Specify what data would confirm each hypothesis",
+      "Provide practical next steps"
+    ]
+  },
+
+  "whenToUse": "After variance analysis when you need to dig deeper into WHY metrics are off. Use when you have context about business changes and want structured hypotheses to investigate.",
+
+  "commonMistakes": [
+    "Not providing enough business context - AI will give generic causes",
+    "Accepting AI hypotheses without validation - these are starting points, not conclusions",
+    "Ignoring external factors - sometimes the cause is outside your control",
+    "Jumping to solutions before confirming the cause"
+  ],
+
+  "exampleInputs": {
+    "PREVIOUS": "95.1",
+    "CURRENT": "94.2",
+    "TARGET": "95.0",
+    "X": "450",
+    "Y": "67,000",
+    "LIST FROM STEP 2": "price increase, competitor discount, seasonal Q4 churn",
+    "CHURNED CHARACTERISTICS": "60% were on annual plans coming up for renewal, 40% were in first year of membership",
+    "PRICING CHANGES": "5% price increase effective Nov 1 for renewals",
+    "COMPETITOR ACTIVITY": "Main competitor launched 20% off first year promotion Dec 1"
+  },
+
+  "exampleOutput": "## Root Cause Analysis: December Retention Drop\n\n### Hypothesis 1: Price Increase Impact (75% confidence)\n**Logic:** Members renewing in Dec faced 5% higher prices for the first time. If price-sensitive, they may have chosen not to renew.\n\n**Expected evidence if true:**\n- Churn concentrated in renewal cohort (✓ confirmed: 60% were renewals)\n- Churn higher in price-sensitive segments\n- Exit surveys mention price/value\n\n**Controllable?** Partially - price is set, but we can adjust messaging, add value, or offer retention incentives.\n\n**Quick wins:**\n- Proactive outreach to Jan/Feb renewals with value messaging\n- Consider limited-time retention offer for at-risk accounts\n\n### Hypothesis 2: Competitor Discount Campaign (50% confidence)...",
+
+  "variations": [
+    {
+      "name": "5 Whys Deep Dive",
+      "useCase": "When you want to drill into a single hypothesis more deeply",
+      "prompt": "Apply the 5 Whys technique to this problem: [DESCRIBE PROBLEM]. Keep asking 'why' until we reach an actionable root cause. For each 'why', explain what evidence supports that answer."
+    },
+    {
+      "name": "Fishbone Diagram",
+      "useCase": "When you want to explore all possible cause categories systematically",
+      "prompt": "Create an Ishikawa (fishbone) diagram for this retention problem. Organize potential causes into: People, Process, Technology, External, Policy/Pricing. List 2-3 potential causes in each category."
+    }
+  ],
+
+  "qualityScore": 9,
+
+  "sources": [
+    "McKinsey Problem Solving - Hypothesis-driven investigation",
+    "BCG Consulting - Root cause analysis frameworks",
+    "Aditya Goyal AAA Experience - Attrition driver investigation"
+  ]
+}

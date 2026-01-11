@@ -118,7 +118,7 @@ export default function Page({ onBack }: { onBack?: () => void }) {
                    </li>
                    <li>
                      <strong className="block text-slate-900 mb-1">Refining</strong>
-                     Highlight text -> "Make this more concise" or "Change tone to confident."
+                     Highlight text → "Make this more concise" or "Change tone to confident."
                    </li>
                    <li>
                      <strong className="block text-slate-900 mb-1">Summarizing</strong>
@@ -135,7 +135,7 @@ export default function Page({ onBack }: { onBack?: () => void }) {
                 <ul className="space-y-4 text-sm text-slate-700">
                    <li>
                      <strong className="block text-slate-900 mb-1">Thread Summary</strong>
-                     Open a long thread -> Click the Star icon -> "Summarize this email thread."
+                     Open a long thread → Click the Star icon → "Summarize this email thread."
                    </li>
                    <li>
                      <strong className="block text-slate-900 mb-1">Smart Reply</strong>

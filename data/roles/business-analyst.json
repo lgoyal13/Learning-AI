@@ -1,0 +1,88 @@
+{
+  "id": "business-analyst",
+  "name": "Strategic Business Analyst",
+  "description": "Translates business problems into data-driven insights. Creates executive reports, analyzes metrics, develops strategic frameworks, and bridges business strategy with analytics.",
+
+  "coreResponsibilities": [
+    "Analyze business performance data and identify trends",
+    "Create executive reports and dashboards for leadership",
+    "Develop strategic frameworks (OKRs, KPIs, scorecards)",
+    "Conduct competitive intelligence and market research",
+    "Support cross-functional initiatives with data insights",
+    "Build business cases and ROI analyses for initiatives"
+  ],
+
+  "typicalTools": [
+    "Excel / Google Sheets",
+    "SQL / BigQuery",
+    "Tableau / Power BI / Looker",
+    "PowerPoint / Google Slides",
+    "Salesforce / CRM systems",
+    "Confluence / Notion"
+  ],
+
+  "successMetrics": [
+    "Quality and accuracy of analysis (75%+ recommendations implemented)",
+    "Speed of insight delivery (< 3 days for strategic analysis)",
+    "Business impact (revenue improvements, cost savings)",
+    "Stakeholder satisfaction and trust",
+    "Data-driven decisions enabled"
+  ],
+
+  "timeAllocation": [
+    {
+      "category": "Data Collection & Validation",
+      "percentage": 27,
+      "isPainPoint": true
+    },
+    {
+      "category": "Analysis & Modeling",
+      "percentage": 22,
+      "isPainPoint": false
+    },
+    {
+      "category": "Report & Document Creation",
+      "percentage": 18,
+      "isPainPoint": true
+    },
+    {
+      "category": "Stakeholder Communication",
+      "percentage": 16,
+      "isPainPoint": false
+    },
+    {
+      "category": "Strategic Planning & Frameworks",
+      "percentage": 10,
+      "isPainPoint": false
+    },
+    {
+      "category": "Meetings & Collaboration",
+      "percentage": 7,
+      "isPainPoint": false
+    }
+  ],
+
+  "painPoints": [
+    "Multiple data sources requiring manual consolidation (CRM, ERP, spreadsheets)",
+    "Time spent recreating reports from scratch each cycle",
+    "Iterative revision cycles with stakeholders who change requirements",
+    "Difficulty identifying root causes quickly when metrics miss targets",
+    "Competitive intelligence research consuming hours for basic updates",
+    "Context-switching between analysis tools and presentation formats"
+  ],
+
+  "workflowIds": [
+    "monthly-retention-analysis",
+    "okr-framework-development",
+    "competitive-intelligence-report",
+    "monthly-business-review",
+    "executive-dashboard-build"
+  ],
+
+  "sources": [
+    "O*NET Database - Business Intelligence Analyst (15-1199.08)",
+    "LinkedIn Job Postings Analysis (2025-2026)",
+    "Perplexity Research - Business Analyst Role Analysis",
+    "Aditya Goyal AAA Experience (2023-2026)"
+  ]
+}

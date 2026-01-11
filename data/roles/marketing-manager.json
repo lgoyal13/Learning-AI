@@ -1,0 +1,90 @@
+{
+  "id": "marketing-manager",
+  "name": "Marketing Manager",
+  "description": "Plans and executes marketing campaigns across channels. Manages marketing technology, analytics, and content strategy. Drives demand generation, brand awareness, and customer acquisition through data-driven marketing programs.",
+
+  "coreResponsibilities": [
+    "Plan and execute multi-channel marketing campaigns",
+    "Develop content strategy and oversee content creation",
+    "Analyze campaign performance and optimize ROI",
+    "Manage marketing automation and technology stack",
+    "Coordinate with sales on lead generation and nurturing",
+    "Build and maintain brand consistency across touchpoints"
+  ],
+
+  "typicalTools": [
+    "Marketing automation (HubSpot, Marketo, Pardot)",
+    "CRM systems (Salesforce, HubSpot CRM)",
+    "Analytics (Google Analytics, Mixpanel)",
+    "Social media management (Hootsuite, Sprout Social)",
+    "Email platforms (Mailchimp, Klaviyo)",
+    "Design tools (Canva, Figma)",
+    "Project management (Asana, Monday.com)"
+  ],
+
+  "successMetrics": [
+    "Marketing Qualified Leads (MQLs) generated",
+    "Cost per acquisition (CPA)",
+    "Campaign ROI and ROAS",
+    "Website traffic and conversion rates",
+    "Email engagement (open rates, click rates)",
+    "Brand awareness metrics"
+  ],
+
+  "timeAllocation": [
+    {
+      "category": "Campaign Planning & Execution",
+      "percentage": 27,
+      "isPainPoint": false
+    },
+    {
+      "category": "Content Creation & Strategy",
+      "percentage": 23,
+      "isPainPoint": true
+    },
+    {
+      "category": "Performance Analysis & Reporting",
+      "percentage": 18,
+      "isPainPoint": true
+    },
+    {
+      "category": "Lead Management & Nurturing",
+      "percentage": 12,
+      "isPainPoint": false
+    },
+    {
+      "category": "Technology & Process Optimization",
+      "percentage": 10,
+      "isPainPoint": false
+    },
+    {
+      "category": "Meetings & Stakeholder Management",
+      "percentage": 10,
+      "isPainPoint": false
+    }
+  ],
+
+  "painPoints": [
+    "Content creation velocity - never enough content for all channels",
+    "Campaign planning from scratch each time (messaging, targeting, channel mix)",
+    "Multiple revision cycles with stakeholders on copy and creative",
+    "Data consolidation from multiple marketing platforms",
+    "Manual report creation and performance analysis",
+    "Keeping up with rapidly changing best practices and platform updates"
+  ],
+
+  "workflowIds": [
+    "campaign-planning-launch",
+    "weekly-performance-reporting",
+    "content-strategy-copywriting",
+    "email-sequence-creation",
+    "marketing-competitive-analysis"
+  ],
+
+  "sources": [
+    "O*NET Database - Marketing Manager (11-2021.00)",
+    "LinkedIn Job Postings Analysis (2025-2026)",
+    "Perplexity Research - Marketing workflow optimization",
+    "HubSpot State of Marketing Report 2025"
+  ]
+}

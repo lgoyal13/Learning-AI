@@ -1,0 +1,67 @@
+{
+  "id": "fpa-variance-commentary",
+  "workflowId": "monthly-variance-analysis",
+  "name": "Financial Variance Commentary",
+  "stepNumber": 5,
+  "recommendedTool": "chatgpt",
+  "alternativeTools": ["claude", "gemini"],
+
+  "systemPrompt": "You are a senior financial analyst writing variance commentary for leadership. Your commentary should be clear, concise, and explain business drivers not just numbers. Use professional financial language but avoid jargon. Always explain the 'so what' - why this variance matters.",
+
+  "promptTemplate": "Write variance commentary for our [MONTH/YEAR] financial results.\n\n**Line Item:** [LINE ITEM NAME]\n**Actual:** $[ACTUAL]\n**Budget:** $[BUDGET]\n**Variance:** $[VARIANCE] ([PERCENTAGE]%)\n**Prior Year:** $[PRIOR_YEAR] (for context)\n\n**Known Context:**\n[DESCRIBE WHAT YOU KNOW ABOUT WHY THIS VARIANCE OCCURRED]\n\n**Please write:**\n1. A 2-3 sentence variance explanation that:\n   - States the variance amount and direction (favorable/unfavorable)\n   - Explains the business driver(s) behind it\n   - Notes if this is timing-related or permanent\n\n2. A brief 'so what' statement:\n   - Impact on full-year outlook\n   - Whether action is needed\n\nFormat: Direct, professional tone. No bullet points - flowing sentences that could go directly into a board report.",
+
+  "pctr": {
+    "persona": "Senior financial analyst writing for executive audience",
+    "context": "Month-end variance analysis for financial reporting; need to explain why actuals differed from budget",
+    "task": "Write clear, concise variance commentary explaining business drivers and implications",
+    "requirements": [
+      "State variance amount and direction clearly",
+      "Explain business drivers, not just restate numbers",
+      "Distinguish timing vs permanent variances",
+      "Include forward-looking implication",
+      "Professional, direct tone suitable for board reports"
+    ]
+  },
+
+  "whenToUse": "When you have identified material variances and understand the drivers, but need to write clear commentary that will satisfy CFO and board-level readers.",
+
+  "commonMistakes": [
+    "Restating the variance without explaining why - 'Revenue was $100K below budget' tells us nothing",
+    "Too much detail - keep it to 2-3 sentences per line item",
+    "No forward look - always address 'what does this mean going forward'",
+    "Passive voice - be direct about what caused the variance"
+  ],
+
+  "exampleInputs": {
+    "MONTH/YEAR": "December 2025",
+    "LINE ITEM NAME": "Revenue - Enterprise Segment",
+    "ACTUAL": "4,200,000",
+    "BUDGET": "4,500,000",
+    "VARIANCE": "-300,000",
+    "PERCENTAGE": "-6.7",
+    "PRIOR_YEAR": "3,800,000",
+    "KNOWN CONTEXT": "Two large deals slipped from December to January due to customer procurement delays. Both deals are still expected to close. Overall pipeline remains healthy."
+  },
+
+  "exampleOutput": "Enterprise revenue of $4.2M was $300K (6.7%) unfavorable to budget, driven primarily by timing as two large deals totaling $280K slipped into January due to customer procurement delays. Both deals remain in final contract stages with expected close in early Q1. Despite the monthly shortfall, full-year Enterprise revenue is tracking 11% above prior year and the Q1 pipeline supports budget recovery, so no corrective action is recommended at this time.",
+
+  "variations": [
+    {
+      "name": "Multiple Line Items",
+      "useCase": "When you need to explain several variances at once",
+      "prompt": "Write variance commentary for these line items:\n[LIST LINE ITEMS WITH ACTUALS, BUDGET, VARIANCE]\n\nFor each, provide a 2-sentence explanation of the variance driver and implication. Group related variances together if they share a common driver."
+    },
+    {
+      "name": "Unfavorable Variance with Action Plan",
+      "useCase": "When leadership will want to know what you're doing about it",
+      "prompt": "This variance is unfavorable and material. Write commentary that:\n1. Explains what happened\n2. Describes the action plan to address it\n3. Sets expectations for when improvement will be seen\n\n[VARIANCE DETAILS]"
+    }
+  ],
+
+  "qualityScore": 9,
+
+  "sources": [
+    "AFP - Financial Reporting Best Practices",
+    "Gartner FP&A Research"
+  ]
+}

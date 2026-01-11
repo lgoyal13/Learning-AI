@@ -1,0 +1,189 @@
+{
+  "id": "monthly-variance-analysis",
+  "roleId": "finance-analyst",
+  "name": "Monthly Variance Analysis",
+  "category": "analysis",
+  "description": "Analyze actual financial results against budget and prior periods. Identify significant variances, investigate root causes, and prepare variance commentary for leadership. A foundational FP&A workflow performed every month-end close.",
+
+  "frequency": "monthly",
+  "complexity": "intermediate",
+
+  "currentTimeMinutes": 180,
+  "aiTimeMinutes": 60,
+  "timeSavedMinutes": 120,
+  "timeSavedPercentage": 67,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Extract actual results from accounting system/ERP",
+      "timeMinutes": 30,
+      "painPoints": [
+        "Multiple data sources (GL, sub-ledgers, accruals)",
+        "Data not always closed on time",
+        "Format inconsistencies between periods"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Align actuals to budget format and chart of accounts",
+      "timeMinutes": 25,
+      "painPoints": [
+        "Budget and actuals use different account structures",
+        "Manual mapping and reclassification",
+        "One-time items need special treatment"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Calculate variances ($ and %) for each line item",
+      "timeMinutes": 20,
+      "painPoints": [
+        "Ensuring formula consistency",
+        "Handling sign conventions (favorable vs unfavorable)",
+        "YTD vs monthly variance calculations"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Identify material variances requiring explanation",
+      "timeMinutes": 15,
+      "painPoints": [
+        "Threshold definitions vary by stakeholder",
+        "Offsetting variances can hide issues",
+        "Prioritizing which variances matter most"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Investigate root causes for each material variance",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Need to contact multiple departments for explanations",
+        "Distinguishing timing vs permanent variances",
+        "Limited visibility into operational drivers"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Write variance commentary for each line item",
+      "timeMinutes": 30,
+      "painPoints": [
+        "Balancing detail with brevity",
+        "Consistent format and tone",
+        "Explaining 'so what' not just 'what happened'"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Review with manager and finalize",
+      "timeMinutes": 15,
+      "painPoints": [
+        "Last-minute adjustments require rework",
+        "Different stakeholders want different detail levels"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Extract and format data from sources",
+      "tool": "gemini",
+      "timeMinutes": 15,
+      "promptId": "fpa-data-extraction",
+      "toolRationale": "Gemini handles structured financial data well",
+      "expectedOutput": "Aligned actual vs budget data in consistent format",
+      "tips": [
+        "Export to CSV with clear column headers",
+        "Include account codes and descriptions"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Calculate variances and flag material items",
+      "tool": "gemini",
+      "timeMinutes": 10,
+      "promptId": "fpa-variance-calculation",
+      "toolRationale": "Gemini performs calculations and applies threshold logic",
+      "expectedOutput": "Variance table with flagged items above threshold",
+      "tips": [
+        "Specify your materiality thresholds upfront",
+        "Ask for both $ and % variances"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Generate variance hypotheses and investigation questions",
+      "tool": "claude",
+      "timeMinutes": 10,
+      "promptId": "fpa-variance-hypotheses",
+      "toolRationale": "Claude excels at generating logical hypotheses for financial variances",
+      "expectedOutput": "Hypothesis list for each material variance with suggested data to confirm",
+      "tips": [
+        "Provide business context (seasonality, known events)",
+        "Ask about timing vs permanent variance likelihood"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Investigate with stakeholders (manual)",
+      "tool": "claude",
+      "timeMinutes": 15,
+      "toolRationale": "Human interaction needed; AI helped focus the questions",
+      "expectedOutput": "Confirmed root causes for each variance"
+    },
+    {
+      "stepNumber": 5,
+      "description": "Draft variance commentary",
+      "tool": "chatgpt",
+      "timeMinutes": 10,
+      "promptId": "fpa-variance-commentary",
+      "toolRationale": "ChatGPT writes clear, concise financial commentary",
+      "expectedOutput": "Draft commentary for each material variance",
+      "tips": [
+        "Provide your company's preferred format",
+        "Ask for 'favorable/unfavorable' framing"
+      ]
+    }
+  ],
+
+  "whyItMatters": "Variance analysis is the foundation of financial accountability. It answers 'did we perform as expected?' and 'why or why not?' Fast, accurate variance analysis enables quicker course corrections and builds trust with leadership.",
+
+  "commonMistakes": [
+    "Reporting variances without explaining business drivers",
+    "Treating all variances equally - prioritize by materiality and controllability",
+    "Ignoring offsetting variances that net to zero but hide issues",
+    "Writing 'due to higher costs' - explain WHY costs were higher",
+    "Not distinguishing timing differences from permanent variances"
+  ],
+
+  "tips": [
+    "Build a 'context log' throughout the month to capture events affecting financials",
+    "Use AI to generate hypotheses, then validate with business partners",
+    "Ask AI to draft commentary in multiple formats: detailed and summary",
+    "Create a template that you update monthly - consistency builds speed"
+  ],
+
+  "promptIds": [
+    "fpa-data-extraction",
+    "fpa-variance-calculation",
+    "fpa-variance-hypotheses",
+    "fpa-variance-commentary"
+  ],
+
+  "tags": [
+    "variance analysis",
+    "month-end close",
+    "financial reporting",
+    "budget vs actual",
+    "FP&A",
+    "financial analysis"
+  ],
+
+  "sources": [
+    "Gartner FP&A Research - 85% time on data prep finding",
+    "AFP (Association for Financial Professionals) - FP&A best practices",
+    "Perplexity Research - Financial variance analysis workflows"
+  ]
+}

@@ -1,0 +1,248 @@
+{
+  "id": "executive-dashboard-build",
+  "roleId": "business-analyst",
+  "name": "Executive Dashboard Build",
+  "category": "reporting",
+  "description": "Design and build an executive dashboard that provides leadership with real-time visibility into key business metrics. Includes requirements gathering, metric selection, data architecture planning, and dashboard design - stopping short of actual technical implementation.",
+
+  "frequency": "ad-hoc",
+  "complexity": "advanced",
+
+  "currentTimeMinutes": 1200,
+  "aiTimeMinutes": 540,
+  "timeSavedMinutes": 660,
+  "timeSavedPercentage": 55,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Gather requirements from executive stakeholders",
+      "timeMinutes": 180,
+      "painPoints": [
+        "Executives don't always know what they want until they see it",
+        "Different stakeholders have conflicting priorities",
+        "Requirements change after interviews"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Audit existing data sources and availability",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Data lives in multiple systems",
+        "Some metrics not currently tracked",
+        "Data quality issues in source systems"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Define metrics and KPI hierarchy",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Too many metrics dilute focus",
+        "Calculation methodology debates",
+        "Balancing leading vs lagging indicators"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Design dashboard wireframes and layouts",
+      "timeMinutes": 180,
+      "painPoints": [
+        "Information hierarchy is hard to get right",
+        "Balancing detail with clarity",
+        "Mobile vs desktop considerations"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Document data requirements for engineering",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Translating business needs to technical specs",
+        "Refresh frequency and performance considerations",
+        "Handling edge cases and missing data"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Review and iterate on designs with stakeholders",
+      "timeMinutes": 240,
+      "painPoints": [
+        "Multiple feedback rounds",
+        "Scope creep ('can we also add...')",
+        "Aligning on priorities when you can't fit everything"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Create final specification document",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Comprehensive enough for engineering to build",
+        "Clear enough for stakeholders to approve",
+        "Documenting what's in scope vs future phases"
+      ]
+    },
+    {
+      "stepNumber": 8,
+      "description": "Plan for ongoing maintenance and updates",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Who owns the dashboard post-launch?",
+        "How to handle metric changes?",
+        "Training and documentation for users"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Generate stakeholder interview questions",
+      "tool": "claude",
+      "timeMinutes": 20,
+      "promptId": "dashboard-stakeholder-questions",
+      "toolRationale": "Claude can generate comprehensive, thoughtful interview guides",
+      "expectedOutput": "Role-specific interview questions for CEO, CFO, VPs",
+      "tips": [
+        "Customize for each stakeholder's domain",
+        "Include questions about decisions they need to make"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Conduct stakeholder interviews (manual)",
+      "tool": "claude",
+      "timeMinutes": 120,
+      "toolRationale": "Human interaction required; AI helps with prep and notes",
+      "expectedOutput": "Interview notes with requirements documented"
+    },
+    {
+      "stepNumber": 3,
+      "description": "Synthesize requirements and propose metric framework",
+      "tool": "claude",
+      "timeMinutes": 30,
+      "promptId": "dashboard-metric-framework",
+      "toolRationale": "Claude excels at organizing and prioritizing information",
+      "expectedOutput": "Prioritized metric list with hierarchy and rationale",
+      "tips": [
+        "Provide all interview notes",
+        "Ask for a 'primary/secondary/nice-to-have' prioritization"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Research dashboard best practices and examples",
+      "tool": "perplexity",
+      "timeMinutes": 30,
+      "promptId": "dashboard-best-practices",
+      "toolRationale": "Perplexity finds real examples and design patterns",
+      "expectedOutput": "Reference examples, design principles, and anti-patterns",
+      "tips": [
+        "Search for '[industry] executive dashboard examples'",
+        "Look for both good and bad examples"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Generate dashboard layout options",
+      "tool": "claude",
+      "timeMinutes": 40,
+      "promptId": "dashboard-layout-design",
+      "toolRationale": "Claude can describe layouts in detail; you'll translate to wireframes",
+      "expectedOutput": "2-3 layout options with rationale for each",
+      "tips": [
+        "Specify your tool constraints (Tableau, Looker, etc.)",
+        "Ask for text descriptions you can mock up"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Create data requirements specification",
+      "tool": "claude",
+      "timeMinutes": 45,
+      "promptId": "dashboard-data-spec",
+      "toolRationale": "Claude can translate business requirements to technical specs",
+      "expectedOutput": "Data specification document for engineering team",
+      "tips": [
+        "List all metrics with calculation logic",
+        "Include data sources, refresh frequency, and edge cases"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Stakeholder review and iteration (manual + AI)",
+      "tool": "chatgpt",
+      "timeMinutes": 150,
+      "toolRationale": "Human facilitation; AI helps with quick iterations",
+      "expectedOutput": "Approved dashboard design"
+    },
+    {
+      "stepNumber": 8,
+      "description": "Create final specification and documentation",
+      "tool": "chatgpt",
+      "timeMinutes": 60,
+      "promptId": "dashboard-final-spec",
+      "toolRationale": "ChatGPT writes clear documentation quickly",
+      "expectedOutput": "Complete dashboard specification document",
+      "tips": [
+        "Include what's in scope AND what's out of scope",
+        "Create a 'future enhancements' section for stakeholder requests you deferred"
+      ]
+    },
+    {
+      "stepNumber": 9,
+      "description": "Plan maintenance and training",
+      "tool": "chatgpt",
+      "timeMinutes": 45,
+      "promptId": "dashboard-maintenance-plan",
+      "toolRationale": "ChatGPT can draft operational plans",
+      "expectedOutput": "Maintenance plan, ownership matrix, training outline"
+    }
+  ],
+
+  "whyItMatters": "Executive dashboards drive organizational visibility and accountability. A poorly designed dashboard leads to wrong decisions, wasted engineering effort, and loss of executive trust. Good dashboards (like BigQuery pipelines at AAA) can save thousands of hours.",
+
+  "commonMistakes": [
+    "Too many metrics - executives want 5-10 KPIs, not 50 data points",
+    "Building before specifying - rushing to code without clear requirements",
+    "Ignoring data quality - garbage in, garbage out",
+    "No owner - dashboards without maintenance become stale and ignored",
+    "Wrong level of detail - executives want trends and exceptions, not raw data"
+  ],
+
+  "tips": [
+    "Start with 'what decisions will this dashboard inform?' not 'what data do we have?'",
+    "Use AI to generate metric definitions - ensures consistency and clarity",
+    "Ask AI to critique your dashboard design: 'What's confusing about this layout?'",
+    "Create a 'question bank' - what questions should this dashboard answer?",
+    "Plan for v2 from day 1 - keep a backlog of deferred features"
+  ],
+
+  "promptIds": [
+    "dashboard-stakeholder-questions",
+    "dashboard-metric-framework",
+    "dashboard-best-practices",
+    "dashboard-layout-design",
+    "dashboard-data-spec",
+    "dashboard-final-spec",
+    "dashboard-maintenance-plan"
+  ],
+
+  "tags": [
+    "dashboard",
+    "executive reporting",
+    "KPIs",
+    "metrics",
+    "data visualization",
+    "Tableau",
+    "business intelligence"
+  ],
+
+  "sources": [
+    "Stephen Few - Information Dashboard Design (best practices)",
+    "Perplexity Research - Executive dashboard patterns",
+    "Aditya Goyal AAA Experience - Executive dashboard building, BigQuery pipelines saving 2,000+ hours"
+  ]
+}

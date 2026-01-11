@@ -1,0 +1,193 @@
+{
+  "id": "content-strategy-copywriting",
+  "roleId": "marketing-manager",
+  "name": "Content Strategy & Copywriting",
+  "category": "planning",
+  "description": "Develop content strategy and create marketing copy across channels. Includes blog posts, social media, landing pages, and ad copy. Balances brand consistency with channel-specific optimization.",
+
+  "frequency": "weekly",
+  "complexity": "intermediate",
+
+  "currentTimeMinutes": 240,
+  "aiTimeMinutes": 100,
+  "timeSavedMinutes": 140,
+  "timeSavedPercentage": 58,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Identify content needs and topics",
+      "timeMinutes": 30,
+      "painPoints": [
+        "Endless content demand",
+        "Topic ideation takes time",
+        "Aligning with SEO and business goals"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Research topics and gather inputs",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Subject matter expert availability",
+        "Competitive content landscape",
+        "Finding unique angles"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Create content outline and structure",
+      "timeMinutes": 30,
+      "painPoints": [
+        "Organizing thoughts coherently",
+        "Balancing depth with readability",
+        "SEO structure requirements"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Write first draft",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Writer's block",
+        "Maintaining brand voice",
+        "Time pressure"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Edit and refine",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Self-editing is hard",
+        "Multiple review cycles",
+        "Stakeholder feedback integration"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Adapt for multiple channels",
+      "timeMinutes": 30,
+      "painPoints": [
+        "Different formats per channel",
+        "Maintaining consistency across adaptations",
+        "Platform-specific requirements"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Generate content topic ideas",
+      "tool": "claude",
+      "timeMinutes": 15,
+      "promptId": "content-topic-ideation",
+      "toolRationale": "Claude generates strategic, differentiated content ideas",
+      "expectedOutput": "10-15 content topic ideas with angles and target audience",
+      "tips": [
+        "Provide business goals and target personas",
+        "Include competitor content to differentiate"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Research and outline content",
+      "tool": "perplexity",
+      "timeMinutes": 20,
+      "promptId": "content-research-outline",
+      "toolRationale": "Perplexity provides factual research with citations",
+      "expectedOutput": "Research summary and content outline",
+      "tips": [
+        "Search for statistics and data points",
+        "Find expert quotes to reference"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Generate first draft",
+      "tool": "chatgpt",
+      "timeMinutes": 20,
+      "promptId": "content-first-draft",
+      "toolRationale": "ChatGPT writes fluent marketing copy quickly",
+      "expectedOutput": "Complete first draft in brand voice",
+      "tips": [
+        "Provide brand voice guidelines and examples",
+        "Include target word count and structure"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Refine and edit with AI feedback",
+      "tool": "claude",
+      "timeMinutes": 20,
+      "promptId": "content-editing-feedback",
+      "toolRationale": "Claude provides thoughtful editorial feedback",
+      "expectedOutput": "Edited draft with improvements",
+      "tips": [
+        "Ask for specific feedback on clarity, engagement, and persuasion",
+        "Request alternative headlines and hooks"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Create channel adaptations",
+      "tool": "chatgpt",
+      "timeMinutes": 15,
+      "promptId": "content-channel-adaptation",
+      "toolRationale": "ChatGPT adapts content to different formats quickly",
+      "expectedOutput": "Content adapted for social, email, ads, etc.",
+      "tips": [
+        "Specify character limits and format requirements",
+        "Ask for multiple variations to test"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Final review (manual)",
+      "tool": "chatgpt",
+      "timeMinutes": 10,
+      "toolRationale": "Human review for accuracy and brand alignment",
+      "expectedOutput": "Final approved content"
+    }
+  ],
+
+  "whyItMatters": "Content is the engine of inbound marketing. Quality content drives organic traffic, builds brand authority, and nurtures leads through the funnel. AI dramatically increases content velocity while maintaining (or improving) quality.",
+
+  "commonMistakes": [
+    "Using AI-generated content without editing - always add human touch",
+    "Ignoring brand voice - provide clear guidelines to AI",
+    "Generic topics - differentiate with unique angles and insights",
+    "No call to action - every piece of content should have a next step",
+    "Forgetting SEO - include keywords naturally"
+  ],
+
+  "tips": [
+    "Create a 'brand voice document' to give AI consistent guidance",
+    "Use AI for first drafts, then add your expertise and examples",
+    "Generate 3-5 headline variations and test the best performer",
+    "Ask AI to 'make this more conversational' or 'add more proof points'",
+    "Build a prompt library for different content types"
+  ],
+
+  "promptIds": [
+    "content-topic-ideation",
+    "content-research-outline",
+    "content-first-draft",
+    "content-editing-feedback",
+    "content-channel-adaptation"
+  ],
+
+  "tags": [
+    "content strategy",
+    "copywriting",
+    "content marketing",
+    "blog writing",
+    "social media content"
+  ],
+
+  "sources": [
+    "Content Marketing Institute - Strategy frameworks",
+    "Perplexity Research - AI content workflows"
+  ]
+}

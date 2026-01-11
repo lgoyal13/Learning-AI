@@ -1,0 +1,60 @@
+{
+  "id": "competitive-research-query",
+  "workflowId": "competitive-intelligence-report",
+  "name": "Competitive Research Query",
+  "stepNumber": 1,
+  "recommendedTool": "perplexity",
+  "alternativeTools": [],
+
+  "systemPrompt": null,
+
+  "promptTemplate": "Research recent news and developments for [COMPETITOR NAME] in the [INDUSTRY] industry.\n\nTime frame: Last [30/60/90] days\n\nFind information on:\n1. **Product/Service Updates**: New features, product launches, service changes\n2. **Pricing Changes**: New pricing tiers, discounts, promotions\n3. **Strategic Moves**: Partnerships, acquisitions, market expansion\n4. **Leadership**: Executive changes, key hires, departures\n5. **Funding/Financial**: Investment rounds, revenue announcements, layoffs\n6. **Marketing/Positioning**: Campaign launches, messaging changes, rebrand\n7. **Customer News**: Major wins, losses, case studies\n\nFor each finding:\n- Provide a 1-2 sentence summary\n- Include the source URL\n- Note the date of the news\n\nPrioritize findings by strategic significance, not recency.",
+
+  "pctr": {
+    "persona": "Research assistant with access to real-time web information",
+    "context": "Competitive intelligence gathering for a monthly or quarterly competitor analysis report",
+    "task": "Find and summarize recent news and developments about a specific competitor across multiple categories",
+    "requirements": [
+      "Include source URLs for all findings",
+      "Organize by category (product, pricing, strategy, etc.)",
+      "Include dates for each item",
+      "Prioritize by strategic significance"
+    ]
+  },
+
+  "whenToUse": "At the start of your competitive intelligence process when you need to gather raw information about competitors. Run this query for each competitor you're tracking.",
+
+  "commonMistakes": [
+    "Searching for all competitors at once - do one at a time for depth",
+    "Not specifying the time frame - you'll get old news mixed with new",
+    "Accepting findings without verifying sources - always check the URLs",
+    "Missing industry context - specify the industry to avoid irrelevant results"
+  ],
+
+  "exampleInputs": {
+    "COMPETITOR NAME": "Geico",
+    "INDUSTRY": "auto insurance",
+    "TIME FRAME": "30"
+  },
+
+  "exampleOutput": "## Geico - Competitive Intelligence (Last 30 Days)\n\n### Product/Service Updates\n- **New mobile app feature**: Geico launched AI-powered claims photo submission on Jan 3, 2026. Customers can now submit accident photos directly through the app for faster claims processing. [Source: Insurance Journal](https://url...)\n\n### Pricing Changes\n- **Multi-policy discount expansion**: Increased bundling discount from 15% to 20% for home+auto customers, effective Jan 1, 2026. [Source: Geico Press Release](https://url...)\n\n### Strategic Moves\n- **Partnership with Tesla**: Announced preferred insurance provider status for Tesla vehicles, offering 10% discount for Tesla owners. [Source: TechCrunch](https://url...)",
+
+  "variations": [
+    {
+      "name": "Deep Dive on Single Topic",
+      "useCase": "When you need more detail on a specific competitive move",
+      "prompt": "Research [COMPETITOR]'s recent [SPECIFIC TOPIC - e.g., 'pricing changes', 'product launch', 'acquisition']. Find:\n1. What exactly happened?\n2. When did it happen?\n3. What was the stated rationale?\n4. How has the market/analysts reacted?\n5. What are the implications for competitors?\n\nProvide sources for all claims."
+    },
+    {
+      "name": "Competitor Job Posting Analysis",
+      "useCase": "When you want to infer strategic priorities from hiring patterns",
+      "prompt": "Search for [COMPETITOR]'s recent job postings. What roles are they hiring for? What can we infer about their strategic priorities based on:\n1. Engineering roles (what technologies?)\n2. Product roles (what areas?)\n3. Sales roles (what markets?)\n4. Executive roles (what gaps?)\n\nProvide links to job postings where possible."
+    }
+  ],
+
+  "qualityScore": 8,
+
+  "sources": [
+    "Perplexity Research - Competitive intelligence methodology"
+  ]
+}

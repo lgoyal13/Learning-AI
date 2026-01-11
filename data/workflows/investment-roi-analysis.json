@@ -1,0 +1,250 @@
+{
+  "id": "investment-roi-analysis",
+  "roleId": "finance-analyst",
+  "name": "Investment & ROI Analysis",
+  "category": "analysis",
+  "description": "Evaluate potential investments, initiatives, or projects using financial analysis including NPV, IRR, payback period, and sensitivity analysis. Build business cases that support capital allocation decisions.",
+
+  "frequency": "ad-hoc",
+  "complexity": "advanced",
+
+  "currentTimeMinutes": 480,
+  "aiTimeMinutes": 240,
+  "timeSavedMinutes": 240,
+  "timeSavedPercentage": 50,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Gather investment details and scope",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Incomplete information from project sponsors",
+        "Scope changes during analysis",
+        "Unclear success criteria"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Research comparable investments and benchmarks",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Limited comparable data",
+        "Industry benchmarks hard to find",
+        "Internal historical data not well organized"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Build financial model with cash flows",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Estimating benefits is challenging",
+        "Timing of cash flows is uncertain",
+        "Model complexity vs accuracy trade-off"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Calculate ROI metrics (NPV, IRR, payback)",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Choosing appropriate discount rate",
+        "Handling terminal value assumptions",
+        "Interpreting results in context"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Run sensitivity and scenario analysis",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Identifying key variables to flex",
+        "Determining reasonable ranges",
+        "Communicating uncertainty appropriately"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Identify risks and mitigation strategies",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Quantifying risks is difficult",
+        "Balancing optimism with realism",
+        "Not being seen as 'deal killers'"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Create investment recommendation memo",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Presenting complex analysis simply",
+        "Making clear recommendation",
+        "Addressing likely objections"
+      ]
+    },
+    {
+      "stepNumber": 8,
+      "description": "Review and prepare for Q&A",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Anticipating stakeholder questions",
+        "Defending assumptions",
+        "Handling pushback on estimates"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Structure investment scope and success criteria",
+      "tool": "claude",
+      "timeMinutes": 30,
+      "promptId": "investment-scope-framework",
+      "toolRationale": "Claude helps structure the investment thesis and identify information gaps",
+      "expectedOutput": "Investment framework with clear scope and success metrics",
+      "tips": [
+        "Document assumptions explicitly",
+        "Define what success looks like in measurable terms"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Research benchmarks and comparable investments",
+      "tool": "perplexity",
+      "timeMinutes": 30,
+      "promptId": "investment-benchmark-research",
+      "toolRationale": "Perplexity finds relevant benchmarks and industry data",
+      "expectedOutput": "Benchmark data for similar investments",
+      "tips": [
+        "Search for '[investment type] ROI benchmark' and '[industry] payback period'",
+        "Include both successes and failures"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Generate cash flow assumptions and model structure",
+      "tool": "claude",
+      "timeMinutes": 30,
+      "promptId": "investment-cashflow-model",
+      "toolRationale": "Claude can reason about cash flow drivers and timing",
+      "expectedOutput": "Structured cash flow assumptions with rationale",
+      "tips": [
+        "Be explicit about benefit timing assumptions",
+        "Include ramp-up period if applicable"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Build model and calculate metrics (manual + AI)",
+      "tool": "gemini",
+      "timeMinutes": 45,
+      "promptId": "investment-metrics-calculation",
+      "toolRationale": "Manual Excel work; AI validates calculations and explains results",
+      "expectedOutput": "Completed financial model with NPV, IRR, payback",
+      "tips": [
+        "Have AI verify your discount rate choice",
+        "Ask AI to explain what the IRR means in plain English"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Generate sensitivity analysis framework",
+      "tool": "claude",
+      "timeMinutes": 25,
+      "promptId": "investment-sensitivity-analysis",
+      "toolRationale": "Claude identifies key sensitivities and reasonable ranges",
+      "expectedOutput": "Sensitivity table showing impact of key variables",
+      "tips": [
+        "Focus on 3-4 most uncertain variables",
+        "Ask for 'break-even' analysis on each variable"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Identify risks and mitigation strategies",
+      "tool": "claude",
+      "timeMinutes": 20,
+      "promptId": "investment-risk-assessment",
+      "toolRationale": "Claude can systematically identify risks across categories",
+      "expectedOutput": "Risk matrix with mitigation strategies",
+      "tips": [
+        "Include execution risks, not just financial risks",
+        "Ask for risk-adjusted scenarios"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Draft investment recommendation memo",
+      "tool": "chatgpt",
+      "timeMinutes": 30,
+      "promptId": "investment-recommendation-memo",
+      "toolRationale": "ChatGPT writes clear, persuasive business cases",
+      "expectedOutput": "Investment memo with clear recommendation",
+      "tips": [
+        "Lead with the recommendation",
+        "Include 'reasons to believe' and 'key risks'"
+      ]
+    },
+    {
+      "stepNumber": 8,
+      "description": "Review and Q&A preparation",
+      "tool": "claude",
+      "timeMinutes": 30,
+      "promptId": "investment-qa-prep",
+      "toolRationale": "Claude can anticipate tough stakeholder questions",
+      "expectedOutput": "Q&A prep document with suggested answers",
+      "tips": [
+        "Think about CFO-style skeptical questions",
+        "Prepare for 'what if you're wrong?' questions"
+      ]
+    }
+  ],
+
+  "whyItMatters": "Capital allocation is one of the most important decisions a company makes. Good investment analysis ensures resources flow to highest-return opportunities. At AAA, proper ROI analysis on the AI pilot program demonstrated 10% IRR, securing funding and executive support.",
+
+  "commonMistakes": [
+    "Over-optimistic benefit estimates - always triangulate with benchmarks",
+    "Ignoring implementation costs and timeline",
+    "Using wrong discount rate - should reflect risk of the specific investment",
+    "Not testing sensitivity to key assumptions",
+    "Presenting analysis without a clear recommendation"
+  ],
+
+  "tips": [
+    "Use AI to sanity-check your assumptions against industry benchmarks",
+    "Ask AI to play 'devil's advocate' on your business case",
+    "Build a template model you can reuse - speeds up future analyses",
+    "Document your assumptions explicitly - you'll thank yourself later",
+    "Always calculate payback period - executives love this metric"
+  ],
+
+  "promptIds": [
+    "investment-scope-framework",
+    "investment-benchmark-research",
+    "investment-cashflow-model",
+    "investment-metrics-calculation",
+    "investment-sensitivity-analysis",
+    "investment-risk-assessment",
+    "investment-recommendation-memo",
+    "investment-qa-prep"
+  ],
+
+  "tags": [
+    "ROI analysis",
+    "IRR",
+    "NPV",
+    "investment analysis",
+    "business case",
+    "capital allocation",
+    "financial modeling"
+  ],
+
+  "sources": [
+    "CFA Institute - Investment Analysis Standards",
+    "Aditya Goyal AAA Experience - IRR calculations, AI pilot program 10% IRR",
+    "Perplexity Research - Investment analysis best practices"
+  ]
+}

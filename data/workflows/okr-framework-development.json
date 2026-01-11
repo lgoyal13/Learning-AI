@@ -1,0 +1,225 @@
+{
+  "id": "okr-framework-development",
+  "roleId": "business-analyst",
+  "name": "OKR Framework Development",
+  "category": "planning",
+  "description": "Develop quarterly or annual OKRs (Objectives and Key Results) for a department or division. Includes historical analysis, benchmarking, stakeholder alignment, and creating measurable key results tied to strategic priorities.",
+
+  "frequency": "quarterly",
+  "complexity": "advanced",
+
+  "currentTimeMinutes": 720,
+  "aiTimeMinutes": 360,
+  "timeSavedMinutes": 360,
+  "timeSavedPercentage": 50,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Review prior period OKRs and score achievement",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Historical OKRs scattered across documents",
+        "Scoring criteria inconsistent quarter to quarter",
+        "Need to reconcile what was actually achieved vs planned"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Gather strategic priorities from leadership",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Multiple stakeholders with different priorities",
+        "Strategic direction sometimes unclear or conflicting",
+        "Translating vision into measurable outcomes is hard"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Research industry benchmarks and competitor OKRs",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Competitor OKRs rarely public",
+        "Industry benchmarks hard to find for specific metrics",
+        "Time-consuming to synthesize findings"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Draft 3-4 alternative OKR frameworks",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Balancing ambitious vs achievable",
+        "Ensuring key results are truly measurable",
+        "Avoiding vanity metrics"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Map dependencies between objectives and teams",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Cross-functional dependencies hard to identify upfront",
+        "Resource conflicts between teams",
+        "Timing and sequencing considerations"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Create presentation for stakeholder review",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Different audiences need different framings",
+        "Visualizing OKR cascades is tedious",
+        "Anticipating pushback and preparing responses"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Facilitate alignment sessions and iterate",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Multiple rounds of feedback",
+        "Scope creep on objectives",
+        "Balancing input from many stakeholders"
+      ]
+    },
+    {
+      "stepNumber": 8,
+      "description": "Finalize and document approved OKRs",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Version control across iterations",
+        "Creating tracking templates",
+        "Communicating final OKRs to all teams"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Analyze prior OKRs and generate performance summary",
+      "tool": "gemini",
+      "timeMinutes": 30,
+      "promptId": "okr-historical-analysis",
+      "toolRationale": "Gemini handles structured data analysis well; can calculate scores and identify patterns",
+      "expectedOutput": "Summary of prior OKR achievement with patterns and lessons learned",
+      "tips": [
+        "Include actual metrics alongside targets",
+        "Note any OKRs that were abandoned mid-quarter and why"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Research benchmarks and best practices",
+      "tool": "perplexity",
+      "timeMinutes": 30,
+      "promptId": "okr-benchmark-research",
+      "toolRationale": "Perplexity provides cited, current research on industry benchmarks",
+      "expectedOutput": "Benchmark data with sources; competitor strategy insights if available",
+      "tips": [
+        "Search for '[industry] OKR examples' and '[metric] benchmark 2025'",
+        "Save sources for credibility in stakeholder discussions"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Generate alternative OKR frameworks",
+      "tool": "claude",
+      "timeMinutes": 45,
+      "promptId": "okr-framework-generation",
+      "toolRationale": "Claude excels at structured strategic thinking and generating alternatives",
+      "expectedOutput": "3-4 distinct OKR options with rationale for each approach",
+      "tips": [
+        "Provide strategic context and constraints",
+        "Ask for 'conservative', 'balanced', and 'stretch' versions"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Map dependencies and identify conflicts",
+      "tool": "claude",
+      "timeMinutes": 30,
+      "promptId": "okr-dependency-mapping",
+      "toolRationale": "Claude can reason about cross-functional relationships systematically",
+      "expectedOutput": "Dependency matrix showing which OKRs require coordination",
+      "tips": [
+        "List all teams/functions involved",
+        "Ask about timing dependencies, not just resource dependencies"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Conduct stakeholder alignment sessions (manual)",
+      "tool": "claude",
+      "timeMinutes": 90,
+      "toolRationale": "Human facilitation required; AI can help prep talking points",
+      "expectedOutput": "Stakeholder feedback incorporated; alignment achieved"
+    },
+    {
+      "stepNumber": 6,
+      "description": "Create final OKR documentation and communication",
+      "tool": "chatgpt",
+      "timeMinutes": 45,
+      "promptId": "okr-documentation",
+      "toolRationale": "ChatGPT writes clear, polished documentation quickly",
+      "expectedOutput": "Final OKR document with tracking template and team communication",
+      "tips": [
+        "Create different versions for different audiences",
+        "Include 'definition of done' for each key result"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Review, refine, and finalize",
+      "tool": "chatgpt",
+      "timeMinutes": 90,
+      "toolRationale": "Human review critical; AI assists with iterations",
+      "expectedOutput": "Approved, finalized OKR framework ready for implementation"
+    }
+  ],
+
+  "whyItMatters": "OKRs drive organizational focus and alignment. Poorly constructed OKRs lead to wasted effort, misaligned teams, and missed strategic opportunities. At AAA, well-designed OKRs across divisions enabled coordinated execution on $27M+ initiatives.",
+
+  "commonMistakes": [
+    "Setting too many objectives (3-5 is ideal, not 10)",
+    "Key results that aren't actually measurable ('improve customer satisfaction' vs '85+ NPS')",
+    "Confusing tasks/activities with outcomes",
+    "Not connecting OKRs to strategic priorities - they become busywork",
+    "Setting 100% achievable targets (good OKRs should be 60-70% achievable)",
+    "Ignoring dependencies until execution starts"
+  ],
+
+  "tips": [
+    "Use AI to generate alternatives, but you make the final call on ambition level",
+    "Have AI stress-test your OKRs: 'What could cause us to miss this?'",
+    "Ask AI to translate objectives into different framings for different audiences",
+    "Keep a 'rejected OKR' list with reasons - useful for next quarter"
+  ],
+
+  "promptIds": [
+    "okr-historical-analysis",
+    "okr-benchmark-research",
+    "okr-framework-generation",
+    "okr-dependency-mapping",
+    "okr-documentation"
+  ],
+
+  "tags": [
+    "OKRs",
+    "objectives",
+    "key results",
+    "strategic planning",
+    "goal setting",
+    "quarterly planning",
+    "alignment"
+  ],
+
+  "sources": [
+    "Measure What Matters - John Doerr (OKR methodology)",
+    "Google re:Work - OKR best practices",
+    "Aditya Goyal AAA Experience - Built OKR frameworks across divisions",
+    "Perplexity Research - OKR implementation patterns"
+  ]
+}

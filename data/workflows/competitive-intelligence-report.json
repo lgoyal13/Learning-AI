@@ -1,0 +1,184 @@
+{
+  "id": "competitive-intelligence-report",
+  "roleId": "business-analyst",
+  "name": "Competitive Intelligence Report",
+  "category": "research",
+  "description": "Research and synthesize competitive intelligence on key competitors. Includes tracking product launches, pricing changes, market positioning, leadership moves, and strategic shifts. Produces actionable insights for leadership decision-making.",
+
+  "frequency": "monthly",
+  "complexity": "intermediate",
+
+  "currentTimeMinutes": 360,
+  "aiTimeMinutes": 150,
+  "timeSavedMinutes": 210,
+  "timeSavedPercentage": 58,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Define scope: which competitors, what aspects to track",
+      "timeMinutes": 20,
+      "painPoints": [
+        "Stakeholders want to track everything",
+        "Hard to prioritize which competitors matter most"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Manual research: news, press releases, social media, job postings",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Information scattered across many sources",
+        "Distinguishing signal from noise",
+        "Missing important updates buried in obscure sources"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Analyze competitor websites for product/pricing changes",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Websites change frequently",
+        "Pricing often hidden or complex",
+        "Hard to track historical changes"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Synthesize findings into themes and implications",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Connecting dots across competitors",
+        "Separating facts from speculation",
+        "Determining what's actually actionable"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Create report with strategic recommendations",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Balancing comprehensiveness with readability",
+        "Making recommendations specific enough to act on",
+        "Different stakeholders want different depth"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Review and finalize",
+      "timeMinutes": 40,
+      "painPoints": [
+        "Last-minute news invalidates analysis",
+        "Stakeholder feedback requires rewrites"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Research competitors using AI-powered search",
+      "tool": "perplexity",
+      "timeMinutes": 40,
+      "promptId": "competitive-research-query",
+      "toolRationale": "Perplexity provides real-time web search with citations - critical for competitive intel",
+      "expectedOutput": "Structured findings by competitor with source URLs",
+      "tips": [
+        "Run separate queries for each competitor",
+        "Search for '[company] news last 30 days' and '[company] product launch 2026'",
+        "Save the sources - you'll need them for credibility"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Analyze and categorize findings",
+      "tool": "claude",
+      "timeMinutes": 25,
+      "promptId": "competitive-analysis-synthesis",
+      "toolRationale": "Claude excels at pattern recognition and strategic synthesis across multiple data points",
+      "expectedOutput": "Categorized findings (product, pricing, strategy, people) with strategic implications",
+      "tips": [
+        "Provide all raw research from Step 1",
+        "Ask for both 'what happened' and 'what it means for us'"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Generate strategic implications and recommendations",
+      "tool": "claude",
+      "timeMinutes": 20,
+      "promptId": "competitive-strategic-implications",
+      "toolRationale": "Claude can reason about competitive dynamics and generate strategic recommendations",
+      "expectedOutput": "3-5 strategic implications with recommended responses",
+      "tips": [
+        "Provide your company's current strategy for context",
+        "Ask for recommendations ranging from 'monitor' to 'respond immediately'"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Draft the competitive intelligence report",
+      "tool": "chatgpt",
+      "timeMinutes": 25,
+      "promptId": "competitive-report-draft",
+      "toolRationale": "ChatGPT writes clear, professional reports quickly",
+      "expectedOutput": "Draft report with executive summary, competitor profiles, and recommendations",
+      "tips": [
+        "Specify length and format preferences",
+        "Request a 'headline' for each competitor"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Review, verify sources, and finalize",
+      "tool": "chatgpt",
+      "timeMinutes": 40,
+      "toolRationale": "Human review critical for accuracy; AI assists with polishing",
+      "expectedOutput": "Final competitive intelligence report",
+      "tips": [
+        "Verify all claims against source URLs",
+        "Add your own strategic commentary",
+        "Flag anything that needs further investigation"
+      ]
+    }
+  ],
+
+  "whyItMatters": "Competitive intelligence drives strategic decision-making. Missing a competitor's move can mean lost market share, pricing disadvantage, or strategic surprise. Fast, accurate intel enables proactive rather than reactive strategy.",
+
+  "commonMistakes": [
+    "Reporting what competitors did without explaining what it means for you",
+    "Including too much noise - every press release isn't strategic",
+    "Not citing sources - reduces credibility with leadership",
+    "Confusing competitor PR spin with actual strategy",
+    "Making recommendations without considering your own capacity to respond"
+  ],
+
+  "tips": [
+    "Set up Google Alerts for competitors to capture news between reports",
+    "Track competitor job postings - they reveal strategic priorities",
+    "Use LinkedIn to monitor leadership changes and new hires",
+    "Ask AI to 'think like competitor X' - what would their next move be?",
+    "Keep a running doc so monthly reports build on each other"
+  ],
+
+  "promptIds": [
+    "competitive-research-query",
+    "competitive-analysis-synthesis",
+    "competitive-strategic-implications",
+    "competitive-report-draft"
+  ],
+
+  "tags": [
+    "competitive intelligence",
+    "competitor analysis",
+    "market research",
+    "strategic planning",
+    "competitive landscape"
+  ],
+
+  "sources": [
+    "Perplexity Research - Competitive intelligence workflows",
+    "McKinsey Strategy Practice - Competitive analysis frameworks",
+    "BCG Henderson Institute - Competitive monitoring best practices"
+  ]
+}

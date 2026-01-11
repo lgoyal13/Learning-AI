@@ -1,0 +1,228 @@
+{
+  "id": "board-financial-reporting",
+  "roleId": "finance-analyst",
+  "name": "Board Financial Reporting",
+  "category": "reporting",
+  "description": "Prepare quarterly or monthly financial reports for the Board of Directors. Includes performance summary, variance analysis, forward outlook, key risks, and strategic financial updates. Must be executive-ready and anticipate Board questions.",
+
+  "frequency": "quarterly",
+  "complexity": "advanced",
+
+  "currentTimeMinutes": 480,
+  "aiTimeMinutes": 210,
+  "timeSavedMinutes": 270,
+  "timeSavedPercentage": 56,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Gather financial data and finalize close",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Waiting for accounting close",
+        "Last-minute adjustments",
+        "Reconciling different data sources"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Build financial summary tables and charts",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Consistent formatting across periods",
+        "Choosing right visualizations",
+        "Balance sheet, P&L, and cash flow alignment"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Write variance commentary and analysis",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Board-level tone and brevity",
+        "Explaining complex issues simply",
+        "Balancing transparency with positioning"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Prepare forward-looking outlook section",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Forecasting accuracy concerns",
+        "Communicating uncertainty appropriately",
+        "Aligning with CEO/CFO messaging"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Identify and articulate key risks",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Prioritizing which risks matter to Board",
+        "Quantifying risks appropriately",
+        "Not being alarmist or dismissive"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Create executive summary and key takeaways",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Distilling to 1 page is hard",
+        "Headline messages require CFO alignment",
+        "Balancing positive and concerning news"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Review with CFO and incorporate feedback",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Multiple revision rounds",
+        "CFO has different perspective on messaging",
+        "Time pressure before Board meeting"
+      ]
+    },
+    {
+      "stepNumber": 8,
+      "description": "Prepare Q&A anticipation and backup slides",
+      "timeMinutes": 30,
+      "painPoints": [
+        "Predicting Board questions",
+        "Having data ready for deep dives",
+        "Coordinating with other presenters"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Structure data and create initial tables",
+      "tool": "gemini",
+      "timeMinutes": 30,
+      "promptId": "board-data-structure",
+      "toolRationale": "Gemini handles financial data structuring",
+      "expectedOutput": "Formatted financial tables ready for presentation",
+      "tips": [
+        "Use consistent formats from prior periods",
+        "Include prior period and budget columns"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Generate variance analysis and commentary",
+      "tool": "claude",
+      "timeMinutes": 30,
+      "promptId": "board-variance-commentary",
+      "toolRationale": "Claude writes sophisticated financial analysis",
+      "expectedOutput": "Board-ready variance commentary for each major line",
+      "tips": [
+        "Specify Board's typical questions",
+        "Ask for 'CFO tone' - confident, clear, balanced"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Draft forward outlook section",
+      "tool": "claude",
+      "timeMinutes": 25,
+      "promptId": "board-outlook-draft",
+      "toolRationale": "Claude can articulate uncertainty and outlook clearly",
+      "expectedOutput": "Forward-looking section with appropriate confidence framing",
+      "tips": [
+        "Include known headwinds and tailwinds",
+        "Be clear about assumptions"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Identify and articulate key risks",
+      "tool": "claude",
+      "timeMinutes": 20,
+      "promptId": "board-risk-summary",
+      "toolRationale": "Claude can prioritize and articulate risks clearly",
+      "expectedOutput": "Top 3-5 risks with mitigation status",
+      "tips": [
+        "Include both financial and operational risks",
+        "Quantify where possible"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Create executive summary",
+      "tool": "chatgpt",
+      "timeMinutes": 20,
+      "promptId": "board-executive-summary",
+      "toolRationale": "ChatGPT writes punchy executive summaries",
+      "expectedOutput": "1-page executive summary with key messages",
+      "tips": [
+        "Lead with the headline - overall health of business",
+        "Use bullet points for scannability"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "CFO review and iterations",
+      "tool": "chatgpt",
+      "timeMinutes": 60,
+      "toolRationale": "Human review critical; AI helps with quick rewrites",
+      "expectedOutput": "CFO-approved report draft"
+    },
+    {
+      "stepNumber": 7,
+      "description": "Generate Q&A prep document",
+      "tool": "claude",
+      "timeMinutes": 25,
+      "promptId": "board-qa-prep",
+      "toolRationale": "Claude can anticipate sophisticated Board questions",
+      "expectedOutput": "Top 10 likely questions with suggested answers",
+      "tips": [
+        "Think about what each Board member typically asks",
+        "Include questions on the concerning items"
+      ]
+    }
+  ],
+
+  "whyItMatters": "Board reporting is the highest-stakes financial communication. It shapes Board confidence in management, influences strategic decisions, and can impact funding, compensation, and company direction. Getting it right builds trust; getting it wrong erodes credibility.",
+
+  "commonMistakes": [
+    "Too much detail - Boards want highlights, not data dumps",
+    "Burying bad news - better to lead with it and show you're on top of it",
+    "No forward outlook - Boards care more about future than past",
+    "Generic risks - be specific about YOUR company's risks",
+    "Not preparing for Q&A - anticipate and prepare for tough questions"
+  ],
+
+  "tips": [
+    "Create a 'Board member profile' - what does each typically ask about?",
+    "Use AI to role-play as a skeptical Board member",
+    "Draft the executive summary FIRST - it clarifies your key messages",
+    "Keep a 'Board Q&A library' that grows over time"
+  ],
+
+  "promptIds": [
+    "board-data-structure",
+    "board-variance-commentary",
+    "board-outlook-draft",
+    "board-risk-summary",
+    "board-executive-summary",
+    "board-qa-prep"
+  ],
+
+  "tags": [
+    "Board reporting",
+    "executive communication",
+    "financial reporting",
+    "quarterly reporting",
+    "FP&A",
+    "investor relations"
+  ],
+
+  "sources": [
+    "NACD (National Association of Corporate Directors) - Board reporting best practices",
+    "Perplexity Research - CFO Board communication",
+    "Aditya Goyal AAA Experience - Board reporting preparation"
+  ]
+}

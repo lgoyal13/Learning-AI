@@ -1,0 +1,66 @@
+{
+  "id": "okr-framework-generation",
+  "workflowId": "okr-framework-development",
+  "name": "OKR Framework Generation",
+  "stepNumber": 3,
+  "recommendedTool": "claude",
+  "alternativeTools": ["chatgpt", "gemini"],
+
+  "systemPrompt": "You are a strategic planning expert who has helped dozens of companies implement OKRs. You understand the difference between objectives (qualitative, inspirational) and key results (quantitative, measurable). You know that good OKRs are ambitious but not impossible - typically 60-70% achievable.",
+
+  "promptTemplate": "Help me develop OKR alternatives for [DEPARTMENT/TEAM] for [TIME PERIOD].\n\n**Strategic Context:**\n- Company priorities: [LIST TOP 3-5 COMPANY PRIORITIES]\n- Department mission: [WHAT THIS TEAM EXISTS TO DO]\n- Current challenges: [KEY PROBLEMS TO SOLVE]\n- Resources/constraints: [BUDGET, HEADCOUNT, DEPENDENCIES]\n\n**Prior Period Performance:**\n[PASTE SUMMARY FROM STEP 1 - what was achieved, what was missed, lessons learned]\n\n**Benchmark Data:**\n[PASTE RELEVANT BENCHMARKS FROM STEP 2]\n\n**Stakeholder Input:**\n- CEO wants: [SUMMARIZE]\n- CFO wants: [SUMMARIZE]\n- Other key stakeholders: [SUMMARIZE]\n\nPlease generate 3 OKR framework alternatives:\n\n**OPTION A: Conservative** (90% confidence of achievement)\n- 2-3 objectives with 3-4 key results each\n- Focus on foundational improvements and sure wins\n\n**OPTION B: Balanced** (70% confidence - recommended)\n- 2-3 objectives with 3-4 key results each\n- Mix of achievable and stretch targets\n\n**OPTION C: Ambitious** (50% confidence)\n- 2-3 objectives with 3-4 key results each\n- Transformational goals that would be impressive if achieved\n\nFor each option, include:\n1. The objectives and key results\n2. Why this approach makes sense\n3. What would need to go right to achieve it\n4. Key risks or dependencies\n5. How it connects to company priorities",
+
+  "pctr": {
+    "persona": "Strategic planning expert with OKR implementation experience",
+    "context": "Quarterly/annual planning cycle; need to balance ambition with achievability; multiple stakeholder priorities to reconcile",
+    "task": "Generate three distinct OKR framework options (conservative, balanced, ambitious) with rationale and risk assessment",
+    "requirements": [
+      "Each option must have 2-3 objectives with 3-4 key results",
+      "Key results must be quantifiable (numbers, percentages, dates)",
+      "Include confidence level and rationale for each option",
+      "Connect to stated company priorities",
+      "Flag dependencies and risks"
+    ]
+  },
+
+  "whenToUse": "After you've analyzed historical performance and gathered benchmark data. Use when you need to present options to stakeholders rather than a single recommendation.",
+
+  "commonMistakes": [
+    "Not providing enough strategic context - AI will generate generic OKRs",
+    "Asking for too many objectives (stick to 2-3 per option)",
+    "Accepting key results that aren't truly measurable",
+    "Ignoring the 'ambitious' option - sometimes stakeholders want to be pushed"
+  ],
+
+  "exampleInputs": {
+    "DEPARTMENT/TEAM": "Customer Retention",
+    "TIME PERIOD": "Q2 2026",
+    "COMPANY PRIORITIES": "1) Increase member lifetime value, 2) Reduce churn, 3) Expand into new segments",
+    "DEPARTMENT MISSION": "Keep members engaged and renewing; identify and save at-risk accounts",
+    "CURRENT CHALLENGES": "Churn increased 15% last quarter; competitor launched discount program; NPS dropped 5 points",
+    "RESOURCES": "$500K budget, 8-person team, dependent on Product for feature improvements"
+  },
+
+  "exampleOutput": "## OKR Options for Customer Retention - Q2 2026\n\n### OPTION B: Balanced (70% confidence) - RECOMMENDED\n\n**Objective 1: Become the retention team our members trust**\n- KR1: Increase NPS from 42 to 50 (+8 points)\n- KR2: Reduce voluntary churn from 5.8% to 4.5%\n- KR3: Achieve 85% satisfaction on post-save surveys\n- KR4: Complete 500 proactive retention calls to at-risk accounts\n\n**Objective 2: Build a predictive retention engine**\n- KR1: Deploy churn prediction model with 75% accuracy\n- KR2: Identify 80% of at-risk accounts 30+ days before renewal\n- KR3: Reduce 'surprise churn' (no warning signals) by 50%\n\n**Why this approach:** Balances immediate churn reduction with building long-term capability...\n\n**Risks:** Dependent on Product delivering health score features by mid-quarter...",
+
+  "variations": [
+    {
+      "name": "Single Objective Deep Dive",
+      "useCase": "When you already know the objective and need help with key results",
+      "prompt": "I have this objective: '[OBJECTIVE]'. Help me create 4-5 key results that are:\n1. Quantifiable (specific numbers)\n2. Time-bound (achievable this quarter)\n3. Within our control (not dependent on external factors we can't influence)\n4. Balanced between leading and lagging indicators\n\nFor each key result, explain why it's a good measure of progress toward the objective."
+    },
+    {
+      "name": "OKR Stress Test",
+      "useCase": "When you have draft OKRs and want to pressure-test them",
+      "prompt": "Here are our draft OKRs for [PERIOD]:\n[PASTE OKRS]\n\nPlease critique these OKRs:\n1. Are the key results truly measurable? If not, how would you fix them?\n2. Are they ambitious enough? (Good OKRs should be ~70% achievable)\n3. Are there any key results that are really just tasks/activities?\n4. What's missing that we should be measuring?\n5. What could cause us to completely miss these?"
+    }
+  ],
+
+  "qualityScore": 9,
+
+  "sources": [
+    "Measure What Matters - John Doerr",
+    "Google re:Work OKR Guide",
+    "Aditya Goyal AAA Experience - Cross-division OKR frameworks"
+  ]
+}

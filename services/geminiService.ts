@@ -224,6 +224,212 @@ Provide constructive feedback and a rewrite that improves the prompt while keepi
   }
 };
 
+// ============================================================================
+// WORKFLOW RECOMMENDATION
+// ============================================================================
+
+/**
+ * Types for workflow recommendation response
+ */
+export interface WorkflowModification {
+  type: 'add' | 'modify' | 'skip' | 'tip';
+  stepNumber?: number;
+  description: string;
+  sourceWorkflowId?: string;
+}
+
+export interface WorkflowAlternative {
+  workflowId: string;
+  reason: string;
+}
+
+export interface WorkflowRecommendation {
+  baseWorkflowId: string;
+  confidenceScore: number;
+  modifications: WorkflowModification[];
+  reasoning: string;
+  alternatives: WorkflowAlternative[];
+}
+
+/**
+ * Recommends the best workflow for a user's task with customization suggestions.
+ * Uses guided remixing: starts from validated workflows and suggests modifications.
+ */
+export const recommendWorkflow = async (
+  userQuery: string,
+  workflowSummaries: Array<{
+    id: string;
+    name: string;
+    roleName: string;
+    description: string;
+    stepCount: number;
+    stepOverview: string[];
+    timeSavedPercentage: number;
+    tags: string[];
+  }>
+): Promise<WorkflowRecommendation> => {
+  const model = "gemini-2.5-flash";
+
+  // Schema for structured response
+  const responseSchema: Schema = {
+    type: Type.OBJECT,
+    properties: {
+      baseWorkflowId: {
+        type: Type.STRING,
+        description: "The ID of the best matching workflow from the available options."
+      },
+      confidenceScore: {
+        type: Type.NUMBER,
+        description: "How confident the match is (0-100). 80+ is strong match, 50-79 is moderate, below 50 is weak."
+      },
+      modifications: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            type: {
+              type: Type.STRING,
+              enum: ["add", "modify", "skip", "tip"],
+              description: "Type of modification: add (incorporate from another workflow), modify (adjust existing step), skip (step not needed), tip (general advice)"
+            },
+            stepNumber: {
+              type: Type.NUMBER,
+              description: "Which step number this applies to (optional, for modify/skip)"
+            },
+            description: {
+              type: Type.STRING,
+              description: "Clear, actionable description of the modification"
+            },
+            sourceWorkflowId: {
+              type: Type.STRING,
+              description: "If type is 'add', which workflow the suggestion comes from"
+            }
+          },
+          required: ["type", "description"]
+        },
+        description: "2-4 specific customizations based on the user's context"
+      },
+      reasoning: {
+        type: Type.STRING,
+        description: "2-3 sentences explaining why this workflow fits and how the modifications help"
+      },
+      alternatives: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            workflowId: { type: Type.STRING },
+            reason: { type: Type.STRING, description: "Brief reason why this was also considered" }
+          },
+          required: ["workflowId", "reason"]
+        },
+        description: "1-2 alternative workflows that were also considered"
+      }
+    },
+    required: ["baseWorkflowId", "confidenceScore", "modifications", "reasoning", "alternatives"]
+  };
+
+  const systemInstruction = `You are an expert AI Workflow Advisor for an Enterprise AI Academy.
+
+Your job is to match a user's task description to the best available workflow and suggest specific customizations.
+
+### How to Think About This
+1. **Find the best base workflow**: Which workflow most closely matches the user's core task?
+2. **Identify customization opportunities**: Based on specific details in the user's description, suggest 2-4 modifications:
+   - ADD: Borrow a step or approach from another workflow (specify which)
+   - MODIFY: Adjust an existing step to better fit their context
+   - SKIP: A step that isn't needed for their specific case
+   - TIP: Practical advice for their situation
+3. **Explain your reasoning**: Help the user understand why this workflow fits
+
+### Quality Guidelines
+- Modifications should be specific and actionable, not generic
+- Reference actual workflow names when suggesting to "add" from another workflow
+- If the user mentions audience (VP, board, team), adjust accordingly
+- If they mention time constraints, prioritize steps
+- Confidence score: 80+ for strong matches, 50-79 for moderate, below 50 for weak matches
+
+### Available Workflows
+${JSON.stringify(workflowSummaries, null, 2)}
+`;
+
+  try {
+    const result = await ai.models.generateContent({
+      model,
+      contents: `Find the best workflow for this task: "${userQuery}"`,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: responseSchema,
+        systemInstruction: systemInstruction,
+        temperature: 0.3, // Slightly higher for more creative modifications
+      }
+    });
+
+    const text = result.text;
+    if (!text) throw new Error("No response from Gemini.");
+
+    const data = JSON.parse(text);
+
+    // Validate the response has required fields
+    if (!data.baseWorkflowId || !workflowSummaries.some(w => w.id === data.baseWorkflowId)) {
+      throw new Error("Invalid workflow ID returned");
+    }
+
+    return {
+      baseWorkflowId: data.baseWorkflowId,
+      confidenceScore: Math.min(100, Math.max(0, data.confidenceScore || 70)),
+      modifications: Array.isArray(data.modifications) ? data.modifications.slice(0, 4) : [],
+      reasoning: data.reasoning || "This workflow matches your task description.",
+      alternatives: Array.isArray(data.alternatives) ? data.alternatives.slice(0, 2) : []
+    };
+
+  } catch (error) {
+    console.error("Gemini Workflow Recommendation Error:", error);
+
+    // Fallback: return a reasonable default based on keyword matching
+    const query = userQuery.toLowerCase();
+    let fallbackId = 'monthly-retention-analysis'; // Default
+
+    // Simple keyword fallback
+    if (query.includes('budget') || query.includes('annual')) {
+      fallbackId = 'annual-budget-process';
+    } else if (query.includes('board') || query.includes('presentation')) {
+      fallbackId = 'board-financial-reporting';
+    } else if (query.includes('forecast') || query.includes('rolling')) {
+      fallbackId = 'rolling-forecast-build';
+    } else if (query.includes('campaign') || query.includes('marketing launch')) {
+      fallbackId = 'campaign-planning-launch';
+    } else if (query.includes('variance') || query.includes('fpa') || query.includes('fp&a')) {
+      fallbackId = 'monthly-variance-analysis';
+    } else if (query.includes('okr') || query.includes('objective')) {
+      fallbackId = 'okr-framework-development';
+    } else if (query.includes('competitive') || query.includes('competitor')) {
+      fallbackId = 'competitive-intelligence-report';
+    } else if (query.includes('email') || query.includes('sequence')) {
+      fallbackId = 'email-sequence-creation';
+    } else if (query.includes('content') || query.includes('copy')) {
+      fallbackId = 'content-strategy-copywriting';
+    } else if (query.includes('dashboard')) {
+      fallbackId = 'executive-dashboard-build';
+    } else if (query.includes('roi') || query.includes('investment')) {
+      fallbackId = 'investment-roi-analysis';
+    }
+
+    return {
+      baseWorkflowId: fallbackId,
+      confidenceScore: 50,
+      modifications: [
+        {
+          type: 'tip',
+          description: 'We had trouble analyzing your request. This is our best guess - feel free to browse other workflows if this doesn\'t fit.'
+        }
+      ],
+      reasoning: "We couldn't fully analyze your request, but this workflow seems relevant based on keywords in your description.",
+      alternatives: []
+    };
+  }
+};
+
 // Legacy stubs to prevent breaking other imports if any exist
 export const generateAIResponse = async (prompt: string): Promise<string> => {
   return "Legacy service disabled. Use specific generator functions.";

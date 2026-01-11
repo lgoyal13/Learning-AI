@@ -1,0 +1,254 @@
+{
+  "id": "annual-budget-process",
+  "roleId": "finance-analyst",
+  "name": "Annual Budget Process",
+  "category": "planning",
+  "description": "Lead the annual budgeting cycle from kickoff through Board approval. Includes setting guidelines, collecting departmental inputs, consolidating into enterprise budget, running scenarios, and preparing final presentations.",
+
+  "frequency": "annually",
+  "complexity": "advanced",
+
+  "currentTimeMinutes": 1800,
+  "aiTimeMinutes": 960,
+  "timeSavedMinutes": 840,
+  "timeSavedPercentage": 47,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Develop budget guidelines and calendar",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Aligning with strategic priorities",
+        "Setting realistic yet ambitious targets",
+        "Getting leadership sign-off on guidelines"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Create templates and distribute to departments",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Different departments need different formats",
+        "Explaining instructions clearly",
+        "Handling template questions"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Collect department submissions and follow up",
+      "timeMinutes": 180,
+      "painPoints": [
+        "Late submissions",
+        "Incomplete or incorrect submissions",
+        "Endless follow-up emails"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Consolidate into master budget model",
+      "timeMinutes": 240,
+      "painPoints": [
+        "Reconciling different formats",
+        "Finding and fixing errors",
+        "Creating consolidated views"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Analyze consolidated budget against targets",
+      "timeMinutes": 180,
+      "painPoints": [
+        "Budget usually exceeds targets initially",
+        "Identifying where to cut",
+        "Balancing competing priorities"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Run multiple iteration cycles with departments",
+      "timeMinutes": 360,
+      "painPoints": [
+        "Negotiation fatigue",
+        "Pushback on reductions",
+        "Tracking all changes across versions"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Prepare scenarios and sensitivity analysis",
+      "timeMinutes": 180,
+      "painPoints": [
+        "Many variables to consider",
+        "Ensuring scenario consistency",
+        "Time pressure at end of process"
+      ]
+    },
+    {
+      "stepNumber": 8,
+      "description": "Create Board presentation and supporting materials",
+      "timeMinutes": 240,
+      "painPoints": [
+        "Distilling complex budget into presentation",
+        "Anticipating Board questions",
+        "Last-minute changes requiring rework"
+      ]
+    },
+    {
+      "stepNumber": 9,
+      "description": "Final approval process and documentation",
+      "timeMinutes": 210,
+      "painPoints": [
+        "Multiple approval layers",
+        "Final adjustments",
+        "Documenting approved budget"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Draft budget guidelines and calendar",
+      "tool": "claude",
+      "timeMinutes": 45,
+      "promptId": "budget-guidelines-draft",
+      "toolRationale": "Claude can structure comprehensive guidelines based on strategic priorities",
+      "expectedOutput": "Draft guidelines document with calendar and instructions",
+      "tips": [
+        "Provide strategic priorities and high-level targets",
+        "Include any specific constraints or assumptions"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Create department-specific templates",
+      "tool": "chatgpt",
+      "timeMinutes": 45,
+      "promptId": "budget-template-creation",
+      "toolRationale": "ChatGPT creates clear, structured templates",
+      "expectedOutput": "Customized templates for each department type",
+      "tips": [
+        "Include prior year actuals as starting point",
+        "Add clear instructions within the template"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Collection and follow-up (manual + AI)",
+      "tool": "chatgpt",
+      "timeMinutes": 120,
+      "toolRationale": "Human coordination needed; AI helps draft follow-up emails",
+      "expectedOutput": "All department submissions collected"
+    },
+    {
+      "stepNumber": 4,
+      "description": "Consolidate and validate submissions",
+      "tool": "gemini",
+      "timeMinutes": 90,
+      "promptId": "budget-consolidation",
+      "toolRationale": "Gemini handles data consolidation and flags inconsistencies",
+      "expectedOutput": "Consolidated budget with flagged items for review",
+      "tips": [
+        "Define validation rules upfront",
+        "Ask for summary by department and category"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Analyze gaps and generate reduction options",
+      "tool": "claude",
+      "timeMinutes": 60,
+      "promptId": "budget-gap-analysis",
+      "toolRationale": "Claude can reason about trade-offs and prioritization",
+      "expectedOutput": "Gap analysis with prioritized reduction options",
+      "tips": [
+        "Provide strategic priorities to guide cuts",
+        "Ask for impact assessment of each option"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Iteration cycles with departments (manual + AI)",
+      "tool": "chatgpt",
+      "timeMinutes": 240,
+      "toolRationale": "Human negotiation; AI helps with documentation and talking points",
+      "expectedOutput": "Finalized departmental budgets"
+    },
+    {
+      "stepNumber": 7,
+      "description": "Generate scenarios and sensitivity analysis",
+      "tool": "claude",
+      "timeMinutes": 60,
+      "promptId": "budget-scenario-analysis",
+      "toolRationale": "Claude can identify key sensitivities and build consistent scenarios",
+      "expectedOutput": "Base, upside, downside scenarios with sensitivity tables",
+      "tips": [
+        "Focus on 3-5 key variables",
+        "Ensure scenarios tell a coherent story"
+      ]
+    },
+    {
+      "stepNumber": 8,
+      "description": "Draft Board presentation",
+      "tool": "chatgpt",
+      "timeMinutes": 90,
+      "promptId": "budget-board-presentation",
+      "toolRationale": "ChatGPT creates clear, executive-level content",
+      "expectedOutput": "Draft Board presentation outline and key messages",
+      "tips": [
+        "Focus on strategic story, not just numbers",
+        "Anticipate likely Board questions"
+      ]
+    },
+    {
+      "stepNumber": 9,
+      "description": "Finalization and documentation",
+      "tool": "chatgpt",
+      "timeMinutes": 210,
+      "toolRationale": "Manual approvals; AI helps with documentation",
+      "expectedOutput": "Approved, documented annual budget"
+    }
+  ],
+
+  "whyItMatters": "The annual budget is the financial expression of strategy. It determines resource allocation, sets performance expectations, and drives accountability across the organization. A well-run budget process builds credibility with the Board and sets teams up for success.",
+
+  "commonMistakes": [
+    "Starting too late - budget season always takes longer than expected",
+    "Unclear guidelines leading to inconsistent submissions",
+    "Letting departments set their own targets (budget should cascade from strategic goals)",
+    "Over-indexing on precision - directional accuracy matters more than false precision",
+    "Not building in contingency for the unexpected"
+  ],
+
+  "tips": [
+    "Use AI to draft the initial guidelines - gets you to 80% faster",
+    "Create a 'budget FAQ' using AI based on common questions from prior years",
+    "Ask AI to role-play as a skeptical Board member - identify weak points in your story",
+    "Build a 'reduction options library' that carries forward year to year"
+  ],
+
+  "promptIds": [
+    "budget-guidelines-draft",
+    "budget-template-creation",
+    "budget-consolidation",
+    "budget-gap-analysis",
+    "budget-scenario-analysis",
+    "budget-board-presentation"
+  ],
+
+  "tags": [
+    "annual budget",
+    "budgeting",
+    "financial planning",
+    "FP&A",
+    "Board reporting",
+    "resource allocation"
+  ],
+
+  "sources": [
+    "AFP - Annual Budgeting Best Practices",
+    "Perplexity Research - Budget process optimization",
+    "Gartner FP&A Research - Planning cycle studies"
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "id": "finance-analyst",
+  "name": "Financial Analyst / FP&A",
+  "description": "Builds financial models, forecasts, and variance analyses. Supports strategic decision-making through data-driven financial insights. Ensures accuracy in reporting and supports budget planning and capital allocation decisions.",
+
+  "coreResponsibilities": [
+    "Build and maintain financial models and forecasts",
+    "Conduct variance analysis and explain drivers",
+    "Support annual budgeting and quarterly re-forecasting",
+    "Prepare financial reports for leadership and board",
+    "Analyze capital investments and calculate ROI/IRR",
+    "Partner with business units on financial planning"
+  ],
+
+  "typicalTools": [
+    "Excel / Google Sheets (advanced)",
+    "ERP systems (SAP, Oracle, NetSuite)",
+    "Financial planning software (Anaplan, Adaptive)",
+    "SQL / database queries",
+    "Tableau / Power BI",
+    "PowerPoint / Google Slides"
+  ],
+
+  "successMetrics": [
+    "Forecast accuracy (within 5% of actuals)",
+    "Month-end close speed (days to close)",
+    "Budget variance explanations accepted by leadership",
+    "Model accuracy and reliability",
+    "Stakeholder satisfaction with financial insights"
+  ],
+
+  "timeAllocation": [
+    {
+      "category": "Data Collection & Consolidation",
+      "percentage": 32,
+      "isPainPoint": true
+    },
+    {
+      "category": "Financial Modeling",
+      "percentage": 22,
+      "isPainPoint": false
+    },
+    {
+      "category": "Variance Analysis",
+      "percentage": 16,
+      "isPainPoint": true
+    },
+    {
+      "category": "Forecasting & Budgeting",
+      "percentage": 14,
+      "isPainPoint": false
+    },
+    {
+      "category": "Reporting & Communication",
+      "percentage": 10,
+      "isPainPoint": false
+    },
+    {
+      "category": "Meetings & Reviews",
+      "percentage": 6,
+      "isPainPoint": false
+    }
+  ],
+
+  "painPoints": [
+    "85% of time on labor-intensive data prep, only 15% on actual analysis (Gartner)",
+    "Multiple data sources requiring manual reconciliation (ERP, CRM, accounting)",
+    "Month-end close delays (3-8 days typical)",
+    "Data quality issues and inconsistencies across systems",
+    "Limited ability to create ad-hoc analyses due to time constraints",
+    "Explaining variances without complete visibility into business drivers"
+  ],
+
+  "workflowIds": [
+    "monthly-variance-analysis",
+    "rolling-forecast-build",
+    "annual-budget-process",
+    "board-financial-reporting",
+    "investment-roi-analysis"
+  ],
+
+  "sources": [
+    "O*NET Database - Financial Analyst (13-2051.00)",
+    "Gartner FP&A Research - Time allocation studies",
+    "LinkedIn Job Postings Analysis (2025-2026)",
+    "Perplexity Research - FP&A workflow optimization"
+  ]
+}

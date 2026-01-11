@@ -1,0 +1,66 @@
+{
+  "id": "mbr-insight-generation",
+  "workflowId": "monthly-business-review",
+  "name": "MBR Insight Generation",
+  "stepNumber": 3,
+  "recommendedTool": "claude",
+  "alternativeTools": ["chatgpt", "gemini"],
+
+  "systemPrompt": "You are a strategic analyst helping create a monthly business review. Your role is to transform data into insights - not just what happened, but why it matters and what to do about it. Always connect metrics to business outcomes.",
+
+  "promptTemplate": "Help me generate insights for our Monthly Business Review for [MONTH/YEAR].\n\n**Performance Data:**\n[PASTE METRICS TABLE FROM STEP 2 - include actual, target, variance, trend]\n\n**Business Context This Month:**\n- Key events: [LIST SIGNIFICANT THINGS THAT HAPPENED]\n- Market conditions: [DESCRIBE EXTERNAL FACTORS]\n- Internal changes: [DESCRIBE ORGANIZATIONAL/PROCESS CHANGES]\n\n**Prior Month's Action Items:**\n[LIST WHAT WAS COMMITTED LAST MONTH AND STATUS]\n\nFor each major metric area, provide:\n\n1. **Headline** (1 sentence - the 'so what')\n2. **What happened** (2-3 sentences - factual performance)\n3. **Why it happened** (2-3 sentences - drivers and root causes)\n4. **What it means** (1-2 sentences - implications going forward)\n5. **Recommended action** (1 sentence - specific next step)\n\nOrganize by these sections:\n- Revenue & Growth\n- Customer Metrics (retention, satisfaction, acquisition)\n- Operational Efficiency\n- Strategic Initiatives\n\nEnd with:\n- **Top 3 Wins** to celebrate\n- **Top 3 Concerns** requiring attention\n- **Key Questions** leadership should discuss",
+
+  "pctr": {
+    "persona": "Strategic analyst transforming data into actionable business insights",
+    "context": "Monthly business review preparation; need to synthesize performance data into narrative insights for executive audience",
+    "task": "Generate section-by-section insights with headlines, explanations, implications, and recommendations",
+    "requirements": [
+      "Lead with insight ('so what'), not just data",
+      "Connect metrics to business outcomes",
+      "Provide specific, actionable recommendations",
+      "Balance positive and concerning trends",
+      "Include questions to prompt leadership discussion"
+    ]
+  },
+
+  "whenToUse": "After you have consolidated metrics and variance analysis, and need to transform numbers into a narrative that executives can act on.",
+
+  "commonMistakes": [
+    "Data without insight - 'revenue was $10M' vs 'revenue exceeded target, driven by...'",
+    "Generic recommendations - 'improve sales' vs 'launch targeted campaign to segment X'",
+    "Ignoring context - metrics don't exist in a vacuum",
+    "All positive or all negative - balance is more credible",
+    "Not connecting to prior commitments - what did we say we'd do?"
+  ],
+
+  "exampleInputs": {
+    "MONTH/YEAR": "December 2025",
+    "METRICS TABLE": "| Metric | Actual | Target | Var | Trend |\n|--------|--------|--------|-----|-------|\n| Revenue | $10.2M | $10.0M | +2% | ↑ |\n| Retention | 94.2% | 95.0% | -0.8pts | ↓ |",
+    "KEY EVENTS": "Holiday promotion launched Dec 1; competitor announced price cut Dec 15; new product feature released Dec 10",
+    "MARKET CONDITIONS": "Seasonal Q4 strength; competitive pressure increasing",
+    "PRIOR ACTION ITEMS": "1) Launch retention campaign (done); 2) Hire 2 sales reps (1 of 2 done)"
+  },
+
+  "exampleOutput": "## Monthly Business Review Insights: December 2025\n\n### Revenue & Growth\n\n**Headline:** Revenue beat target despite competitive pressure, validating our premium positioning strategy.\n\n**What happened:** Revenue of $10.2M exceeded the $10.0M target by 2%, marking the third consecutive month of target achievement. Growth was driven primarily by the holiday promotion (+$150K) and the new product feature (+$80K in upsells).\n\n**Why it happened:** The Dec 1 promotion attracted price-sensitive customers without cannibalizing full-price sales. The new feature release on Dec 10 drove immediate upsell conversations.\n\n**What it means:** Our premium positioning is defensible even as competitors cut prices. The feature-driven upsell motion is a repeatable playbook.\n\n**Recommended action:** Document the holiday promotion learnings and plan a similar Q1 campaign.\n\n---\n\n### Top 3 Concerns\n1. **Retention decline** (-0.8pts) needs immediate attention before Q1 renewals\n2. **Sales hiring** behind plan (1 of 2) - impacts Q1 pipeline\n3. **Competitor price cut** may affect January acquisition costs",
+
+  "variations": [
+    {
+      "name": "Executive Summary Only",
+      "useCase": "When you need just the high-level summary without detailed sections",
+      "prompt": "Based on this performance data [PASTE DATA], write a 200-word executive summary for leadership. Structure: (1) Overall assessment - are we on track? (2) The one thing to celebrate (3) The one thing to worry about (4) The one action needed this month. Write in direct, confident tone."
+    },
+    {
+      "name": "Q&A Prep",
+      "useCase": "When you need to prepare for leadership questions",
+      "prompt": "Based on this MBR data [PASTE DATA], what are the 10 most likely questions leadership will ask? For each question, provide:\n1. The likely question\n2. A concise answer (2-3 sentences)\n3. Supporting data point to reference\n4. If you don't have a good answer, flag what you need to find out"
+    }
+  ],
+
+  "qualityScore": 9,
+
+  "sources": [
+    "McKinsey - Executive communication frameworks",
+    "Perplexity Research - Business review best practices",
+    "Aditya Goyal AAA Experience - Monthly reporting"
+  ]
+}

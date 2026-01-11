@@ -1,0 +1,71 @@
+{
+  "id": "retention-variance-analysis",
+  "workflowId": "monthly-retention-analysis",
+  "name": "Retention Variance Analysis",
+  "stepNumber": 2,
+  "recommendedTool": "gemini",
+  "alternativeTools": ["claude", "chatgpt"],
+
+  "systemPrompt": "You are a business analyst helping identify and explain variances in retention metrics. Focus on both the math and the business implications. Always show your calculations.",
+
+  "promptTemplate": "Analyze the variance in our retention metrics for [MONTH/YEAR].\n\n**This Month's Results:**\n- Retention Rate: [X]%\n- Churn Rate: [Y]%\n- Members Lost: [Z]\n- Revenue at Risk: $[AMOUNT]\n\n**Targets:**\n- Retention Rate Target: [TARGET]%\n- Acceptable Churn: [MAX_CHURN]%\n\n**Prior Period Comparison:**\n- Last Month: [LAST_MONTH_RETENTION]%\n- Same Month Last Year: [LAST_YEAR_RETENTION]%\n- YTD Average: [YTD_AVG]%\n\n**Recent Business Context:**\n[DESCRIBE ANY RELEVANT CHANGES: price increases, new products, marketing campaigns, competitor actions, seasonality]\n\nPlease provide:\n1. Variance calculations (actual vs target, MoM change, YoY change)\n2. Significance assessment (is this variance meaningful or within normal fluctuation?)\n3. Top 3 most likely explanations based on the context provided\n4. What additional data would help confirm each explanation\n5. Recommended actions (if variance is negative) or insights to preserve (if positive)",
+
+  "pctr": {
+    "persona": "Business analyst focused on actionable variance analysis",
+    "context": "Monthly retention metrics compared against targets and historical performance, with business context about recent changes",
+    "task": "Calculate variances, assess significance, generate hypotheses for causes, and recommend actions",
+    "requirements": [
+      "Show all variance calculations explicitly",
+      "Distinguish between statistical noise and meaningful variance",
+      "Connect explanations to the business context provided",
+      "Provide actionable next steps",
+      "Format for executive consumption"
+    ]
+  },
+
+  "whenToUse": "After you have your consolidated metrics and want to understand what's driving performance vs. targets. Best used when you have both current data AND historical comparisons.",
+
+  "commonMistakes": [
+    "Not providing enough business context - AI will make generic suggestions",
+    "Expecting AI to know about your specific business events",
+    "Treating small variances as significant - ask AI to assess materiality",
+    "Not asking for 'what data would confirm this' - leaves you without next steps"
+  ],
+
+  "exampleInputs": {
+    "MONTH/YEAR": "December 2025",
+    "X": "94.2",
+    "Y": "5.8",
+    "Z": "1,247",
+    "AMOUNT": "185,000",
+    "TARGET": "95.0",
+    "MAX_CHURN": "5.0",
+    "LAST_MONTH_RETENTION": "95.1",
+    "LAST_YEAR_RETENTION": "93.8",
+    "YTD_AVG": "94.8",
+    "BUSINESS CONTEXT": "We implemented a 5% price increase on Nov 1. Q4 typically sees higher churn due to annual renewals. Competitor launched a discount campaign in early December."
+  },
+
+  "exampleOutput": "## Variance Analysis: December 2025 Retention\n\n### Calculations\n| Metric | Actual | Target | Variance |\n|--------|--------|--------|----------|\n| Retention Rate | 94.2% | 95.0% | -0.8 pts |\n| vs Last Month | 94.2% | 95.1% | -0.9 pts |\n| vs Last Year | 94.2% | 93.8% | +0.4 pts |\n\n### Significance: MODERATE CONCERN\nThe -0.8pt miss vs target is outside our typical ±0.3pt monthly fluctuation...\n\n### Most Likely Causes\n1. **Price increase impact** (70% confidence)...\n2. **Competitor discount campaign** (50% confidence)...\n3. **Seasonal Q4 renewals** (40% confidence)...",
+
+  "variations": [
+    {
+      "name": "Segment-Level Variance",
+      "useCase": "When you want to understand which customer segments are driving the variance",
+      "prompt": "Here's our retention by segment for [MONTH]:\n- Gold tier: [X]% (target [Y]%)\n- Silver tier: [X]% (target [Y]%)\n- Bronze tier: [X]% (target [Y]%)\n\nWhich segment is most responsible for our overall miss? What segment-specific factors might explain this?"
+    },
+    {
+      "name": "Trend Analysis",
+      "useCase": "When you have multiple months of data and want to understand the trajectory",
+      "prompt": "Here's our retention rate for the past 6 months: [LIST RATES]. Is the trend improving, stable, or declining? At what rate? If this trend continues, where will we be in 3 months?"
+    }
+  ],
+
+  "qualityScore": 9,
+
+  "sources": [
+    "McKinsey Operations Practice - Variance analysis frameworks",
+    "Gartner FP&A Research - Analytical best practices",
+    "Aditya Goyal AAA Experience - Retention variance investigation"
+  ]
+}

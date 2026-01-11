@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from '../lib/routerContext';
-import { LayoutDashboard, Zap, BookOpen, Book, Menu, X, ShieldCheck, Layers, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Zap, BookOpen, Book, Menu, X, ShieldCheck, Sparkles, Wand2, Route } from 'lucide-react';
 
 export default function RootLayout({ children }: { children?: React.ReactNode }) {
   const { path, push } = useRouter();
@@ -42,10 +42,11 @@ export default function RootLayout({ children }: { children?: React.ReactNode })
         <nav className="flex-1 p-4 space-y-1">
           <NavItem href="/" icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" />
           <NavItem href="/quick-start" icon={<Zap className="w-5 h-5" />} label="Quick Start" />
+          <NavItem href="/workflows" icon={<Route className="w-5 h-5" />} label="Workflows" />
           <NavItem href="/generator" icon={<Sparkles className="w-5 h-5" />} label="Prompt Generator" />
+          <NavItem href="/prompt-refiner" icon={<Wand2 className="w-5 h-5" />} label="Prompt Refiner" />
           <NavItem href="/modules" icon={<Book className="w-5 h-5" />} label="Learning Modules" />
           <NavItem href="/reference" icon={<ShieldCheck className="w-5 h-5" />} label="Reference Guide" />
-          <NavItem href="/advanced" icon={<Layers className="w-5 h-5" />} label="Advanced" />
         </nav>
 
         <div className="p-4 border-t border-slate-100">
@@ -78,10 +79,11 @@ export default function RootLayout({ children }: { children?: React.ReactNode })
            <nav className="space-y-2">
             <NavItem href="/" icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" />
             <NavItem href="/quick-start" icon={<Zap className="w-5 h-5" />} label="Quick Start" />
+            <NavItem href="/workflows" icon={<Route className="w-5 h-5" />} label="Workflows" />
             <NavItem href="/generator" icon={<Sparkles className="w-5 h-5" />} label="Prompt Generator" />
+            <NavItem href="/prompt-refiner" icon={<Wand2 className="w-5 h-5" />} label="Prompt Refiner" />
             <NavItem href="/modules" icon={<Book className="w-5 h-5" />} label="Learning Modules" />
             <NavItem href="/reference" icon={<ShieldCheck className="w-5 h-5" />} label="Reference Guide" />
-            <NavItem href="/advanced" icon={<Layers className="w-5 h-5" />} label="Advanced" />
            </nav>
         </div>
       )}

@@ -1,0 +1,178 @@
+{
+  "id": "email-sequence-creation",
+  "roleId": "marketing-manager",
+  "name": "Email Sequence Creation",
+  "category": "planning",
+  "description": "Design and write automated email sequences for nurturing leads, onboarding customers, or re-engaging inactive users. Includes sequence strategy, email copy, subject lines, and timing optimization.",
+
+  "frequency": "monthly",
+  "complexity": "intermediate",
+
+  "currentTimeMinutes": 300,
+  "aiTimeMinutes": 120,
+  "timeSavedMinutes": 180,
+  "timeSavedPercentage": 60,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Define sequence goals and audience segment",
+      "timeMinutes": 30,
+      "painPoints": [
+        "Unclear conversion goals",
+        "Segment definitions are fuzzy",
+        "Multiple stakeholder input needed"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Map the sequence journey and email count",
+      "timeMinutes": 30,
+      "painPoints": [
+        "How many emails is too many?",
+        "Timing between emails unclear",
+        "Branching logic complexity"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Write email copy for each email",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Maintaining narrative thread across emails",
+        "Fresh angles for each email",
+        "CTA optimization"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Create subject lines and preview text",
+      "timeMinutes": 30,
+      "painPoints": [
+        "Subject line creativity",
+        "A/B test variations needed",
+        "Preview text often forgotten"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Set up in email platform",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Platform complexity",
+        "Trigger and timing configuration",
+        "Testing and QA"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Review and launch",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Stakeholder approvals",
+        "Legal/compliance review",
+        "Last-minute changes"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Define sequence strategy and journey map",
+      "tool": "claude",
+      "timeMinutes": 20,
+      "promptId": "email-sequence-strategy",
+      "toolRationale": "Claude designs strategic email journeys",
+      "expectedOutput": "Sequence map with email count, timing, and goals per email",
+      "tips": [
+        "Define the desired end action clearly",
+        "Provide context on where leads are coming from"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Generate email copy for all emails",
+      "tool": "chatgpt",
+      "timeMinutes": 40,
+      "promptId": "email-sequence-copy",
+      "toolRationale": "ChatGPT writes persuasive email copy quickly",
+      "expectedOutput": "Complete copy for all emails in sequence",
+      "tips": [
+        "Provide brand voice and tone guidelines",
+        "Include successful past email examples"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Create subject line and preview text variations",
+      "tool": "chatgpt",
+      "timeMinutes": 15,
+      "promptId": "email-subject-lines",
+      "toolRationale": "ChatGPT generates creative subject line options",
+      "expectedOutput": "3-5 subject line options per email with preview text",
+      "tips": [
+        "Ask for different angles: curiosity, benefit, urgency, social proof",
+        "Specify character limits"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Review and refine copy",
+      "tool": "claude",
+      "timeMinutes": 20,
+      "promptId": "email-copy-review",
+      "toolRationale": "Claude provides editorial feedback on persuasion and clarity",
+      "expectedOutput": "Refined email copy ready for implementation",
+      "tips": [
+        "Ask for feedback on CTA clarity and urgency",
+        "Check for consistency across the sequence"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Platform setup and QA (manual)",
+      "tool": "chatgpt",
+      "timeMinutes": 25,
+      "toolRationale": "Manual platform work; AI can help with QA checklist",
+      "expectedOutput": "Sequence live in platform"
+    }
+  ],
+
+  "whyItMatters": "Email sequences are the workhorse of marketing automation. They nurture leads while you sleep, convert at scale, and build relationships over time. Good sequences can 2-3x conversion rates compared to single emails.",
+
+  "commonMistakes": [
+    "Too many emails too fast - respect inbox attention",
+    "No clear value in each email - every email should stand alone",
+    "Weak subject lines - if they don't open, the content doesn't matter",
+    "Generic CTAs - be specific about the next step",
+    "No personalization - use merge fields and segmentation"
+  ],
+
+  "tips": [
+    "Use AI to generate the full sequence at once - maintains narrative thread",
+    "Generate 5+ subject lines per email and A/B test the best",
+    "Ask AI to write emails that 'build on the previous email's value'",
+    "Include a plain-text version - some audiences prefer it"
+  ],
+
+  "promptIds": [
+    "email-sequence-strategy",
+    "email-sequence-copy",
+    "email-subject-lines",
+    "email-copy-review"
+  ],
+
+  "tags": [
+    "email marketing",
+    "email sequence",
+    "marketing automation",
+    "nurture campaign",
+    "drip campaign"
+  ],
+
+  "sources": [
+    "HubSpot - Email Marketing Best Practices",
+    "Perplexity Research - Email sequence optimization"
+  ]
+}

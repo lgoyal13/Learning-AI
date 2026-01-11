@@ -1,0 +1,258 @@
+{
+  "id": "campaign-planning-launch",
+  "roleId": "marketing-manager",
+  "name": "Campaign Planning & Launch",
+  "category": "planning",
+  "description": "Plan and launch a multi-channel marketing campaign from concept to execution. Includes audience definition, messaging development, channel selection, creative briefs, timeline management, and launch coordination.",
+
+  "frequency": "monthly",
+  "complexity": "intermediate",
+
+  "currentTimeMinutes": 840,
+  "aiTimeMinutes": 480,
+  "timeSavedMinutes": 360,
+  "timeSavedPercentage": 43,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Define campaign objectives and KPIs",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Vague objectives from stakeholders",
+        "Too many goals for one campaign",
+        "Unrealistic KPI expectations"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Research audience and competitive landscape",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Limited audience data",
+        "Competitor campaigns hard to track",
+        "Research takes time away from execution"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Develop messaging and positioning",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Multiple revision cycles",
+        "Stakeholder alignment on messaging",
+        "Differentiating from competitors"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Select channels and allocate budget",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Too many channel options",
+        "Limited historical data on channel performance",
+        "Budget constraints force trade-offs"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Create campaign brief and creative requirements",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Translating strategy to creative specs",
+        "Multiple asset sizes and formats",
+        "Coordinating with creative team/agency"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Build campaign timeline and task assignments",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Dependency management across teams",
+        "Approval bottlenecks",
+        "Last-minute timeline compression"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Review creative and copy",
+      "timeMinutes": 120,
+      "painPoints": [
+        "Multiple stakeholder feedback rounds",
+        "Conflicting opinions on creative",
+        "Legal/compliance review delays"
+      ]
+    },
+    {
+      "stepNumber": 8,
+      "description": "Set up campaigns in platforms and QA",
+      "timeMinutes": 90,
+      "painPoints": [
+        "Multiple platforms to configure",
+        "Tracking and UTM setup",
+        "QA across devices and placements"
+      ]
+    },
+    {
+      "stepNumber": 9,
+      "description": "Launch and monitor initial performance",
+      "timeMinutes": 150,
+      "painPoints": [
+        "Launch day issues",
+        "Early performance anxiety",
+        "Quick optimization decisions"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Clarify objectives and define success metrics",
+      "tool": "claude",
+      "timeMinutes": 30,
+      "promptId": "campaign-objective-framework",
+      "toolRationale": "Claude helps structure clear, measurable objectives",
+      "expectedOutput": "Campaign brief with SMART objectives and KPIs",
+      "tips": [
+        "Limit to 1-2 primary objectives",
+        "Define what success looks like quantitatively"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Research audience and competitors",
+      "tool": "perplexity",
+      "timeMinutes": 45,
+      "promptId": "campaign-audience-research",
+      "toolRationale": "Perplexity provides real-time competitive and market research",
+      "expectedOutput": "Audience insights and competitive campaign analysis",
+      "tips": [
+        "Search for '[competitor] recent campaigns'",
+        "Look for audience pain points and triggers"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Generate messaging and positioning options",
+      "tool": "claude",
+      "timeMinutes": 45,
+      "promptId": "campaign-messaging-development",
+      "toolRationale": "Claude excels at strategic messaging frameworks",
+      "expectedOutput": "3 messaging directions with value props and proof points",
+      "tips": [
+        "Provide audience insights from Step 2",
+        "Ask for differentiation from competitors"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Recommend channel mix and budget allocation",
+      "tool": "claude",
+      "timeMinutes": 30,
+      "promptId": "campaign-channel-strategy",
+      "toolRationale": "Claude can reason about channel selection based on objectives",
+      "expectedOutput": "Recommended channel mix with budget allocation rationale",
+      "tips": [
+        "Provide historical channel performance if available",
+        "Include constraints (budget, timeline)"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Create campaign brief and creative specs",
+      "tool": "chatgpt",
+      "timeMinutes": 45,
+      "promptId": "campaign-creative-brief",
+      "toolRationale": "ChatGPT writes clear, comprehensive creative briefs",
+      "expectedOutput": "Complete creative brief for design team/agency",
+      "tips": [
+        "Include specific deliverables and dimensions",
+        "Provide example references if available"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Build timeline and identify dependencies",
+      "tool": "chatgpt",
+      "timeMinutes": 30,
+      "promptId": "campaign-timeline",
+      "toolRationale": "ChatGPT creates structured project plans",
+      "expectedOutput": "Campaign timeline with milestones and owners",
+      "tips": [
+        "Build in buffer for approvals",
+        "Identify critical path items"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Review and iterate on creative (manual + AI)",
+      "tool": "chatgpt",
+      "timeMinutes": 90,
+      "toolRationale": "Human review needed; AI helps with quick copy iterations",
+      "expectedOutput": "Approved creative assets"
+    },
+    {
+      "stepNumber": 8,
+      "description": "Platform setup and QA (manual)",
+      "tool": "chatgpt",
+      "timeMinutes": 75,
+      "toolRationale": "Manual platform work; AI can help generate UTM parameters",
+      "expectedOutput": "Campaigns live in platforms"
+    },
+    {
+      "stepNumber": 9,
+      "description": "Launch monitoring and optimization",
+      "tool": "gemini",
+      "timeMinutes": 90,
+      "promptId": "campaign-launch-analysis",
+      "toolRationale": "Gemini analyzes early performance data quickly",
+      "expectedOutput": "Launch performance summary with optimization recommendations",
+      "tips": [
+        "Set up real-time dashboards before launch",
+        "Define escalation triggers"
+      ]
+    }
+  ],
+
+  "whyItMatters": "Campaigns drive revenue and brand awareness. A well-planned campaign maximizes ROI and builds brand equity. A poorly planned one wastes budget and damages brand perception.",
+
+  "commonMistakes": [
+    "Too many objectives - focus on 1-2 primary goals",
+    "Skipping audience research - leads to generic messaging",
+    "Underestimating timeline - campaigns always take longer than expected",
+    "Not having clear KPIs - makes optimization impossible",
+    "Launching without QA - broken tracking ruins measurement"
+  ],
+
+  "tips": [
+    "Use AI to generate multiple messaging directions - then test them",
+    "Ask AI to critique your campaign brief before sharing with creative team",
+    "Build a 'campaign template' in your project management tool",
+    "Create a launch checklist that you reuse for every campaign"
+  ],
+
+  "promptIds": [
+    "campaign-objective-framework",
+    "campaign-audience-research",
+    "campaign-messaging-development",
+    "campaign-channel-strategy",
+    "campaign-creative-brief",
+    "campaign-timeline",
+    "campaign-launch-analysis"
+  ],
+
+  "tags": [
+    "campaign planning",
+    "marketing campaign",
+    "creative brief",
+    "channel strategy",
+    "marketing launch"
+  ],
+
+  "sources": [
+    "HubSpot - Campaign Planning Best Practices",
+    "Perplexity Research - Marketing campaign workflows"
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "id": "marketing-competitive-analysis",
+  "roleId": "marketing-manager",
+  "name": "Marketing Competitive Analysis",
+  "category": "research",
+  "description": "Analyze competitor marketing strategies, messaging, positioning, and tactics. Identify opportunities for differentiation and inform marketing strategy. Includes website analysis, ad monitoring, content audit, and social presence review.",
+
+  "frequency": "quarterly",
+  "complexity": "intermediate",
+
+  "currentTimeMinutes": 360,
+  "aiTimeMinutes": 150,
+  "timeSavedMinutes": 210,
+  "timeSavedPercentage": 58,
+
+  "currentProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Define competitive set and analysis scope",
+      "timeMinutes": 20,
+      "painPoints": [
+        "Too many competitors to track",
+        "Defining direct vs indirect competitors",
+        "Stakeholder alignment on focus"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Analyze competitor websites and positioning",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Manual website review is tedious",
+        "Capturing positioning nuances",
+        "Tracking changes over time"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Review competitor content and SEO",
+      "timeMinutes": 60,
+      "painPoints": [
+        "Content volume is overwhelming",
+        "SEO tools have learning curves",
+        "Identifying content gaps"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Monitor competitor advertising",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Ads change frequently",
+        "Multiple platforms to check",
+        "Estimating competitor spend"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Analyze social media presence",
+      "timeMinutes": 45,
+      "painPoints": [
+        "Multiple platforms per competitor",
+        "Qualitative assessment is subjective",
+        "Engagement metrics vary by platform"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Synthesize findings and identify opportunities",
+      "timeMinutes": 60,
+      "painPoints": [
+        "So much data, what matters?",
+        "Moving from description to insight",
+        "Actionable recommendations"
+      ]
+    },
+    {
+      "stepNumber": 7,
+      "description": "Create competitive analysis report",
+      "timeMinutes": 70,
+      "painPoints": [
+        "Organizing information clearly",
+        "Visual presentation",
+        "Keeping it concise"
+      ]
+    }
+  ],
+
+  "aiProcess": [
+    {
+      "stepNumber": 1,
+      "description": "Research competitor positioning and messaging",
+      "tool": "perplexity",
+      "timeMinutes": 30,
+      "promptId": "marketing-competitor-positioning",
+      "toolRationale": "Perplexity can analyze competitor websites and public messaging",
+      "expectedOutput": "Positioning summary for each competitor",
+      "tips": [
+        "Search for '[competitor] value proposition' and '[competitor] messaging'",
+        "Look for recent press releases and announcements"
+      ]
+    },
+    {
+      "stepNumber": 2,
+      "description": "Analyze competitor content strategy",
+      "tool": "perplexity",
+      "timeMinutes": 25,
+      "promptId": "marketing-competitor-content",
+      "toolRationale": "Perplexity researches content themes and top performers",
+      "expectedOutput": "Content strategy summary with themes and gaps",
+      "tips": [
+        "Search for '[competitor] blog topics' and top-ranking content",
+        "Identify content gaps they're not covering"
+      ]
+    },
+    {
+      "stepNumber": 3,
+      "description": "Review advertising and campaign activity",
+      "tool": "perplexity",
+      "timeMinutes": 25,
+      "promptId": "marketing-competitor-ads",
+      "toolRationale": "Perplexity finds ad examples and campaign mentions",
+      "expectedOutput": "Summary of recent ad campaigns and messaging themes",
+      "tips": [
+        "Search for '[competitor] ads' and '[competitor] marketing campaign'",
+        "Check Facebook Ad Library for active ads"
+      ]
+    },
+    {
+      "stepNumber": 4,
+      "description": "Synthesize findings and identify opportunities",
+      "tool": "claude",
+      "timeMinutes": 30,
+      "promptId": "marketing-competitive-synthesis",
+      "toolRationale": "Claude excels at strategic synthesis and opportunity identification",
+      "expectedOutput": "Strategic opportunities and differentiation recommendations",
+      "tips": [
+        "Provide all raw research from previous steps",
+        "Ask for both offensive and defensive recommendations"
+      ]
+    },
+    {
+      "stepNumber": 5,
+      "description": "Create competitive analysis report",
+      "tool": "chatgpt",
+      "timeMinutes": 25,
+      "promptId": "marketing-competitive-report",
+      "toolRationale": "ChatGPT creates clear, well-structured reports",
+      "expectedOutput": "Complete competitive analysis document",
+      "tips": [
+        "Request specific sections: positioning, content, advertising, opportunities",
+        "Include competitive comparison tables"
+      ]
+    },
+    {
+      "stepNumber": 6,
+      "description": "Review and finalize",
+      "tool": "chatgpt",
+      "timeMinutes": 15,
+      "toolRationale": "Human review for accuracy",
+      "expectedOutput": "Final competitive analysis ready for stakeholders"
+    }
+  ],
+
+  "whyItMatters": "Understanding competitors is essential for differentiation and market positioning. Good competitive analysis reveals opportunities your competitors are missing and threats you need to address. It informs messaging, content strategy, and campaign planning.",
+
+  "commonMistakes": [
+    "Tracking too many competitors - focus on 3-5 key players",
+    "Describing without analyzing - what does this mean for US?",
+    "One-time analysis - competition changes; make it recurring",
+    "Copying competitors - use insights to differentiate, not imitate",
+    "No action items - analysis without recommendations is useless"
+  ],
+
+  "tips": [
+    "Use AI to quickly summarize competitor positioning from their website",
+    "Create a competitive monitoring template you update quarterly",
+    "Ask AI to identify 'what competitors are NOT doing' - that's your opportunity",
+    "Build a competitive swipe file of ads and content you admire"
+  ],
+
+  "promptIds": [
+    "marketing-competitor-positioning",
+    "marketing-competitor-content",
+    "marketing-competitor-ads",
+    "marketing-competitive-synthesis",
+    "marketing-competitive-report"
+  ],
+
+  "tags": [
+    "competitive analysis",
+    "competitor research",
+    "market positioning",
+    "marketing strategy",
+    "differentiation"
+  ],
+
+  "sources": [
+    "Perplexity Research - Competitive intelligence for marketers",
+    "HubSpot - Competitive Analysis Templates"
+  ]
+}
