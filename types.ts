@@ -85,3 +85,113 @@ export interface PromptEvaluationOutput {
   improvedPrompt: string;
   tip: string;
 }
+
+// --- Simple Generator Types ---
+
+export type AITool = 'chatgpt' | 'claude' | 'gemini' | 'unsure';
+
+export interface SimpleGeneratorInput {
+  task: string;
+  audience: string;
+  goal: string;
+  tool: AITool;
+}
+
+export interface SimpleGeneratorOutput {
+  prompt: string;
+  pctrBreakdown: {
+    persona: string;
+    context: string;
+    task: string;
+    requirements: string;
+  };
+  toolSuggestion?: {
+    recommended: 'chatgpt' | 'claude' | 'gemini';
+    reason: string;
+  };
+}
+
+// --- Game Plan Generator Types ---
+
+export type GamePlanStage =
+  | 'prompt-input'      // Stage 1a: User describes task
+  | 'prompt-questions'  // Stage 1b: Clarifying questions
+  | 'prompt-output'     // Stage 2: Show generated prompt + invitation
+  | 'plan-questions'    // Stage 3: Clarifying questions for game plan
+  | 'plan-generating'   // Stage 4: Loading state during generation
+  | 'plan-view'         // Stage 5: Show full game plan
+  | 'refinement';       // Stage 6: Chat interface for refinement
+
+export type StepActor = 'Human' | 'AI-Assisted' | 'Mixed';
+export type ConfidenceLevel = 'High' | 'Medium' | 'Low';
+export type InferredDomain = 'Finance & FP&A' | 'Marketing' | 'Business Ops / Strategy' | 'General Business';
+
+export interface GeneratedStep {
+  stepNumber: number;
+  stepName: string;
+  actor: StepActor;
+  timeMinutes: number;
+  tool: string | null;
+  toolRationale: string | null;
+  whatToDo: string;
+  prompt: string | null;
+  whyThisMatters: string;
+  watchOut: string;
+}
+
+export interface GeneratedGamePlan {
+  planName: string;
+  generatedAt: string;
+  inferredDomain: InferredDomain;
+  domainReasoning: string;
+  confidence: ConfidenceLevel;
+  confidenceReasoning: string;
+  userContextSummary: string;
+  totalTimeMinutes: number;
+  insertMarkers: string[];
+  steps: GeneratedStep[];
+}
+
+export interface PlanQuestionsInput {
+  successCriteria: string;
+  startingPoint: string;
+  constraints: string;
+}
+
+export interface GamePlanGeneratorInput {
+  // From Stage 1
+  task: string;
+  audience: string;
+  goal: string;
+  tool: AITool;
+  generatedPrompt: string;
+  // From Stage 3
+  successCriteria: string;
+  startingPoint: string;
+  constraints: string;
+}
+
+export interface RefinementMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface GeneratorFlowState {
+  stage: GamePlanStage;
+  // Stage 1 data
+  task: string;
+  audience: string;
+  goal: string;
+  tool: AITool;
+  generatedPrompt: SimpleGeneratorOutput | null;
+  // Stage 3 data
+  planQuestions: PlanQuestionsInput;
+  // Stage 4-5 data
+  gamePlan: GeneratedGamePlan | null;
+  // Stage 6 data
+  refinementMessages: RefinementMessage[];
+  // UI state
+  isLoading: boolean;
+  error: string | null;
+  copied: boolean;
+}

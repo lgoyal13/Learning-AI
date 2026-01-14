@@ -1,530 +1,639 @@
 import React, { useState } from 'react';
-import { PageLayout, Card, Button, Badge, PromptCard, Callout } from '../../components/ui';
-import { 
-  Sparkles, 
-  MessageSquare, 
-  FileText, 
-  Search, 
-  Settings, 
-  ChevronRight, 
+import { PageLayout, Card, Button, Badge } from '../../components/ui';
+import { PromptDisplay } from '../../components/PromptDisplay';
+import { GamePlanView } from '../../components/GamePlanView';
+import { RefinementChat } from '../../components/RefinementChat';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
   Copy,
-  Wand2,
+  Sparkles,
+  Users,
+  Target,
+  Wrench,
   RefreshCw,
-  CheckCircle2,
-  AlertTriangle,
+  ExternalLink,
   Lightbulb,
-  Zap,
-  Layers,
-  BrainCircuit,
-  PenTool,
-  Upload,
-  ShieldCheck,
-  Image as ImageIcon
+  MapPin,
+  MessageSquare
 } from 'lucide-react';
-import { generatePromptTemplate } from '../../services/geminiService';
-import { PromptGeneratorInput, PromptGeneratorOutput, TaskType, Stakes, ModelEnv, ExampleType } from '../../types';
+import { generateSimplePrompt, generateGamePlan } from '../../services/geminiService';
+import {
+  SimpleGeneratorInput,
+  SimpleGeneratorOutput,
+  AITool,
+  GamePlanStage,
+  GeneratedGamePlan,
+  PlanQuestionsInput,
+  RefinementMessage,
+  GeneratorFlowState
+} from '../../types';
 
-// --- Recipes ---
+// --- Example chips for quick start ---
 
-type PromptRecipe = {
-  id: string;
-  label: string;
-  icon: React.ReactNode;
-  data: Partial<PromptGeneratorInput>;
-  // UI-specific mappings
-  uiReasoning?: 'fast' | 'deep';
-  uiStructure?: 'light' | 'medium' | 'high';
-};
-
-const RECIPES: PromptRecipe[] = [
-  {
-    id: 'email',
-    label: 'Exec Update',
-    icon: <MessageSquare className="w-5 h-5 text-blue-500" />,
-    data: {
-      rawTaskDescription: 'Draft a project update email highlighting risks and key decisions needed. (Audience: Executives)',
-      modelEnvironment: 'workspace'
-    },
-    uiReasoning: 'fast',
-    uiStructure: 'medium'
-  },
-  {
-    id: 'summary',
-    label: 'Summarizer',
-    icon: <FileText className="w-5 h-5 text-purple-500" />,
-    data: {
-      rawTaskDescription: 'Summarize the attached user research notes into key themes. (Audience: Product Team)',
-      modelEnvironment: 'notebook'
-    },
-    uiReasoning: 'deep',
-    uiStructure: 'high'
-  },
-  {
-    id: 'analysis',
-    label: 'Root Cause',
-    icon: <Search className="w-5 h-5 text-emerald-500" />,
-    data: {
-      rawTaskDescription: 'Analyze the provided error logs to explain why the system crashed.',
-      modelEnvironment: 'chat'
-    },
-    uiReasoning: 'deep',
-    uiStructure: 'high'
-  }
+const EXAMPLES = [
+  { label: 'Board presentation', task: 'A board presentation summarizing Q4 financial results and strategic recommendations' },
+  { label: 'Competitive analysis', task: 'A competitive analysis of our top 3 competitors for our leadership team' },
+  { label: 'Data analysis', task: 'Analysis of customer churn data to identify key drivers and recommend retention strategies' },
+  { label: 'Campaign plan', task: 'A marketing campaign plan for launching our new product next quarter' },
 ];
 
-export default function GeneratorPage() {
-  // --- New UI State ---
-  const [taskDescription, setTaskDescription] = useState('');
-  const [existingDraft, setExistingDraft] = useState('');
-  const [files, setFiles] = useState<File[]>([]);
-  
-  const [selectedTool, setSelectedTool] = useState<ModelEnv>('chat');
-  const [structure, setStructure] = useState<'light' | 'medium' | 'high'>('medium');
-  const [reasoning, setReasoning] = useState<'fast' | 'deep'>('fast');
-  
-  const [isSensitive, setIsSensitive] = useState(false);
-  const [selfCritique, setSelfCritique] = useState(false);
+// --- Question options ---
 
-  // --- Generation State ---
-  const [output, setOutput] = useState<PromptGeneratorOutput | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [showReasoning, setShowReasoning] = useState(false);
+const AUDIENCE_OPTIONS = [
+  { label: 'Board/Execs', value: 'Board members and executives' },
+  { label: 'Leadership', value: 'Senior leadership team' },
+  { label: 'Team', value: 'My direct team or colleagues' },
+  { label: 'Clients', value: 'External clients or customers' },
+];
+
+const GOAL_OPTIONS = [
+  { label: 'Inform', value: 'Inform and share information clearly' },
+  { label: 'Persuade', value: 'Persuade and influence a decision' },
+  { label: 'Analyze', value: 'Analyze data and provide insights' },
+  { label: 'Get approval', value: 'Get approval or buy-in for a proposal' },
+];
+
+const TOOL_OPTIONS = [
+  { label: 'ChatGPT', value: 'chatgpt' as AITool, icon: '🤖' },
+  { label: 'Claude', value: 'claude' as AITool, icon: '🟠' },
+  { label: 'Gemini', value: 'gemini' as AITool, icon: '✨' },
+  { label: 'Not sure', value: 'unsure' as AITool, icon: '❓' },
+];
+
+// --- Initial State ---
+
+const initialState: GeneratorFlowState = {
+  stage: 'prompt-input',
+  task: '',
+  audience: '',
+  goal: '',
+  tool: 'unsure',
+  generatedPrompt: null,
+  planQuestions: {
+    successCriteria: '',
+    startingPoint: '',
+    constraints: ''
+  },
+  gamePlan: null,
+  refinementMessages: [],
+  isLoading: false,
+  error: null,
+  copied: false
+};
+
+// --- Main Component ---
+
+export default function GeneratorPage() {
+  const [state, setState] = useState<GeneratorFlowState>(initialState);
+
+  // --- State Update Helpers ---
+
+  const updateState = (updates: Partial<GeneratorFlowState>) => {
+    setState(prev => ({ ...prev, ...updates }));
+  };
+
+  const updatePlanQuestions = (updates: Partial<PlanQuestionsInput>) => {
+    setState(prev => ({
+      ...prev,
+      planQuestions: { ...prev.planQuestions, ...updates }
+    }));
+  };
+
+  // --- Stage Navigation ---
+
+  const goToStage = (stage: GamePlanStage) => {
+    updateState({ stage, error: null });
+  };
 
   // --- Handlers ---
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFiles(Array.from(e.target.files));
-    }
-  };
-
-  const applyRecipe = (recipe: PromptRecipe) => {
-    setTaskDescription(recipe.data.rawTaskDescription || '');
-    setSelectedTool(recipe.data.modelEnvironment || 'chat');
-    setStructure(recipe.uiStructure || 'medium');
-    setReasoning(recipe.uiReasoning || 'fast');
-    setExistingDraft('');
-    setIsSensitive(false);
-    setSelfCritique(false);
-    setOutput(null);
-    setError(null);
-  };
-
-  const handleGenerate = async () => {
-    if (!taskDescription.trim()) {
-      setError("Please describe your task first.");
+  const handleGeneratePrompt = async () => {
+    if (!state.audience || !state.goal) {
+      updateState({ error: 'Please answer the questions above.' });
       return;
     }
 
-    setIsGenerating(true);
-    setError(null);
-
-    // Construct the payload for the backend service
-    // We combine our simple UI fields into the structured input the service expects
-    let combinedDescription = taskDescription;
-    
-    if (existingDraft.trim()) {
-      combinedDescription += `\n\n[User Draft Provided]:\n${existingDraft}`;
-    }
-
-    if (files.length > 0) {
-      combinedDescription += `\n\n[User Context]: User has attached ${files.length} file(s) (e.g. ${files[0].name}) containing source material.`;
-    }
-
-    let constraints = "";
-    if (selfCritique) {
-      constraints += "Include a self-critique section where the AI evaluates its own answer. ";
-    }
-    if (reasoning === 'deep') {
-      constraints += "Think step-by-step before answering. ";
-    }
-
-    const payload: PromptGeneratorInput = {
-      role: '', // Let the LLM infer this from the task description
-      audience: '', // Let the LLM infer this
-      taskType: 'draft', // Default, LLM will adjust
-      rawTaskDescription: combinedDescription,
-      stakes: reasoning === 'deep' ? 'high' : 'low',
-      isRecurring: false,
-      outputFormat: '',
-      structureLevel: structure,
-      tone: '',
-      constraints: constraints,
-      dataSensitivity: isSensitive ? 'sensitive' : 'normal',
-      willProvideExamples: files.length > 0 || !!existingDraft,
-      exampleType: files.length > 0 ? 'docs' : (existingDraft ? 'raw-inputs' : 'none'),
-      modelEnvironment: selectedTool,
-    };
+    updateState({ isLoading: true, error: null });
 
     try {
-      const result = await generatePromptTemplate(payload);
-      setOutput(result);
+      const input: SimpleGeneratorInput = {
+        task: state.task,
+        audience: state.audience,
+        goal: state.goal,
+        tool: state.tool,
+      };
+
+      const output = await generateSimplePrompt(input);
+      updateState({
+        generatedPrompt: output,
+        stage: 'prompt-output',
+        isLoading: false
+      });
     } catch (err) {
       console.error(err);
-      setError("Something went wrong generating your template. Please try again.");
-    } finally {
-      setIsGenerating(false);
+      updateState({
+        error: 'Something went wrong. Please try again.',
+        isLoading: false
+      });
     }
   };
 
+  const handleWantGamePlan = (wantPlan: boolean) => {
+    if (wantPlan) {
+      goToStage('plan-questions');
+    }
+    // If not, they stay on prompt-output with their prompt
+  };
+
+  const handleGenerateGamePlan = async () => {
+    updateState({ stage: 'plan-generating', isLoading: true, error: null });
+
+    try {
+      const plan = await generateGamePlan({
+        task: state.task,
+        audience: state.audience,
+        goal: state.goal,
+        tool: state.tool,
+        generatedPrompt: state.generatedPrompt?.prompt || '',
+        successCriteria: state.planQuestions.successCriteria,
+        startingPoint: state.planQuestions.startingPoint,
+        constraints: state.planQuestions.constraints
+      });
+
+      updateState({
+        gamePlan: plan,
+        stage: 'plan-view',
+        isLoading: false
+      });
+    } catch (err) {
+      console.error(err);
+      updateState({
+        error: 'Failed to generate game plan. Please try again.',
+        stage: 'plan-questions',
+        isLoading: false
+      });
+    }
+  };
+
+  const handleCopyPrompt = async () => {
+    if (state.generatedPrompt) {
+      await navigator.clipboard.writeText(state.generatedPrompt.prompt);
+      updateState({ copied: true });
+      setTimeout(() => updateState({ copied: false }), 2000);
+    }
+  };
+
+  const handleStartOver = () => {
+    setState(initialState);
+  };
+
   // --- Styles ---
-  const labelStyles = "block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2";
-  const cardBase = "bg-white rounded-xl border border-slate-200 shadow-sm p-6";
+
+  const chipBase = "px-4 py-2 rounded-full text-sm font-medium border transition-all cursor-pointer";
+  const chipInactive = "bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50";
+  const chipActive = "bg-blue-600 border-blue-600 text-white";
+
+  // --- Render ---
 
   return (
     <PageLayout
-      title="Prompt Template Generator"
-      description="Describe your task in plain language, and we'll build a professional prompt template for you."
+      title="Prompt Generator"
+      description="Get an expert-level prompt in seconds, or go deeper with a full game plan."
     >
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pb-20">
-        
-        {/* LEFT COLUMN: INPUTS */}
-        <div className="lg:col-span-5 space-y-6">
-          
-          {/* Recipes */}
-          <div className="flex flex-wrap gap-3 pb-2">
-            {RECIPES.map(recipe => (
-              <button
-                key={recipe.id}
-                type="button"
-                onClick={() => applyRecipe(recipe)}
-                className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg hover:border-blue-300 hover:bg-slate-50 transition-all shrink-0 group shadow-sm"
-              >
-                <div className="text-slate-500 group-hover:text-blue-500">{recipe.icon}</div>
-                <span className="text-sm font-medium text-slate-700">{recipe.label}</span>
-              </button>
-            ))}
-          </div>
+      <div className="max-w-2xl mx-auto pb-20">
 
-          {/* Card 1: Task */}
-          <div className={cardBase}>
-            <div className="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
-               <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">1</div>
-               <h3 className="font-bold text-slate-900">Task & Examples</h3>
+        {/* === STAGE 1a: PROMPT INPUT === */}
+        {state.stage === 'prompt-input' && (
+          <div className="space-y-6 animate-fade-in">
+            <div>
+              <label className="block text-lg font-semibold text-slate-900 mb-3">
+                What are you trying to create or accomplish?
+              </label>
+              <p className="text-sm text-slate-500 mb-3">
+                Be as specific as you'd like - the more context you give, the better I can help.
+              </p>
+              <textarea
+                className="w-full p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base text-slate-900 bg-white placeholder:text-slate-400 min-h-[160px] shadow-sm resize-none leading-relaxed"
+                placeholder="A presentation summarizing quarterly results for the board..."
+                value={state.task}
+                onChange={(e) => updateState({ task: e.target.value, error: null })}
+                autoFocus
+              />
             </div>
 
-            <div className="space-y-5">
-              <div>
-                <label className={labelStyles}>Describe your task <span className="text-red-500">*</span></label>
-                <textarea
-                  className="w-full p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-900 bg-white placeholder:text-slate-400 min-h-[140px] shadow-sm resize-y leading-relaxed"
-                  placeholder="e.g. Draft a follow-up email to a quiet client who hasn't replied in 2 weeks. Tone should be polite but firm..."
-                  value={taskDescription}
-                  onChange={(e) => setTaskDescription(e.target.value)}
+            {/* Example chips */}
+            <div>
+              <p className="text-sm text-slate-500 mb-3">Or try one of these:</p>
+              <div className="flex flex-wrap gap-2">
+                {EXAMPLES.map((example) => (
+                  <button
+                    key={example.label}
+                    type="button"
+                    onClick={() => updateState({ task: example.task })}
+                    className={`${chipBase} ${chipInactive}`}
+                  >
+                    {example.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {state.error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+                {state.error}
+              </div>
+            )}
+
+            <div className="flex justify-end pt-4">
+              <Button
+                onClick={() => {
+                  if (!state.task.trim()) {
+                    updateState({ error: 'Please describe what you want to create.' });
+                    return;
+                  }
+                  goToStage('prompt-questions');
+                }}
+                disabled={!state.task.trim()}
+                className="px-6"
+              >
+                Continue <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* === STAGE 1b: PROMPT QUESTIONS === */}
+        {state.stage === 'prompt-questions' && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Task summary */}
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Your task</p>
+                  <p className="text-slate-900 leading-relaxed">{state.task}</p>
+                </div>
+                <button
+                  onClick={() => goToStage('prompt-input')}
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium shrink-0"
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+
+            <p className="text-lg font-semibold text-slate-900">
+              A few questions to make this great:
+            </p>
+
+            {/* Question 1: Audience */}
+            <Card className="p-5">
+              <div className="flex items-center gap-2 mb-1">
+                <Users className="w-4 h-4 text-blue-600" />
+                <h3 className="font-semibold text-slate-900">Who is this for?</h3>
+              </div>
+              <p className="text-sm text-slate-500 mb-4">The person or group who will see/use the output</p>
+              <div className="flex flex-wrap gap-2">
+                {AUDIENCE_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => updateState({ audience: option.value })}
+                    className={`${chipBase} ${state.audience === option.value ? chipActive : chipInactive}`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+                <input
+                  type="text"
+                  placeholder="Other..."
+                  className="px-4 py-2 rounded-full text-sm border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900 placeholder:text-slate-400 w-32"
+                  value={!AUDIENCE_OPTIONS.find(o => o.value === state.audience) ? state.audience : ''}
+                  onChange={(e) => updateState({ audience: e.target.value })}
+                  onFocus={() => {
+                    if (AUDIENCE_OPTIONS.find(o => o.value === state.audience)) {
+                      updateState({ audience: '' });
+                    }
+                  }}
                 />
               </div>
+            </Card>
 
-              <div>
-                <label className={labelStyles}>Starting materials (Optional)</label>
-                <div className="space-y-3">
-                  {/* File Upload Mock */}
-                  <div className="relative">
-                     <input 
-                       type="file" 
-                       id="file-upload" 
-                       className="hidden" 
-                       onChange={handleFileChange}
-                       multiple
-                     />
-                     <label htmlFor="file-upload" className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-slate-300 rounded-lg hover:bg-slate-50 hover:border-blue-300 cursor-pointer transition-colors text-slate-600 text-sm bg-white">
-                        <Upload className="w-4 h-4 text-slate-400" />
-                        {files.length > 0 ? `${files.length} file(s) selected` : "Upload docs or images"}
-                     </label>
-                  </div>
+            {/* Question 2: Goal */}
+            <Card className="p-5">
+              <div className="flex items-center gap-2 mb-1">
+                <Target className="w-4 h-4 text-purple-600" />
+                <h3 className="font-semibold text-slate-900">What's the goal?</h3>
+              </div>
+              <p className="text-sm text-slate-500 mb-4">What should this help them understand, decide, or do?</p>
+              <div className="flex flex-wrap gap-2">
+                {GOAL_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => updateState({ goal: option.value })}
+                    className={`${chipBase} ${state.goal === option.value ? chipActive : chipInactive}`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+                <input
+                  type="text"
+                  placeholder="Other..."
+                  className="px-4 py-2 rounded-full text-sm border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900 placeholder:text-slate-400 w-32"
+                  value={!GOAL_OPTIONS.find(o => o.value === state.goal) ? state.goal : ''}
+                  onChange={(e) => updateState({ goal: e.target.value })}
+                  onFocus={() => {
+                    if (GOAL_OPTIONS.find(o => o.value === state.goal)) {
+                      updateState({ goal: '' });
+                    }
+                  }}
+                />
+              </div>
+            </Card>
 
-                  {/* Existing Draft */}
+            {/* Question 3: Tool */}
+            <Card className="p-5">
+              <div className="flex items-center gap-2 mb-1">
+                <Wrench className="w-4 h-4 text-emerald-600" />
+                <h3 className="font-semibold text-slate-900">Which AI tool will you use?</h3>
+              </div>
+              <p className="text-sm text-slate-500 mb-4">We'll optimize the prompt format (or recommend one)</p>
+              <div className="flex flex-wrap gap-2">
+                {TOOL_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => updateState({ tool: option.value })}
+                    className={`${chipBase} ${state.tool === option.value ? chipActive : chipInactive}`}
+                  >
+                    <span className="mr-1.5">{option.icon}</span>
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </Card>
+
+            {state.error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+                {state.error}
+              </div>
+            )}
+
+            <div className="flex justify-between pt-4">
+              <Button variant="outline" onClick={() => goToStage('prompt-input')}>
+                <ArrowLeft className="w-4 h-4 mr-2" /> Back
+              </Button>
+              <Button
+                onClick={handleGeneratePrompt}
+                isLoading={state.isLoading}
+                disabled={!state.audience || !state.goal}
+                className="px-6"
+              >
+                Generate Prompt <Sparkles className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* === STAGE 2: PROMPT OUTPUT + INVITATION === */}
+        {state.stage === 'prompt-output' && state.generatedPrompt && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Success header */}
+            <div className="flex items-center gap-2 text-emerald-600">
+              <Check className="w-5 h-5" />
+              <span className="font-semibold">Your prompt is ready</span>
+            </div>
+
+            {/* The prompt with PCTR labels */}
+            <Card className="p-0 overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Your Prompt</span>
+                <button
+                  onClick={handleCopyPrompt}
+                  className="flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+                >
+                  {state.copied ? (
+                    <>
+                      <Check className="w-4 h-4" /> Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4" /> Copy
+                    </>
+                  )}
+                </button>
+              </div>
+              <div className="p-5">
+                <pre className="whitespace-pre-wrap text-sm text-slate-900 leading-relaxed font-sans">
+                  {state.generatedPrompt.prompt}
+                </pre>
+              </div>
+            </Card>
+
+            {/* Why this works - PCTR breakdown */}
+            <Card className="p-5 bg-blue-50 border-blue-100">
+              <div className="flex items-center gap-2 mb-4">
+                <Lightbulb className="w-4 h-4 text-blue-600" />
+                <h3 className="font-semibold text-blue-900">Why this works</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="font-medium text-blue-800">[P] Persona</span>
+                  <p className="text-blue-700 mt-1">{state.generatedPrompt.pctrBreakdown.persona}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-blue-800">[C] Context</span>
+                  <p className="text-blue-700 mt-1">{state.generatedPrompt.pctrBreakdown.context}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-blue-800">[T] Task</span>
+                  <p className="text-blue-700 mt-1">{state.generatedPrompt.pctrBreakdown.task}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-blue-800">[R] Requirements</span>
+                  <p className="text-blue-700 mt-1">{state.generatedPrompt.pctrBreakdown.requirements}</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* Tool suggestion (only if user was unsure) */}
+            {state.generatedPrompt.toolSuggestion && (
+              <Card className="p-4 bg-amber-50 border-amber-100">
+                <div className="flex items-start gap-3">
+                  <span className="text-xl">💡</span>
                   <div>
-                    <input 
-                      type="text"
-                      className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-900 bg-white placeholder:text-slate-400 shadow-sm"
-                      placeholder="Paste an existing prompt draft here..."
-                      value={existingDraft}
-                      onChange={(e) => setExistingDraft(e.target.value)}
-                    />
+                    <p className="font-medium text-amber-900">
+                      Tool tip: We recommend <span className="font-bold capitalize">{state.generatedPrompt.toolSuggestion.recommended}</span>
+                    </p>
+                    <p className="text-sm text-amber-700 mt-1">
+                      {state.generatedPrompt.toolSuggestion.reason}
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            )}
+
+            {/* === INVITATION TO GO DEEPER === */}
+            <Card className="p-6 bg-gradient-to-br from-violet-50 to-blue-50 border-violet-200">
+              <div className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-violet-600 shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-semibold text-violet-900 mb-2">
+                    Want to take this further?
+                  </h3>
+                  <p className="text-sm text-violet-700 mb-4">
+                    This sounds like it might be part of a bigger effort. I can help you think through the full process - showing where AI can help at each step, what's best handled by you, and where to watch out for common mistakes.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button onClick={() => handleWantGamePlan(true)}>
+                      Yes, help me think through this
+                    </Button>
+                    <Button variant="outline" onClick={() => handleWantGamePlan(false)}>
+                      No, the prompt is enough
+                    </Button>
                   </div>
                 </div>
               </div>
+            </Card>
+
+            {/* Action buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <Button variant="outline" onClick={handleStartOver} className="flex-1">
+                <RefreshCw className="w-4 h-4 mr-2" /> Start Over
+              </Button>
+              <Button
+                onClick={() => {
+                  const tool = state.generatedPrompt?.toolSuggestion?.recommended || state.tool;
+                  const urls: Record<string, string> = {
+                    chatgpt: 'https://chat.openai.com',
+                    claude: 'https://claude.ai',
+                    gemini: 'https://gemini.google.com',
+                    unsure: 'https://gemini.google.com',
+                  };
+                  window.open(urls[tool], '_blank');
+                }}
+                className="flex-1"
+              >
+                Open {state.generatedPrompt.toolSuggestion?.recommended || (state.tool === 'unsure' ? 'Gemini' : state.tool)}
+                <ExternalLink className="w-4 h-4 ml-2" />
+              </Button>
             </div>
           </div>
+        )}
 
-          {/* Card 2: Options */}
-          <div className={cardBase}>
-            <div className="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
-               <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs">2</div>
-               <h3 className="font-bold text-slate-900">Options</h3>
-            </div>
-
-            <div className="space-y-6">
-              
-              {/* Tool Selection */}
-              <div>
-                 <label className={labelStyles}>Which tool will you use?</label>
-                 <div className="grid grid-cols-2 gap-2">
-                    {[
-                      { id: 'chat', label: 'Chat', icon: <MessageSquare className="w-4 h-4"/> },
-                      { id: 'notebook', label: 'NotebookLM', icon: <Layers className="w-4 h-4"/> },
-                      { id: 'research', label: 'Research', icon: <Search className="w-4 h-4"/> },
-                      { id: 'workspace', label: 'Workspace', icon: <Zap className="w-4 h-4"/> },
-                    ].map(tool => (
-                      <button
-                        key={tool.id}
-                        type="button"
-                        onClick={() => setSelectedTool(tool.id as ModelEnv)}
-                        className={`flex items-center gap-2 p-2.5 rounded-lg border text-sm font-medium transition-all ${
-                          selectedTool === tool.id 
-                            ? 'bg-blue-50 border-blue-500 text-blue-700 ring-1 ring-blue-500' 
-                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                        }`}
-                      >
-                        {tool.icon} {tool.label}
-                      </button>
-                    ))}
-                 </div>
-              </div>
-
-              {/* Quality Settings */}
-              <div className="grid grid-cols-2 gap-4">
-                 <div>
-                    <label className={labelStyles}>Structure</label>
-                    <div className="space-y-2">
-                       {['light', 'medium', 'high'].map(lvl => (
-                         <label key={lvl} className="flex items-center gap-2 cursor-pointer group">
-                            <input 
-                              type="radio" 
-                              name="structure"
-                              className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300 bg-white"
-                              checked={structure === lvl}
-                              onChange={() => setStructure(lvl as any)}
-                            />
-                            <span className="text-sm text-slate-700 capitalize group-hover:text-slate-900">{lvl}</span>
-                         </label>
-                       ))}
-                    </div>
-                 </div>
-                 <div>
-                    <label className={labelStyles}>Reasoning</label>
-                    <div className="space-y-2">
-                       <label className="flex items-center gap-2 cursor-pointer group">
-                          <input 
-                            type="radio" 
-                            name="reasoning"
-                            className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-gray-300 bg-white"
-                            checked={reasoning === 'fast'}
-                            onChange={() => setReasoning('fast')}
-                          />
-                          <span className="text-sm text-slate-700 group-hover:text-slate-900">Fast / Simple</span>
-                       </label>
-                       <label className="flex items-center gap-2 cursor-pointer group">
-                          <input 
-                            type="radio" 
-                            name="reasoning"
-                            className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-gray-300 bg-white"
-                            checked={reasoning === 'deep'}
-                            onChange={() => setReasoning('deep')}
-                          />
-                          <span className="text-sm text-slate-700 group-hover:text-slate-900">Deep Reasoning</span>
-                       </label>
-                    </div>
-                 </div>
-              </div>
-
-              {/* Toggles */}
-              <div className="space-y-3 pt-2 border-t border-slate-100">
-                <label className="flex items-center justify-between cursor-pointer group">
-                   <div className="flex items-center gap-2">
-                      <div className={`p-1 rounded ${isSensitive ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-400'}`}>
-                        <AlertTriangle className="w-4 h-4" />
-                      </div>
-                      <span className="text-sm text-slate-700 group-hover:text-slate-900">Includes PII / Secrets</span>
-                   </div>
-                   <div className="relative inline-flex items-center cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        className="sr-only peer"
-                        checked={isSensitive}
-                        onChange={(e) => setIsSensitive(e.target.checked)}
-                      />
-                      <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-500"></div>
-                   </div>
-                </label>
-
-                <label className="flex items-center justify-between cursor-pointer group">
-                   <div className="flex items-center gap-2">
-                      <div className={`p-1 rounded ${selfCritique ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
-                        <CheckCircle2 className="w-4 h-4" />
-                      </div>
-                      <span className="text-sm text-slate-700 group-hover:text-slate-900">Include Self-Critique</span>
-                   </div>
-                   <div className="relative inline-flex items-center cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        className="sr-only peer"
-                        checked={selfCritique}
-                        onChange={(e) => setSelfCritique(e.target.checked)}
-                      />
-                      <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
-                   </div>
-                </label>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 flex items-start gap-2 animate-fade-in">
-              <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
-              {error}
-            </div>
-          )}
-
-          {/* Action Button */}
-          <Button 
-            onClick={handleGenerate}
-            isLoading={isGenerating} 
-            className="w-full h-12 text-base font-bold shadow-lg shadow-blue-900/10 hover:shadow-blue-900/20"
-            icon={<Wand2 className="w-5 h-5" />}
-          >
-            Generate my prompt template
-          </Button>
-        </div>
-
-        {/* RIGHT COLUMN: PREVIEW */}
-        <div className="lg:col-span-7 sticky top-8">
-          
-          {!output ? (
-            // EMPTY STATE
-            <div className="border-2 border-dashed border-slate-200 rounded-2xl p-12 text-center h-full flex flex-col items-center justify-center bg-slate-50/50 min-h-[600px]">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-6">
-                <Sparkles className="w-8 h-8 text-slate-300" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-400 mb-2">Ready to Build</h3>
-              <p className="text-slate-400 max-w-sm mx-auto text-sm">
-                Describe your task on the left and we will architect a professional prompt template for you.
+        {/* === STAGE 3: CLARIFYING QUESTIONS FOR GAME PLAN === */}
+        {state.stage === 'plan-questions' && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Context reminder */}
+            <div className="p-4 bg-violet-50 rounded-xl border border-violet-200">
+              <p className="text-sm text-violet-700">
+                <span className="font-medium">Building a game plan for:</span> {state.task}
               </p>
             </div>
-          ) : (
-            // RESULT STATE
-            <div className="space-y-6 animate-fade-in pb-12">
-              {/* Header */}
-              <div className="flex items-center justify-between">
-                <div>
-                   <h2 className="text-2xl font-bold text-slate-900">Your Template</h2>
-                   <p className="text-xs text-slate-500 mt-1">Generated by Gemini • {output.modelRecommendation}</p>
-                </div>
-                <div className="flex gap-2">
-                   <Badge variant={output.complexityLevel === 'Advanced' ? 'warning' : 'blue'}>
-                     {output.complexityLevel} Complexity
-                   </Badge>
-                </div>
-              </div>
-              
-              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-sm text-slate-700 italic">
-                <span className="font-bold text-slate-900 not-italic">Snapshot: </span> 
-                {output.taskSnapshot}
-              </div>
 
-              {/* System Prompt (Conditional) */}
-              {output.systemPromptTemplate && (
-                <div className="animate-slide-up">
-                  <div className="flex items-center justify-between mb-2 px-1">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                      <Settings className="w-3 h-3" /> System Instructions
-                    </span>
-                    <span className="text-[10px] text-slate-400">Optional</span>
-                  </div>
-                  <PromptCard 
-                    label="SYSTEM PROMPT" 
-                    prompt={output.systemPromptTemplate} 
-                  />
-                </div>
-              )}
-
-              {/* Task Prompt */}
-              <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                <div className="flex items-center justify-between mb-2 px-1">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                    <MessageSquare className="w-3 h-3" /> Task Prompt
-                  </span>
-                </div>
-                <PromptCard 
-                  label="TASK PROMPT" 
-                  prompt={output.taskPromptTemplate} 
-                />
-              </div>
-
-              {/* Metadata Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Card className="p-4 bg-purple-50 border-purple-100">
-                   <div className="flex items-center gap-2 mb-2 font-bold text-purple-700 text-xs uppercase">
-                     <BrainCircuit className="w-4 h-4" /> Mode Recommendation
-                   </div>
-                   <p className="text-sm font-bold text-slate-900">{output.modeRecommendation}</p>
-                   <p className="text-xs text-slate-600 mt-1">Best suited environment for this task.</p>
-                </Card>
-                <Card className="p-4 bg-emerald-50 border-emerald-100">
-                   <div className="flex items-center gap-2 mb-2 font-bold text-emerald-700 text-xs uppercase">
-                     <Layers className="w-4 h-4" /> Example Guidance
-                   </div>
-                   <p className="text-xs text-slate-700 leading-relaxed">{output.exampleGuidance}</p>
-                </Card>
-              </div>
-
-              {/* Follow ups */}
-              <div>
-                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Suggested Iterations</h4>
-                <div className="space-y-2">
-                   {output.followUpPrompts.map((prompt, i) => (
-                     <div key={i} className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg group hover:border-blue-300 transition-colors">
-                        <span className="text-sm text-slate-700 font-mono">{prompt}</span>
-                        <button 
-                          onClick={() => navigator.clipboard.writeText(prompt)}
-                          className="text-slate-300 hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <Copy className="w-4 h-4" />
-                        </button>
-                     </div>
-                   ))}
-                </div>
-              </div>
-
-              {/* Reasoning Toggle */}
-              <div className="border-t border-slate-200 pt-6 mt-6">
-                <button 
-                  onClick={() => setShowReasoning(!showReasoning)}
-                  className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors"
-                >
-                  <Lightbulb className="w-4 h-4" />
-                  {showReasoning ? "Hide Generator Logic" : "Show Generator Logic"}
-                  <ChevronRight className={`w-4 h-4 transition-transform ${showReasoning ? 'rotate-90' : ''}`} />
-                </button>
-                
-                {showReasoning && (
-                  <div className="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200 text-sm text-slate-700 animate-fade-in leading-relaxed">
-                    <p className="mb-2 font-bold text-slate-900">Why this structure?</p>
-                    <p>{output.reasoning}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-4 pt-4">
-                <Button variant="outline" onClick={() => {
-                   setTaskDescription('');
-                   setExistingDraft('');
-                   setOutput(null);
-                }} className="w-full">
-                  <RefreshCw className="w-4 h-4 mr-2" /> Start Over
-                </Button>
-                <Button onClick={() => window.open('https://gemini.google.com', '_blank')} className="w-full">
-                  Open Gemini <ChevronRight className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-
+            <div>
+              <h2 className="text-xl font-bold text-slate-900 mb-2">
+                A few more questions to make your game plan as useful as possible.
+              </h2>
+              <p className="text-sm text-slate-500">
+                The more detail you give, the more tailored this will be.
+              </p>
             </div>
-          )}
-        </div>
+
+            {/* Question 1: Success Criteria */}
+            <Card className="p-5">
+              <h3 className="font-semibold text-slate-900 mb-2">
+                You mentioned this is for {state.audience}. What would make this successful in their eyes?
+              </h3>
+              <p className="text-sm text-slate-500 mb-3">What are they hoping to learn or decide?</p>
+              <textarea
+                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-900 bg-white placeholder:text-slate-400 min-h-[100px] resize-none"
+                placeholder="They want to understand the competitive landscape and make a decision about our positioning..."
+                value={state.planQuestions.successCriteria}
+                onChange={(e) => updatePlanQuestions({ successCriteria: e.target.value })}
+              />
+            </Card>
+
+            {/* Question 2: Starting Point */}
+            <Card className="p-5">
+              <h3 className="font-semibold text-slate-900 mb-2">
+                What do you already have to work with, and what will you need to figure out?
+              </h3>
+              <p className="text-sm text-slate-500 mb-3">Data you have, research you've done, gaps you know about</p>
+              <textarea
+                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-900 bg-white placeholder:text-slate-400 min-h-[100px] resize-none"
+                placeholder="I have last quarter's sales data and some competitor pricing info. I still need to research their recent product launches..."
+                value={state.planQuestions.startingPoint}
+                onChange={(e) => updatePlanQuestions({ startingPoint: e.target.value })}
+              />
+            </Card>
+
+            {/* Question 3: Constraints */}
+            <Card className="p-5">
+              <h3 className="font-semibold text-slate-900 mb-2">
+                Anything else I should know?
+              </h3>
+              <p className="text-sm text-slate-500 mb-3">Timeline, tools you can or can't use, specific constraints, format requirements</p>
+              <textarea
+                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-slate-900 bg-white placeholder:text-slate-400 min-h-[80px] resize-none"
+                placeholder="I need this by Friday. I have access to ChatGPT and Perplexity. Should be a slide deck format..."
+                value={state.planQuestions.constraints}
+                onChange={(e) => updatePlanQuestions({ constraints: e.target.value })}
+              />
+            </Card>
+
+            {state.error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+                {state.error}
+              </div>
+            )}
+
+            <div className="flex justify-between pt-4">
+              <Button variant="outline" onClick={() => goToStage('prompt-output')}>
+                <ArrowLeft className="w-4 h-4 mr-2" /> Back to Prompt
+              </Button>
+              <Button
+                onClick={handleGenerateGamePlan}
+                isLoading={state.isLoading}
+                className="px-6"
+              >
+                Build My Game Plan <Sparkles className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* === STAGE 4: GENERATING === */}
+        {state.stage === 'plan-generating' && (
+          <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
+            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-6" />
+            <h2 className="text-xl font-semibold text-slate-900 mb-2">Building your game plan...</h2>
+            <p className="text-slate-500 text-center max-w-md">
+              Analyzing your context, matching to the best workflow pattern, and creating step-by-step guidance.
+            </p>
+          </div>
+        )}
+
+        {/* === STAGE 5: PLAN VIEW === */}
+        {state.stage === 'plan-view' && state.gamePlan && (
+          <GamePlanView
+            plan={state.gamePlan}
+            onRefine={() => goToStage('refinement')}
+            onStartOver={handleStartOver}
+          />
+        )}
+
+        {/* === STAGE 6: REFINEMENT CHAT === */}
+        {state.stage === 'refinement' && state.gamePlan && (
+          <RefinementChat
+            plan={state.gamePlan}
+            messages={state.refinementMessages}
+            onMessagesUpdate={(messages) => updateState({ refinementMessages: messages })}
+            onBack={() => goToStage('plan-view')}
+          />
+        )}
       </div>
     </PageLayout>
   );
