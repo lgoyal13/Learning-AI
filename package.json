@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "AI coaching platform that helps professionals get better results from AI tools like ChatGPT, Claude, and Gemini",
   "author": "Aditya Goyal",
-  "license": "MIT",
+  "license": "UNLICENSED",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/lgoyal13/Learning-AI"
