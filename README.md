@@ -16,4 +16,4 @@ React 19, TypeScript, Vite, Tailwind CSS, Google Gemini API
 
 ---
 
-*This is a portfolio project by Aditya Goyal. Not open for contributions.*
+*This is a portfolio project by Aditya Goyal.*
