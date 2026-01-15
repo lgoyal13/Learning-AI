@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, ArrowRight, Lightbulb, User, FileText, Target, ListChecks } from 'lucide-react';
-import { evaluatePrompt } from '../app/services/geminiService';
-import { PromptEvaluationOutput, PCTRDimension } from '../app/types';
+import { evaluatePrompt } from '../services/geminiService';
+import { PromptEvaluationOutput, PCTRDimension } from '../types';
 import { Button, Card, Badge, PromptCard, Callout } from './ui';
 
 interface PCTRCardProps {
