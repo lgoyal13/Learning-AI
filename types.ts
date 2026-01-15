@@ -111,6 +111,35 @@ export interface SimpleGeneratorOutput {
   };
 }
 
+// --- Coach Question Types ---
+
+export interface QuestionOption {
+  label: string;
+  value: string;
+}
+
+export interface CoachQuestionConfig {
+  question: string;
+  options: QuestionOption[];
+  allowSkip?: boolean;
+  allowCustom?: boolean;
+}
+
+// --- Smart Input Extraction Types ---
+
+export interface ExtractedContext {
+  audience: string | null;      // Extracted audience (e.g., "VP" → "Senior leadership team")
+  audienceMatch: string | null; // Which preset option it matches (e.g., "Leadership")
+  goal: string | null;          // Extracted goal (e.g., "summarize" → "Inform and share information clearly")
+  goalMatch: string | null;     // Which preset option it matches (e.g., "Inform")
+  tool: AITool | null;          // If a specific tool was mentioned
+  confidence: {
+    audience: number;           // 0-100 confidence score
+    goal: number;
+    tool: number;
+  };
+}
+
 // --- Game Plan Generator Types ---
 
 export type GamePlanStage =
@@ -194,4 +223,57 @@ export interface GeneratorFlowState {
   isLoading: boolean;
   error: string | null;
   copied: boolean;
+}
+
+// --- Task Planner Types ---
+
+export type TaskPlannerPhase = 'input' | 'understanding' | 'questions' | 'generating' | 'output';
+export type StepWho = 'you' | 'you-ai' | 'ai';
+
+export interface TaskUnderstanding {
+  deliverables: string[];      // What they're creating
+  inputs: string[];            // What they have to work with
+  audience: string | null;     // Who it's for
+  timeline: string | null;     // When they need it
+  constraints: string[];       // Any limitations mentioned
+}
+
+export interface ClarifyingQuestion {
+  id: string;
+  question: string;
+  options: { label: string; value: string }[];
+  allowCustom: boolean;
+}
+
+export interface TaskPlanStep {
+  number: number;
+  title: string;
+  who: StepWho;
+  timeMinutes: number;
+  tool: string | null;
+  description: string;
+  whyThisStep: string;
+  prompt: string | null;
+  promptCaveat: string | null;  // Warning for human steps
+}
+
+export interface TaskPlan {
+  title: string;
+  summary: string;
+  totalTimeMinutes: number;
+  stepCount: number;
+  steps: TaskPlanStep[];
+}
+
+export interface TaskPlannerState {
+  userInput: string;
+  understanding: TaskUnderstanding | null;
+  clarifyingQuestions: ClarifyingQuestion[];
+  answers: Record<string, string>;
+  complexity: 'simple' | 'multi-step' | null;
+  plan: TaskPlan | null;
+  singlePrompt: string | null;  // For simple tasks
+  currentPhase: TaskPlannerPhase;
+  isLoading: boolean;
+  error: string | null;
 }

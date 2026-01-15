@@ -30,6 +30,7 @@ import AdvancedPage from './app/advanced/page';
 import PromptRefinerPage from './app/prompt-refiner/page';
 import WorkflowsPage from './app/workflows/page';
 import { WorkflowGuide } from './components/WorkflowGuide';
+import TaskPlannerPage from './app/task-planner/page';
 
 const RouteHandler = () => {
   const { path } = useRouter();
@@ -65,6 +66,7 @@ const RouteHandler = () => {
 
   // Phase 3: Core Tools
   if (cleanPath === '/prompt-refiner') return <PromptRefinerPage />;
+  if (cleanPath === '/task-planner') return <TaskPlannerPage />;
   if (cleanPath === '/workflows') return <WorkflowsPage />;
   if (cleanPath.startsWith('/workflows/')) {
     const workflowId = cleanPath.replace('/workflows/', '');

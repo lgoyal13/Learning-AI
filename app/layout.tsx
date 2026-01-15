@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from '../lib/routerContext';
-import { LayoutDashboard, Zap, BookOpen, Book, Menu, X, ShieldCheck, Sparkles, Wand2, Route } from 'lucide-react';
+import { LayoutDashboard, Zap, BookOpen, Book, Menu, X, ShieldCheck, Sparkles, Wand2, Route, MessageSquare } from 'lucide-react';
 
 export default function RootLayout({ children }: { children?: React.ReactNode }) {
   const { path, push } = useRouter();
@@ -42,6 +42,7 @@ export default function RootLayout({ children }: { children?: React.ReactNode })
         <nav className="flex-1 p-4 space-y-1">
           <NavItem href="/" icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" />
           <NavItem href="/quick-start" icon={<Zap className="w-5 h-5" />} label="Quick Start" />
+          <NavItem href="/task-planner" icon={<MessageSquare className="w-5 h-5" />} label="Task Planner" />
           <NavItem href="/workflows" icon={<Route className="w-5 h-5" />} label="Workflows" />
           <NavItem href="/generator" icon={<Sparkles className="w-5 h-5" />} label="Prompt Generator" />
           <NavItem href="/prompt-refiner" icon={<Wand2 className="w-5 h-5" />} label="Prompt Refiner" />
@@ -79,6 +80,7 @@ export default function RootLayout({ children }: { children?: React.ReactNode })
            <nav className="space-y-2">
             <NavItem href="/" icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" />
             <NavItem href="/quick-start" icon={<Zap className="w-5 h-5" />} label="Quick Start" />
+            <NavItem href="/task-planner" icon={<MessageSquare className="w-5 h-5" />} label="Task Planner" />
             <NavItem href="/workflows" icon={<Route className="w-5 h-5" />} label="Workflows" />
             <NavItem href="/generator" icon={<Sparkles className="w-5 h-5" />} label="Prompt Generator" />
             <NavItem href="/prompt-refiner" icon={<Wand2 className="w-5 h-5" />} label="Prompt Refiner" />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Card } from '../components/ui';
 import { useRouter } from '../lib/routerContext';
-import { Wand2, Sparkles, ArrowRight } from 'lucide-react';
+import { Wand2, Sparkles, ArrowRight, MessageSquare } from 'lucide-react';
 
 export default function Page() {
   const { push } = useRouter();
@@ -21,23 +21,52 @@ export default function Page() {
           </p>
         </div>
 
-        {/* Two Path Cards */}
+        {/* Primary CTA: Task Planner */}
+        <div
+          className="w-full max-w-3xl mb-6 p-8 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-white cursor-pointer group hover:shadow-xl transition-all"
+          onClick={() => push('/task-planner')}
+        >
+          <div className="flex flex-col md:flex-row md:items-center gap-6">
+            <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+              <MessageSquare className="w-7 h-7" />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold mb-2">Plan a task with AI guidance</h2>
+              <p className="text-blue-100 leading-relaxed">
+                Tell me what you're trying to accomplish. I'll create a step-by-step plan showing where AI can help, what's best handled by you, and common pitfalls to avoid.
+              </p>
+            </div>
+            <Button
+              className="bg-white text-blue-700 hover:bg-blue-50 flex-shrink-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                push('/task-planner');
+              }}
+            >
+              Start planning
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Secondary Options */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl mb-12">
 
-          {/* Card 1: Fix a Prompt (Refiner) - Recommended */}
+          {/* Card 1: Fix a Prompt (Refiner) */}
           <Card
-            className="p-8 border-2 border-blue-200 bg-blue-50/30 hover:border-blue-400 hover:shadow-lg transition-all cursor-pointer group"
+            className="p-6 border-2 border-slate-200 hover:border-slate-300 hover:shadow-lg transition-all cursor-pointer group"
             onClick={() => push('/prompt-refiner')}
           >
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-5 group-hover:scale-110 transition-transform">
-              <Wand2 className="w-6 h-6" />
+            <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600 mb-4 group-hover:scale-110 transition-transform">
+              <Wand2 className="w-5 h-5" />
             </div>
-            <h2 className="text-xl font-bold text-slate-900 mb-2">Fix a prompt</h2>
-            <p className="text-slate-600 mb-6 leading-relaxed">
-              AI not giving you what you want? Paste your prompt and we'll show you exactly how to improve it.
+            <h2 className="text-lg font-bold text-slate-900 mb-2">Fix a prompt</h2>
+            <p className="text-slate-600 text-sm mb-5 leading-relaxed">
+              AI not giving you what you want? Paste your prompt and we'll show you how to improve it.
             </p>
             <Button
-              className="w-full group-hover:bg-blue-700"
+              variant="outline"
+              className="w-full"
               onClick={(e) => {
                 e.stopPropagation();
                 push('/prompt-refiner');
@@ -50,19 +79,19 @@ export default function Page() {
 
           {/* Card 2: Build a Prompt (Generator) */}
           <Card
-            className="p-8 border-2 border-slate-200 hover:border-slate-300 hover:shadow-lg transition-all cursor-pointer group"
+            className="p-6 border-2 border-slate-200 hover:border-slate-300 hover:shadow-lg transition-all cursor-pointer group"
             onClick={() => push('/generator')}
           >
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600 mb-5 group-hover:scale-110 transition-transform">
-              <Sparkles className="w-6 h-6" />
+            <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600 mb-4 group-hover:scale-110 transition-transform">
+              <Sparkles className="w-5 h-5" />
             </div>
-            <h2 className="text-xl font-bold text-slate-900 mb-2">Build a prompt</h2>
-            <p className="text-slate-600 mb-6 leading-relaxed">
+            <h2 className="text-lg font-bold text-slate-900 mb-2">Build a prompt</h2>
+            <p className="text-slate-600 text-sm mb-5 leading-relaxed">
               Starting fresh? Describe your task and we'll create an expert prompt for any AI tool.
             </p>
             <Button
-              variant="secondary"
-              className="w-full group-hover:bg-slate-200"
+              variant="outline"
+              className="w-full"
               onClick={(e) => {
                 e.stopPropagation();
                 push('/generator');

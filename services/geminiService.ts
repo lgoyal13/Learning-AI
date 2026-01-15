@@ -8,13 +8,18 @@ import {
   GamePlanGeneratorInput,
   GeneratedGamePlan,
   GeneratedStep,
-  RefinementMessage
+  RefinementMessage,
+  TaskUnderstanding,
+  ClarifyingQuestion,
+  TaskPlan,
+  TaskPlanStep,
+  StepWho
 } from "../types";
 
 // Initialize the client with the API key from the environment.
-// Note: In a production client-side app, this key should be proxied through a backend.
-// For this environment, we assume process.env.API_KEY is available and safe to use.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Users must create a .env file with their own VITE_GEMINI_API_KEY.
+// Get a free API key at: https://aistudio.google.com/apikey
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
 /**
  * Generates a structured prompt template based on user inputs.
@@ -483,11 +488,35 @@ export const generateSimplePrompt = async (input: SimpleGeneratorInput): Promise
 
   const systemInstruction = `You are an expert Prompt Engineer. Create an optimized prompt from the user's inputs.
 
+### Output Format
+Generate prompts with this EXACT markdown structure:
+\`\`\`
+**ROLE**
+[Specific expert persona - be specific, not generic like "helpful assistant"]
+
+**CONTEXT**
+- [Situation - what's happening]
+- [What you have - inputs, materials]
+- [Constraints - requirements, limitations]
+- [Audience - who this is for]
+
+**TASK**
+[Clear, specific instruction - what exactly to do. Use bullet points for multiple items]
+
+**FORMAT**
+[How output should be structured - bullets, sections, length]
+
+**INPUT**
+[INSERT: Clear description of what to paste here]
+\`\`\`
+
 ### Guidelines
-1. **Structure using PCTR**: Persona (who the AI should be), Context (background/audience), Task (specific deliverable), Requirements (format/constraints)
-2. **Be specific**: Replace vague requests with clear deliverables
-3. **Include format constraints**: Prevent rambling with clear structure expectations
-4. **Sound professional**: The prompt should read like an expert wrote it
+1. Use markdown formatting (bold headers, bullets, whitespace)
+2. Be specific - "Extract top 5 trends" not "summarize"
+3. Be bounded - Clear scope, not open-ended
+4. Actionable output - Specify format user can actually use
+5. [INSERT: description] markers - Make gaps explicit with clear descriptions
+6. Sound professional - The prompt should read like an expert wrote it
 
 ### Tool Suggestion (only if user is unsure)
 If the user selected "unsure" for their tool, recommend the best one:
@@ -496,7 +525,7 @@ If the user selected "unsure" for their tool, recommend the best one:
 - **Gemini**: Best for research tasks, large context, multimodal tasks, current information
 
 ### PCTR Breakdown
-For each element, write ONE sentence explaining what it contributes to the prompt's effectiveness.`;
+For each element (persona=ROLE, context=CONTEXT, task=TASK, requirements=FORMAT), write ONE sentence explaining what it contributes to the prompt's effectiveness.`;
 
   try {
     const contents = `Generate an expert prompt from these inputs:
@@ -900,6 +929,835 @@ ${messages.map(m => `${m.role}: ${m.content}`).join('\n')}`;
     console.error("Gemini Refinement Error:", error);
     return {
       response: "I had trouble processing that. Could you try rephrasing?"
+    };
+  }
+};
+
+// ============================================================================
+// SMART INPUT EXTRACTION
+// ============================================================================
+
+/**
+ * Extracted context from user's task input
+ */
+export interface ExtractedContext {
+  audience: string | null;
+  audienceMatch: string | null;
+  goal: string | null;
+  goalMatch: string | null;
+  tool: 'chatgpt' | 'claude' | 'gemini' | null;
+  confidence: {
+    audience: number;
+    goal: number;
+    tool: number;
+  };
+}
+
+/**
+ * Extracts context from user's initial task input.
+ * Identifies audience, goal, and tool mentions to pre-fill questions.
+ */
+export const extractContextFromInput = async (
+  input: string
+): Promise<ExtractedContext> => {
+  const model = "gemini-2.5-flash";
+
+  const responseSchema: Schema = {
+    type: Type.OBJECT,
+    properties: {
+      audience: {
+        type: Type.STRING,
+        description: "The audience mentioned in the input, or null if not mentioned"
+      },
+      audienceMatch: {
+        type: Type.STRING,
+        enum: ["Board/Execs", "Leadership", "Team", "Clients"],
+        description: "Which preset option best matches the audience"
+      },
+      goal: {
+        type: Type.STRING,
+        description: "The goal/purpose mentioned in the input, or null if not clear"
+      },
+      goalMatch: {
+        type: Type.STRING,
+        enum: ["Inform", "Persuade", "Analyze", "Get approval"],
+        description: "Which preset option best matches the goal"
+      },
+      tool: {
+        type: Type.STRING,
+        enum: ["chatgpt", "claude", "gemini"],
+        description: "If a specific AI tool was mentioned"
+      },
+      confidenceAudience: {
+        type: Type.NUMBER,
+        description: "Confidence in audience extraction (0-100)"
+      },
+      confidenceGoal: {
+        type: Type.NUMBER,
+        description: "Confidence in goal extraction (0-100)"
+      },
+      confidenceTool: {
+        type: Type.NUMBER,
+        description: "Confidence in tool extraction (0-100)"
+      }
+    },
+    required: ["confidenceAudience", "confidenceGoal", "confidenceTool"]
+  };
+
+  const systemInstruction = `You extract context from a user's task description to pre-fill form questions.
+
+### Audience Detection
+Look for mentions of WHO this is for:
+- "for my VP", "for the VP" → Leadership (75%+ confidence)
+- "for the board", "board presentation" → Board/Execs (80%+ confidence)
+- "for my team", "team meeting" → Team (75%+ confidence)
+- "for clients", "customer-facing" → Clients (75%+ confidence)
+- Titles like "VP", "director", "manager" → Leadership
+- "executives", "C-suite" → Board/Execs
+
+### Goal Detection
+Look for the PURPOSE of the task:
+- "summarize", "report on", "share", "present" → Inform
+- "convince", "propose", "recommend", "advocate" → Persuade
+- "analyze", "compare", "evaluate", "assess" → Analyze
+- "get approval", "budget request", "sign-off" → Get approval
+
+### Tool Detection
+Look for specific tool mentions:
+- "ChatGPT", "GPT" → chatgpt
+- "Claude" → claude
+- "Gemini" → gemini
+
+### Confidence Guidelines
+- 80-100: Explicit mention (e.g., "for my VP" → 85%)
+- 50-79: Implied but not explicit
+- 0-49: Guessing or very weak signal
+
+Be conservative. Only return high confidence when there's clear evidence.`;
+
+  try {
+    const result = await ai.models.generateContent({
+      model,
+      contents: `Extract context from this task description:\n\n"${input}"`,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: responseSchema,
+        systemInstruction: systemInstruction,
+        temperature: 0.1,
+      }
+    });
+
+    const text = result.text;
+    if (!text) throw new Error("No response from Gemini.");
+
+    const data = JSON.parse(text);
+
+    return {
+      audience: data.audience || null,
+      audienceMatch: data.audienceMatch || null,
+      goal: data.goal || null,
+      goalMatch: data.goalMatch || null,
+      tool: data.tool || null,
+      confidence: {
+        audience: Math.min(100, Math.max(0, data.confidenceAudience || 0)),
+        goal: Math.min(100, Math.max(0, data.confidenceGoal || 0)),
+        tool: Math.min(100, Math.max(0, data.confidenceTool || 0)),
+      }
+    };
+
+  } catch (error) {
+    console.error("Gemini Context Extraction Error:", error);
+
+    // Fallback: Simple keyword-based extraction
+    const inputLower = input.toLowerCase();
+    let audience: string | null = null;
+    let audienceMatch: string | null = null;
+    let audienceConfidence = 0;
+
+    if (inputLower.includes('board') || inputLower.includes('executive')) {
+      audience = 'Board/executives';
+      audienceMatch = 'Board/Execs';
+      audienceConfidence = 70;
+    } else if (inputLower.includes('vp') || inputLower.includes('leadership') || inputLower.includes('director')) {
+      audience = 'Leadership';
+      audienceMatch = 'Leadership';
+      audienceConfidence = 75;
+    } else if (inputLower.includes('team') || inputLower.includes('colleague')) {
+      audience = 'Team';
+      audienceMatch = 'Team';
+      audienceConfidence = 70;
+    } else if (inputLower.includes('client') || inputLower.includes('customer')) {
+      audience = 'Clients';
+      audienceMatch = 'Clients';
+      audienceConfidence = 70;
+    }
+
+    let goal: string | null = null;
+    let goalMatch: string | null = null;
+    let goalConfidence = 0;
+
+    if (inputLower.includes('analyze') || inputLower.includes('analysis')) {
+      goal = 'Analyze';
+      goalMatch = 'Analyze';
+      goalConfidence = 70;
+    } else if (inputLower.includes('persuade') || inputLower.includes('recommend')) {
+      goal = 'Persuade';
+      goalMatch = 'Persuade';
+      goalConfidence = 65;
+    } else if (inputLower.includes('approval') || inputLower.includes('sign-off')) {
+      goal = 'Get approval';
+      goalMatch = 'Get approval';
+      goalConfidence = 70;
+    }
+
+    return {
+      audience,
+      audienceMatch,
+      goal,
+      goalMatch,
+      tool: null,
+      confidence: {
+        audience: audienceConfidence,
+        goal: goalConfidence,
+        tool: 0,
+      }
+    };
+  }
+};
+
+// ============================================================================
+// COMPLEXITY DETECTION
+// ============================================================================
+
+/**
+ * Complexity assessment result
+ */
+export interface ComplexityAssessment {
+  complexity: 'simple' | 'multi-step';
+  confidence: number;
+  signals: string[];
+  bridgeMessage: string | null;
+}
+
+/**
+ * Assesses whether a task is simple (single prompt) or multi-step (needs planning).
+ * Used to determine whether to show the bridge to Task Planner.
+ */
+export const assessComplexity = async (
+  task: string,
+  context?: { audience?: string; goal?: string }
+): Promise<ComplexityAssessment> => {
+  const model = "gemini-2.5-flash";
+
+  const responseSchema: Schema = {
+    type: Type.OBJECT,
+    properties: {
+      complexity: {
+        type: Type.STRING,
+        enum: ["simple", "multi-step"],
+        description: "Whether this task can be done with a single prompt or needs multiple steps"
+      },
+      confidence: {
+        type: Type.NUMBER,
+        description: "How confident in this assessment (0-100)"
+      },
+      signals: {
+        type: Type.ARRAY,
+        items: { type: Type.STRING },
+        description: "What signals led to this assessment (1-3 items)"
+      },
+      bridgeMessage: {
+        type: Type.STRING,
+        description: "If multi-step, a brief message explaining why planning would help. Null if simple."
+      }
+    },
+    required: ["complexity", "confidence", "signals"]
+  };
+
+  const systemInstruction = `You assess whether a task is simple (single prompt) or multi-step (needs planning).
+
+### SIMPLE tasks (single prompt):
+- Single deliverable (one email, one summary, one draft)
+- Clear, bounded scope
+- No source documents to process
+- User seems confident about what they need
+
+Examples: "Write an email about X", "Summarize this article", "Draft feedback for Y"
+
+### MULTI-STEP tasks (needs planning):
+- Multiple deliverables ("report AND presentation", "doc AND slides")
+- Source document processing ("from these 12 docs", "synthesize", "consolidate")
+- Sequential dependency ("first X, then Y", "after I do X")
+- Vague/unclear path (user seems unsure)
+- Research + synthesis required
+
+Examples: "Create annual report from monthly data", "Research competitors and build recommendations", "Prepare board presentation from Q4 data"
+
+### Response Guidelines:
+- Err on the side of "simple" for borderline cases
+- Only mark as "multi-step" when there are clear signals
+- Bridge message should be conversational, mentioning what they said that triggered this
+- Keep signals brief (3-5 words each)`;
+
+  try {
+    const inputContent = context
+      ? `Task: ${task}\nAudience: ${context.audience || 'Not specified'}\nGoal: ${context.goal || 'Not specified'}`
+      : `Task: ${task}`;
+
+    const result = await ai.models.generateContent({
+      model,
+      contents: `Assess this task's complexity:\n\n${inputContent}`,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: responseSchema,
+        systemInstruction: systemInstruction,
+        temperature: 0.1, // Very low for consistent assessment
+      }
+    });
+
+    const text = result.text;
+    if (!text) throw new Error("No response from Gemini.");
+
+    const data = JSON.parse(text);
+
+    return {
+      complexity: data.complexity || 'simple',
+      confidence: Math.min(100, Math.max(0, data.confidence || 70)),
+      signals: Array.isArray(data.signals) ? data.signals.slice(0, 3) : [],
+      bridgeMessage: data.complexity === 'multi-step' ? data.bridgeMessage : null
+    };
+
+  } catch (error) {
+    console.error("Gemini Complexity Assessment Error:", error);
+
+    // Fallback: simple keyword-based detection
+    const taskLower = task.toLowerCase();
+    const multiStepSignals: string[] = [];
+
+    if (taskLower.includes(' and ') && (taskLower.includes('report') || taskLower.includes('presentation') || taskLower.includes('doc'))) {
+      multiStepSignals.push('Multiple deliverables');
+    }
+    if (taskLower.match(/\d+\s*(doc|report|file|sheet)/)) {
+      multiStepSignals.push('Source documents to process');
+    }
+    if (taskLower.includes('first') && taskLower.includes('then')) {
+      multiStepSignals.push('Sequential steps mentioned');
+    }
+    if (taskLower.includes('research') && (taskLower.includes('recommend') || taskLower.includes('analysis'))) {
+      multiStepSignals.push('Research + synthesis');
+    }
+
+    const isMultiStep = multiStepSignals.length >= 1;
+
+    return {
+      complexity: isMultiStep ? 'multi-step' : 'simple',
+      confidence: 50,
+      signals: multiStepSignals.length > 0 ? multiStepSignals : ['Single deliverable'],
+      bridgeMessage: isMultiStep
+        ? "This looks like it might need multiple steps. Want help planning the approach?"
+        : null
+    };
+  }
+};
+
+// ============================================================================
+// TASK PLANNER SERVICES
+// ============================================================================
+
+/**
+ * Analyzes user input and extracts structured understanding of their task.
+ * This powers the "Here's what I'm hearing" card in Task Planner.
+ */
+export const analyzeTaskForPlanning = async (input: string): Promise<TaskUnderstanding> => {
+  const model = "gemini-2.5-flash";
+
+  const responseSchema: Schema = {
+    type: Type.OBJECT,
+    properties: {
+      deliverables: {
+        type: Type.ARRAY,
+        items: { type: Type.STRING },
+        description: "What the user is trying to create (e.g., 'Annual report', 'Executive presentation')"
+      },
+      inputs: {
+        type: Type.ARRAY,
+        items: { type: Type.STRING },
+        description: "What they have to work with (e.g., '12 monthly reviews', 'Q4 data')"
+      },
+      audience: {
+        type: Type.STRING,
+        description: "Who this is for (e.g., 'VP', 'Board', 'Team'). Return null if not mentioned."
+      },
+      timeline: {
+        type: Type.STRING,
+        description: "When they need it (e.g., 'by Friday', 'end of week'). Return null if not mentioned."
+      },
+      constraints: {
+        type: Type.ARRAY,
+        items: { type: Type.STRING },
+        description: "Any limitations or requirements mentioned (e.g., 'must be concise', 'formal tone')"
+      }
+    },
+    required: ["deliverables", "inputs", "constraints"]
+  };
+
+  const systemInstruction = `You extract structured understanding from a user's task description.
+
+### What to Extract
+
+1. **Deliverables**: What are they creating? Look for:
+   - Document types: report, presentation, email, proposal
+   - Specific outputs: "annual summary", "board deck", "competitor analysis"
+   - Multiple items: "report AND presentation" → two deliverables
+
+2. **Inputs**: What do they have to work with? Look for:
+   - Source materials: "from 12 monthly reports", "using Q4 data"
+   - Reference documents: "based on the strategy doc"
+   - Data sources: "our CRM data", "survey results"
+
+3. **Audience**: Who is this for? Look for:
+   - Titles: VP, director, board, executives, team
+   - Descriptions: "my boss", "leadership", "clients"
+
+4. **Timeline**: When do they need it? Look for:
+   - Specific dates: "by Friday", "before Monday"
+   - Relative: "this week", "ASAP", "next meeting"
+
+5. **Constraints**: Any requirements or limitations? Look for:
+   - Format: "one page", "10 slides max"
+   - Tone: "formal", "casual", "executive-ready"
+   - Other: "no jargon", "include data visualizations"
+
+### Guidelines
+- Be specific, not generic
+- If something isn't mentioned, use empty array or null
+- Don't infer too much - only extract what's clearly stated or strongly implied`;
+
+  try {
+    const result = await ai.models.generateContent({
+      model,
+      contents: `Extract task understanding from this description:\n\n"${input}"`,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: responseSchema,
+        systemInstruction: systemInstruction,
+        temperature: 0.1,
+      }
+    });
+
+    const text = result.text;
+    if (!text) throw new Error("No response from Gemini.");
+
+    const data = JSON.parse(text);
+
+    return {
+      deliverables: Array.isArray(data.deliverables) ? data.deliverables : [],
+      inputs: Array.isArray(data.inputs) ? data.inputs : [],
+      audience: data.audience || null,
+      timeline: data.timeline || null,
+      constraints: Array.isArray(data.constraints) ? data.constraints : []
+    };
+
+  } catch (error) {
+    console.error("Gemini Task Analysis Error:", error);
+
+    // Fallback: basic extraction
+    const inputLower = input.toLowerCase();
+    const deliverables: string[] = [];
+    const inputs: string[] = [];
+
+    // Extract deliverables from keywords
+    if (inputLower.includes('report')) deliverables.push('Report');
+    if (inputLower.includes('presentation')) deliverables.push('Presentation');
+    if (inputLower.includes('email')) deliverables.push('Email');
+    if (inputLower.includes('analysis')) deliverables.push('Analysis');
+    if (deliverables.length === 0) deliverables.push('Document');
+
+    // Extract inputs from patterns
+    const monthMatch = input.match(/(\d+)\s*month/i);
+    if (monthMatch) inputs.push(`${monthMatch[1]} monthly documents`);
+    if (inputLower.includes('data')) inputs.push('Data');
+
+    // Extract audience
+    let audience: string | null = null;
+    if (inputLower.includes('vp') || inputLower.includes('leadership')) audience = 'VP/Leadership';
+    else if (inputLower.includes('board')) audience = 'Board';
+    else if (inputLower.includes('team')) audience = 'Team';
+
+    return {
+      deliverables,
+      inputs,
+      audience,
+      timeline: null,
+      constraints: []
+    };
+  }
+};
+
+/**
+ * Generates 0-2 clarifying questions based on gaps in understanding.
+ * CRITICAL: Maximum 2 questions - never exceed this.
+ */
+export const generateClarifyingQuestions = async (
+  understanding: TaskUnderstanding
+): Promise<ClarifyingQuestion[]> => {
+  const model = "gemini-2.5-flash";
+
+  const questionSchema: Schema = {
+    type: Type.OBJECT,
+    properties: {
+      id: { type: Type.STRING },
+      question: { type: Type.STRING },
+      options: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            label: { type: Type.STRING },
+            value: { type: Type.STRING }
+          },
+          required: ["label", "value"]
+        }
+      },
+      allowCustom: { type: Type.BOOLEAN }
+    },
+    required: ["id", "question", "options", "allowCustom"]
+  };
+
+  const responseSchema: Schema = {
+    type: Type.OBJECT,
+    properties: {
+      questions: {
+        type: Type.ARRAY,
+        items: questionSchema,
+        description: "0-2 clarifying questions. Return empty array if understanding is complete."
+      }
+    },
+    required: ["questions"]
+  };
+
+  const systemInstruction = `You generate clarifying questions to improve a task plan.
+
+### CRITICAL RULES
+- Return 0-2 questions MAXIMUM. Never return more than 2.
+- If the understanding is already complete enough to generate a good plan, return NO questions (empty array).
+- Only ask what truly matters for creating a better plan.
+
+### When to Ask Questions
+
+Ask about **main message/narrative** if:
+- Multiple deliverables mentioned
+- High-stakes audience (board, executives)
+- User creating summary/synthesis
+
+Ask about **polish level** if:
+- Audience not clear on formality needs
+- Could be internal draft vs. final deliverable
+
+Ask about **timeline/priority** if:
+- Multiple deliverables with unclear priorities
+- Scope seems large
+
+### Question Format
+- Questions should feel like a smart colleague asking for clarification
+- Provide 3-4 chip options + allow custom input
+- Options should be practical, not generic
+
+### What NOT to Ask
+- Don't ask about things already mentioned
+- Don't ask vague questions like "Anything else?"
+- Don't ask about tool preferences (we'll recommend)
+
+### Current Understanding
+${JSON.stringify(understanding, null, 2)}`;
+
+  try {
+    const result = await ai.models.generateContent({
+      model,
+      contents: `Generate clarifying questions (0-2 max) based on this task understanding:\n\n${JSON.stringify(understanding)}`,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: responseSchema,
+        systemInstruction: systemInstruction,
+        temperature: 0.2,
+      }
+    });
+
+    const text = result.text;
+    if (!text) throw new Error("No response from Gemini.");
+
+    const data = JSON.parse(text);
+
+    // Enforce maximum of 2 questions
+    const questions = Array.isArray(data.questions) ? data.questions.slice(0, 2) : [];
+
+    return questions.map((q: ClarifyingQuestion, index: number) => ({
+      id: q.id || `q${index + 1}`,
+      question: q.question || "What else should we know?",
+      options: Array.isArray(q.options) ? q.options.slice(0, 4) : [],
+      allowCustom: q.allowCustom !== false
+    }));
+
+  } catch (error) {
+    console.error("Gemini Question Generation Error:", error);
+
+    // Fallback: return contextual questions based on gaps
+    const questions: ClarifyingQuestion[] = [];
+
+    // If multiple deliverables, ask about main message
+    if (understanding.deliverables.length > 1) {
+      questions.push({
+        id: "main-message",
+        question: "What's the main message you want to convey?",
+        options: [
+          { label: "Growth and wins", value: "growth" },
+          { label: "Challenges ahead", value: "challenges" },
+          { label: "Year in review", value: "review" },
+          { label: "Recommendations", value: "recommendations" }
+        ],
+        allowCustom: true
+      });
+    }
+
+    // If no audience clarity, ask about polish level
+    if (!understanding.audience) {
+      questions.push({
+        id: "polish-level",
+        question: "How polished does this need to be?",
+        options: [
+          { label: "Internal/casual", value: "casual" },
+          { label: "Executive-ready", value: "executive" },
+          { label: "Board-level", value: "board" }
+        ],
+        allowCustom: true
+      });
+    }
+
+    return questions.slice(0, 2);
+  }
+};
+
+/**
+ * Generates a step-by-step task plan.
+ * CRITICAL: 3-5 steps typical, 7 maximum. Never exceed 7.
+ */
+export const generateTaskPlan = async (
+  understanding: TaskUnderstanding,
+  answers: Record<string, string>
+): Promise<TaskPlan> => {
+  const model = "gemini-2.5-flash";
+
+  const stepSchema: Schema = {
+    type: Type.OBJECT,
+    properties: {
+      number: { type: Type.NUMBER },
+      title: { type: Type.STRING, description: "Clear action-oriented title" },
+      who: {
+        type: Type.STRING,
+        enum: ["you", "you-ai", "ai"],
+        description: "Who does this step: you (human), you-ai (human with AI help), ai (AI handles it)"
+      },
+      timeMinutes: { type: Type.NUMBER, description: "Realistic time estimate in minutes" },
+      tool: {
+        type: Type.STRING,
+        description: "Recommended AI tool: ChatGPT, Claude, Gemini, or null for human-only steps"
+      },
+      description: { type: Type.STRING, description: "2-4 sentences explaining what to do" },
+      whyThisStep: { type: Type.STRING, description: "1-2 sentences on why this matters" },
+      prompt: {
+        type: Type.STRING,
+        description: "Full PCTR-formatted prompt for AI steps. Include [INSERT: description] for gaps."
+      },
+      promptCaveat: {
+        type: Type.STRING,
+        description: "For 'you' steps, a note about why this is best done by human but offer AI help anyway"
+      }
+    },
+    required: ["number", "title", "who", "timeMinutes", "description", "whyThisStep"]
+  };
+
+  const planSchema: Schema = {
+    type: Type.OBJECT,
+    properties: {
+      title: { type: Type.STRING, description: "Concise plan title based on the task" },
+      summary: { type: Type.STRING, description: "1-2 sentence summary of the approach" },
+      totalTimeMinutes: { type: Type.NUMBER },
+      stepCount: { type: Type.NUMBER },
+      steps: {
+        type: Type.ARRAY,
+        items: stepSchema,
+        description: "3-5 steps (7 maximum)"
+      }
+    },
+    required: ["title", "summary", "totalTimeMinutes", "stepCount", "steps"]
+  };
+
+  const systemInstruction = `You are a task planning consultant helping business professionals accomplish their work.
+
+### CRITICAL CONSTRAINTS
+- Plans must have 3-5 steps. Maximum 7 steps. Never exceed 7.
+- Ask yourself: "What's the SMALLEST plan that gets them to DONE?"
+- Only add steps that are truly necessary.
+
+### Step Assignment Logic
+
+**"you" (Human recommended):**
+- Narrative/story decisions
+- Political/contextual judgment
+- Final review and approval
+- Decisions requiring institutional knowledge
+For these steps, STILL include a prompt with promptCaveat explaining why human is better but AI can help.
+
+**"you-ai" (Human + AI together):**
+- Data extraction from documents
+- Synthesis and summarization
+- First drafts of content
+- Research and information gathering
+
+**"ai" (AI can handle alone):**
+- Simple transformations
+- Reformatting
+- Proofreading
+- Template application
+
+### Prompt Format (PCTR)
+Every AI step needs a well-structured prompt:
+\`\`\`
+**ROLE**
+[Specific expert persona]
+
+**CONTEXT**
+- [Situation]
+- [What you have]
+- [Constraints]
+- [Audience]
+
+**TASK**
+[Clear, specific instruction]
+
+**FORMAT**
+[Output structure]
+
+**INPUT**
+[INSERT: description of what to paste]
+\`\`\`
+
+### Tool Recommendations
+- **Claude**: Long-form writing, nuanced analysis, executive tone
+- **ChatGPT**: Structured output, data analysis, step-by-step
+- **Gemini**: Research, large context, multimodal
+
+### INSERT Markers
+Use [INSERT: description] for any information gaps. Be specific:
+- Good: [INSERT: paste your 12 monthly review documents here]
+- Bad: [INSERT: data]
+
+### User Context
+Deliverables: ${JSON.stringify(understanding.deliverables)}
+Inputs: ${JSON.stringify(understanding.inputs)}
+Audience: ${understanding.audience || 'Not specified'}
+Timeline: ${understanding.timeline || 'Not specified'}
+Constraints: ${JSON.stringify(understanding.constraints)}
+Additional answers: ${JSON.stringify(answers)}`;
+
+  try {
+    const result = await ai.models.generateContent({
+      model,
+      contents: `Generate a task plan (3-7 steps) for this task:\n\n${systemInstruction}`,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: planSchema,
+        temperature: 0.3,
+      }
+    });
+
+    const text = result.text;
+    if (!text) throw new Error("No response from Gemini.");
+
+    const data = JSON.parse(text);
+
+    // Enforce maximum of 7 steps
+    const steps: TaskPlanStep[] = (Array.isArray(data.steps) ? data.steps : [])
+      .slice(0, 7)
+      .map((step: TaskPlanStep, index: number) => ({
+        number: index + 1,
+        title: step.title || `Step ${index + 1}`,
+        who: (step.who as StepWho) || 'you-ai',
+        timeMinutes: step.timeMinutes || 15,
+        tool: step.tool || null,
+        description: step.description || "Complete this step.",
+        whyThisStep: step.whyThisStep || "This step moves you forward.",
+        prompt: step.prompt || null,
+        promptCaveat: step.who === 'you' ? (step.promptCaveat || "This step benefits from your judgment, but AI can help if you want a starting point.") : null
+      }));
+
+    const totalTime = steps.reduce((sum, step) => sum + step.timeMinutes, 0);
+
+    return {
+      title: data.title || "Your Task Plan",
+      summary: data.summary || `A ${steps.length}-step plan to complete your task.`,
+      totalTimeMinutes: totalTime,
+      stepCount: steps.length,
+      steps
+    };
+
+  } catch (error) {
+    console.error("Gemini Plan Generation Error:", error);
+
+    // Fallback plan based on deliverables
+    const fallbackSteps: TaskPlanStep[] = [
+      {
+        number: 1,
+        title: "Define Your Focus",
+        who: "you",
+        timeMinutes: 15,
+        tool: null,
+        description: "Before diving in, clarify what success looks like. What's the key message? Who's the primary audience?",
+        whyThisStep: "Clear goals prevent wasted effort and rework.",
+        prompt: "**ROLE**\nStrategic communications advisor\n\n**CONTEXT**\n- I'm working on: [INSERT: your deliverable]\n- Audience: [INSERT: who this is for]\n\n**TASK**\nHelp me identify 2-3 possible angles for this work and suggest which would be most impactful.\n\n**FORMAT**\nBrief options with pros/cons\n\n**INPUT**\n[INSERT: any context you have]",
+        promptCaveat: "You know the context and politics best, but AI can help brainstorm angles."
+      },
+      {
+        number: 2,
+        title: "Gather and Organize Information",
+        who: "you-ai",
+        timeMinutes: 30,
+        tool: "Claude",
+        description: "Extract key information from your source materials. AI is great at pulling out patterns and organizing data.",
+        whyThisStep: "Good inputs lead to good outputs. This step builds your foundation.",
+        prompt: "**ROLE**\nSenior analyst with expertise in data synthesis\n\n**CONTEXT**\n- I have [INSERT: your source materials]\n- I need to extract key information for [INSERT: your deliverable]\n\n**TASK**\nReview the following and extract:\n- Key data points\n- Notable trends or patterns\n- Important quotes or findings\n\n**FORMAT**\nOrganized bullets grouped by theme\n\n**INPUT**\n[INSERT: paste your source documents here]",
+        promptCaveat: null
+      },
+      {
+        number: 3,
+        title: "Create Your Draft",
+        who: "you-ai",
+        timeMinutes: 30,
+        tool: "Claude",
+        description: "Using your organized information, create a first draft. Don't aim for perfection - aim for a solid starting point.",
+        whyThisStep: "AI accelerates drafting; you add judgment and polish.",
+        prompt: "**ROLE**\nSenior professional writer\n\n**CONTEXT**\n- Creating: [INSERT: your deliverable type]\n- Audience: [INSERT: who this is for]\n- Key information: [INSERT: summary from Step 2]\n\n**TASK**\nDraft [INSERT: deliverable] with clear structure and professional tone.\n\n**FORMAT**\n[INSERT: format requirements]\n\n**INPUT**\n[INSERT: your organized information from Step 2]",
+        promptCaveat: null
+      },
+      {
+        number: 4,
+        title: "Review and Finalize",
+        who: "you",
+        timeMinutes: 20,
+        tool: null,
+        description: "Review the draft with fresh eyes. Check for accuracy, tone, and completeness. Make final adjustments.",
+        whyThisStep: "Human judgment ensures quality and catches what AI misses.",
+        prompt: "**ROLE**\nEditor and quality reviewer\n\n**CONTEXT**\n- I have a draft of [INSERT: your deliverable]\n- Audience: [INSERT: who this is for]\n\n**TASK**\nReview this draft and:\n1. Flag any factual issues or unclear points\n2. Suggest tone improvements\n3. Identify missing elements\n\n**FORMAT**\nBulleted feedback organized by priority\n\n**INPUT**\n[INSERT: paste your draft here]",
+        promptCaveat: "Your judgment matters most here, but AI can provide a second opinion."
+      }
+    ];
+
+    return {
+      title: "Your Task Plan",
+      summary: "A straightforward plan to complete your task efficiently.",
+      totalTimeMinutes: 95,
+      stepCount: 4,
+      steps: fallbackSteps
     };
   }
 };

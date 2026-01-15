@@ -3,6 +3,8 @@ import { PageLayout, Card, Button, Badge } from '../../components/ui';
 import { PromptDisplay } from '../../components/PromptDisplay';
 import { GamePlanView } from '../../components/GamePlanView';
 import { RefinementChat } from '../../components/RefinementChat';
+import { ComplexityBridge } from '../../components/ComplexityBridge';
+import { useRouter } from '../../lib/routerContext';
 import {
   ArrowLeft,
   ArrowRight,
@@ -18,7 +20,7 @@ import {
   MapPin,
   MessageSquare
 } from 'lucide-react';
-import { generateSimplePrompt, generateGamePlan } from '../../services/geminiService';
+import { generateSimplePrompt, generateGamePlan, assessComplexity, ComplexityAssessment, extractContextFromInput, ExtractedContext } from '../../services/geminiService';
 import {
   SimpleGeneratorInput,
   SimpleGeneratorOutput,
@@ -62,9 +64,19 @@ const TOOL_OPTIONS = [
   { label: 'Not sure', value: 'unsure' as AITool, icon: '❓' },
 ];
 
+// --- Extended State with Complexity and Extraction ---
+
+interface ExtendedGeneratorState extends GeneratorFlowState {
+  complexityAssessment: ComplexityAssessment | null;
+  showBridge: boolean;
+  bridgeDismissed: boolean;
+  extractedContext: ExtractedContext | null;
+  isExtracting: boolean;
+}
+
 // --- Initial State ---
 
-const initialState: GeneratorFlowState = {
+const initialState: ExtendedGeneratorState = {
   stage: 'prompt-input',
   task: '',
   audience: '',
@@ -80,17 +92,23 @@ const initialState: GeneratorFlowState = {
   refinementMessages: [],
   isLoading: false,
   error: null,
-  copied: false
+  copied: false,
+  complexityAssessment: null,
+  showBridge: false,
+  bridgeDismissed: false,
+  extractedContext: null,
+  isExtracting: false
 };
 
 // --- Main Component ---
 
 export default function GeneratorPage() {
-  const [state, setState] = useState<GeneratorFlowState>(initialState);
+  const [state, setState] = useState<ExtendedGeneratorState>(initialState);
+  const { push } = useRouter();
 
   // --- State Update Helpers ---
 
-  const updateState = (updates: Partial<GeneratorFlowState>) => {
+  const updateState = (updates: Partial<ExtendedGeneratorState>) => {
     setState(prev => ({ ...prev, ...updates }));
   };
 
@@ -125,9 +143,19 @@ export default function GeneratorPage() {
         tool: state.tool,
       };
 
-      const output = await generateSimplePrompt(input);
+      // Generate prompt and assess complexity in parallel
+      const [output, complexity] = await Promise.all([
+        generateSimplePrompt(input),
+        assessComplexity(state.task, { audience: state.audience, goal: state.goal })
+      ]);
+
+      // Show bridge if task is complex and user hasn't dismissed it before
+      const shouldShowBridge = complexity.complexity === 'multi-step' && !state.bridgeDismissed;
+
       updateState({
         generatedPrompt: output,
+        complexityAssessment: complexity,
+        showBridge: shouldShowBridge,
         stage: 'prompt-output',
         isLoading: false
       });
@@ -138,6 +166,22 @@ export default function GeneratorPage() {
         isLoading: false
       });
     }
+  };
+
+  const handleBridgeBuildPlan = () => {
+    // Navigate to Task Planner with context
+    // Store task in sessionStorage for Task Planner to pick up
+    sessionStorage.setItem('taskPlannerInput', JSON.stringify({
+      task: state.task,
+      audience: state.audience,
+      goal: state.goal,
+      tool: state.tool
+    }));
+    push('/task-planner');
+  };
+
+  const handleBridgeDismiss = () => {
+    updateState({ showBridge: false, bridgeDismissed: true });
   };
 
   const handleWantGamePlan = (wantPlan: boolean) => {
@@ -248,17 +292,58 @@ export default function GeneratorPage() {
 
             <div className="flex justify-end pt-4">
               <Button
-                onClick={() => {
+                onClick={async () => {
                   if (!state.task.trim()) {
                     updateState({ error: 'Please describe what you want to create.' });
                     return;
                   }
-                  goToStage('prompt-questions');
+
+                  // Run smart extraction on the input
+                  updateState({ isExtracting: true, error: null });
+
+                  try {
+                    const extracted = await extractContextFromInput(state.task);
+
+                    // Pre-fill values based on extraction (only if high confidence)
+                    const updates: Partial<ExtendedGeneratorState> = {
+                      extractedContext: extracted,
+                      isExtracting: false,
+                      stage: 'prompt-questions'
+                    };
+
+                    // Pre-fill audience if confidence > 60%
+                    if (extracted.audienceMatch && extracted.confidence.audience > 60) {
+                      const audienceOption = AUDIENCE_OPTIONS.find(o => o.label === extracted.audienceMatch);
+                      if (audienceOption) {
+                        updates.audience = audienceOption.value;
+                      }
+                    }
+
+                    // Pre-fill goal if confidence > 60%
+                    if (extracted.goalMatch && extracted.confidence.goal > 60) {
+                      const goalOption = GOAL_OPTIONS.find(o => o.label === extracted.goalMatch);
+                      if (goalOption) {
+                        updates.goal = goalOption.value;
+                      }
+                    }
+
+                    // Pre-fill tool if mentioned
+                    if (extracted.tool && extracted.confidence.tool > 60) {
+                      updates.tool = extracted.tool;
+                    }
+
+                    updateState(updates);
+                  } catch (err) {
+                    console.error('Extraction error:', err);
+                    // On error, just proceed without extraction
+                    updateState({ isExtracting: false, stage: 'prompt-questions' });
+                  }
                 }}
                 disabled={!state.task.trim()}
+                isLoading={state.isExtracting}
                 className="px-6"
               >
-                Continue <ArrowRight className="w-4 h-4 ml-2" />
+                {state.isExtracting ? 'Analyzing...' : 'Continue'} <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
           </div>
@@ -267,7 +352,7 @@ export default function GeneratorPage() {
         {/* === STAGE 1b: PROMPT QUESTIONS === */}
         {state.stage === 'prompt-questions' && (
           <div className="space-y-6 animate-fade-in">
-            {/* Task summary */}
+            {/* Task summary with extraction feedback */}
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -281,10 +366,34 @@ export default function GeneratorPage() {
                   Edit
                 </button>
               </div>
+
+              {/* Show what was detected */}
+              {state.extractedContext && (state.extractedContext.audience || state.extractedContext.goal) && (
+                <div className="mt-3 pt-3 border-t border-slate-200">
+                  <p className="text-xs text-emerald-600 font-medium flex items-center gap-1">
+                    <Check className="w-3 h-3" />
+                    I noticed some details - I've pre-filled what I could:
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {state.extractedContext.audience && state.extractedContext.confidence.audience > 60 && (
+                      <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                        For: {state.extractedContext.audience}
+                      </span>
+                    )}
+                    {state.extractedContext.goal && state.extractedContext.confidence.goal > 60 && (
+                      <span className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full">
+                        Goal: {state.extractedContext.goalMatch}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             <p className="text-lg font-semibold text-slate-900">
-              A few questions to make this great:
+              {state.extractedContext && (state.audience || state.goal)
+                ? 'Confirm or adjust:'
+                : 'A few questions to make this great:'}
             </p>
 
             {/* Question 1: Audience */}
@@ -292,6 +401,11 @@ export default function GeneratorPage() {
               <div className="flex items-center gap-2 mb-1">
                 <Users className="w-4 h-4 text-blue-600" />
                 <h3 className="font-semibold text-slate-900">Who is this for?</h3>
+                {state.extractedContext?.audienceMatch && state.extractedContext.confidence.audience > 60 && (
+                  <span className="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full">
+                    Auto-detected
+                  </span>
+                )}
               </div>
               <p className="text-sm text-slate-500 mb-4">The person or group who will see/use the output</p>
               <div className="flex flex-wrap gap-2">
@@ -325,6 +439,11 @@ export default function GeneratorPage() {
               <div className="flex items-center gap-2 mb-1">
                 <Target className="w-4 h-4 text-purple-600" />
                 <h3 className="font-semibold text-slate-900">What's the goal?</h3>
+                {state.extractedContext?.goalMatch && state.extractedContext.confidence.goal > 60 && (
+                  <span className="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full">
+                    Auto-detected
+                  </span>
+                )}
               </div>
               <p className="text-sm text-slate-500 mb-4">What should this help them understand, decide, or do?</p>
               <div className="flex flex-wrap gap-2">
@@ -400,126 +519,140 @@ export default function GeneratorPage() {
         {/* === STAGE 2: PROMPT OUTPUT + INVITATION === */}
         {state.stage === 'prompt-output' && state.generatedPrompt && (
           <div className="space-y-6 animate-fade-in">
-            {/* Success header */}
-            <div className="flex items-center gap-2 text-emerald-600">
-              <Check className="w-5 h-5" />
-              <span className="font-semibold">Your prompt is ready</span>
-            </div>
-
-            {/* The prompt with PCTR labels */}
-            <Card className="p-0 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Your Prompt</span>
-                <button
-                  onClick={handleCopyPrompt}
-                  className="flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
-                >
-                  {state.copied ? (
-                    <>
-                      <Check className="w-4 h-4" /> Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-4 h-4" /> Copy
-                    </>
-                  )}
-                </button>
-              </div>
-              <div className="p-5">
-                <pre className="whitespace-pre-wrap text-sm text-slate-900 leading-relaxed font-sans">
-                  {state.generatedPrompt.prompt}
-                </pre>
-              </div>
-            </Card>
-
-            {/* Why this works - PCTR breakdown */}
-            <Card className="p-5 bg-blue-50 border-blue-100">
-              <div className="flex items-center gap-2 mb-4">
-                <Lightbulb className="w-4 h-4 text-blue-600" />
-                <h3 className="font-semibold text-blue-900">Why this works</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-medium text-blue-800">[P] Persona</span>
-                  <p className="text-blue-700 mt-1">{state.generatedPrompt.pctrBreakdown.persona}</p>
-                </div>
-                <div>
-                  <span className="font-medium text-blue-800">[C] Context</span>
-                  <p className="text-blue-700 mt-1">{state.generatedPrompt.pctrBreakdown.context}</p>
-                </div>
-                <div>
-                  <span className="font-medium text-blue-800">[T] Task</span>
-                  <p className="text-blue-700 mt-1">{state.generatedPrompt.pctrBreakdown.task}</p>
-                </div>
-                <div>
-                  <span className="font-medium text-blue-800">[R] Requirements</span>
-                  <p className="text-blue-700 mt-1">{state.generatedPrompt.pctrBreakdown.requirements}</p>
-                </div>
-              </div>
-            </Card>
-
-            {/* Tool suggestion (only if user was unsure) */}
-            {state.generatedPrompt.toolSuggestion && (
-              <Card className="p-4 bg-amber-50 border-amber-100">
-                <div className="flex items-start gap-3">
-                  <span className="text-xl">💡</span>
-                  <div>
-                    <p className="font-medium text-amber-900">
-                      Tool tip: We recommend <span className="font-bold capitalize">{state.generatedPrompt.toolSuggestion.recommended}</span>
-                    </p>
-                    <p className="text-sm text-amber-700 mt-1">
-                      {state.generatedPrompt.toolSuggestion.reason}
-                    </p>
-                  </div>
-                </div>
-              </Card>
+            {/* Complexity Bridge - shown when task is multi-step */}
+            {state.showBridge && state.complexityAssessment?.bridgeMessage && (
+              <ComplexityBridge
+                message={state.complexityAssessment.bridgeMessage}
+                onBuildPlan={handleBridgeBuildPlan}
+                onJustPrompt={handleBridgeDismiss}
+              />
             )}
 
-            {/* === INVITATION TO GO DEEPER === */}
-            <Card className="p-6 bg-gradient-to-br from-violet-50 to-blue-50 border-violet-200">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-violet-600 shrink-0 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold text-violet-900 mb-2">
-                    Want to take this further?
-                  </h3>
-                  <p className="text-sm text-violet-700 mb-4">
-                    This sounds like it might be part of a bigger effort. I can help you think through the full process - showing where AI can help at each step, what's best handled by you, and where to watch out for common mistakes.
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <Button onClick={() => handleWantGamePlan(true)}>
-                      Yes, help me think through this
-                    </Button>
-                    <Button variant="outline" onClick={() => handleWantGamePlan(false)}>
-                      No, the prompt is enough
-                    </Button>
-                  </div>
+            {/* Show prompt output when bridge is dismissed or not shown */}
+            {!state.showBridge && (
+              <>
+                {/* Success header */}
+                <div className="flex items-center gap-2 text-emerald-600">
+                  <Check className="w-5 h-5" />
+                  <span className="font-semibold">Your prompt is ready</span>
                 </div>
-              </div>
-            </Card>
 
-            {/* Action buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-4">
-              <Button variant="outline" onClick={handleStartOver} className="flex-1">
-                <RefreshCw className="w-4 h-4 mr-2" /> Start Over
-              </Button>
-              <Button
-                onClick={() => {
-                  const tool = state.generatedPrompt?.toolSuggestion?.recommended || state.tool;
-                  const urls: Record<string, string> = {
-                    chatgpt: 'https://chat.openai.com',
-                    claude: 'https://claude.ai',
-                    gemini: 'https://gemini.google.com',
-                    unsure: 'https://gemini.google.com',
-                  };
-                  window.open(urls[tool], '_blank');
-                }}
-                className="flex-1"
-              >
-                Open {state.generatedPrompt.toolSuggestion?.recommended || (state.tool === 'unsure' ? 'Gemini' : state.tool)}
-                <ExternalLink className="w-4 h-4 ml-2" />
-              </Button>
-            </div>
+                {/* The prompt with PCTR labels */}
+                <Card className="p-0 overflow-hidden">
+                  <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200">
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Your Prompt</span>
+                    <button
+                      onClick={handleCopyPrompt}
+                      className="flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+                    >
+                      {state.copied ? (
+                        <>
+                          <Check className="w-4 h-4" /> Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4" /> Copy
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <div className="p-5">
+                    <pre className="whitespace-pre-wrap text-sm text-slate-900 leading-relaxed font-sans">
+                      {state.generatedPrompt.prompt}
+                    </pre>
+                  </div>
+                </Card>
+
+                {/* Why this works - PCTR breakdown */}
+                <Card className="p-5 bg-blue-50 border-blue-100">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Lightbulb className="w-4 h-4 text-blue-600" />
+                    <h3 className="font-semibold text-blue-900">Why this works</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="font-medium text-blue-800">[P] Persona</span>
+                      <p className="text-blue-700 mt-1">{state.generatedPrompt.pctrBreakdown.persona}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-blue-800">[C] Context</span>
+                      <p className="text-blue-700 mt-1">{state.generatedPrompt.pctrBreakdown.context}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-blue-800">[T] Task</span>
+                      <p className="text-blue-700 mt-1">{state.generatedPrompt.pctrBreakdown.task}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium text-blue-800">[R] Requirements</span>
+                      <p className="text-blue-700 mt-1">{state.generatedPrompt.pctrBreakdown.requirements}</p>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Tool suggestion (only if user was unsure) */}
+                {state.generatedPrompt.toolSuggestion && (
+                  <Card className="p-4 bg-amber-50 border-amber-100">
+                    <div className="flex items-start gap-3">
+                      <span className="text-xl">💡</span>
+                      <div>
+                        <p className="font-medium text-amber-900">
+                          Tool tip: We recommend <span className="font-bold capitalize">{state.generatedPrompt.toolSuggestion.recommended}</span>
+                        </p>
+                        <p className="text-sm text-amber-700 mt-1">
+                          {state.generatedPrompt.toolSuggestion.reason}
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                )}
+
+                {/* === INVITATION TO GO DEEPER === */}
+                <Card className="p-6 bg-gradient-to-br from-violet-50 to-blue-50 border-violet-200">
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-violet-600 shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="font-semibold text-violet-900 mb-2">
+                        Want to take this further?
+                      </h3>
+                      <p className="text-sm text-violet-700 mb-4">
+                        This sounds like it might be part of a bigger effort. I can help you think through the full process - showing where AI can help at each step, what's best handled by you, and where to watch out for common mistakes.
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Button onClick={() => handleWantGamePlan(true)}>
+                          Yes, help me think through this
+                        </Button>
+                        <Button variant="outline" onClick={() => handleWantGamePlan(false)}>
+                          No, the prompt is enough
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Action buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <Button variant="outline" onClick={handleStartOver} className="flex-1">
+                    <RefreshCw className="w-4 h-4 mr-2" /> Start Over
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      const tool = state.generatedPrompt?.toolSuggestion?.recommended || state.tool;
+                      const urls: Record<string, string> = {
+                        chatgpt: 'https://chat.openai.com',
+                        claude: 'https://claude.ai',
+                        gemini: 'https://gemini.google.com',
+                        unsure: 'https://gemini.google.com',
+                      };
+                      window.open(urls[tool], '_blank');
+                    }}
+                    className="flex-1"
+                  >
+                    Open {state.generatedPrompt.toolSuggestion?.recommended || (state.tool === 'unsure' ? 'Gemini' : state.tool)}
+                    <ExternalLink className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         )}
 

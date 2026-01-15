@@ -126,6 +126,13 @@ export interface QuestionOption {
   value: string;
 }
 
+export interface CoachQuestionConfig {
+  question: string;
+  options: QuestionOption[];
+  allowSkip?: boolean;
+  allowCustom?: boolean;
+}
+
 // --- Game Plan Generator Types ---
 
 export type GamePlanStage =
